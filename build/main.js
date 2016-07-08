@@ -65,8 +65,12 @@ app.use(function () {
 
 router.get('/user', _user2.default);
 router.get('/anime', _anime2.default);
+router.get('/auth', function (ctx, next) {
+	ctx.body = 'If you see this, you\'re done.';
+});
 
 app.use(router.routes());
 app.use(router.allowedMethods());
 app.use((0, _koaCors2.default)());
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
+//# sourceMappingURL=main.js.map

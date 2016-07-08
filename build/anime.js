@@ -96,3 +96,4 @@ exports.default = function () {
 		return _ref.apply(this, arguments);
 	};
 }();
+//# sourceMappingURL=anime.js.map

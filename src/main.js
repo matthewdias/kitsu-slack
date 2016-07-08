@@ -20,6 +20,9 @@ app.use(async (ctx, next) => {
 
 router.get('/user', user);
 router.get('/anime', anime);
+router.get('/auth', (ctx, next) => {
+	ctx.body = 'If you see this, you\'re done.';
+});
 
 app.use(router.routes());
 app.use(router.allowedMethods());

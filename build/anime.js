@@ -26,11 +26,16 @@ exports.default = function () {
 			while (1) {
 				switch (_context.prev = _context.next) {
 					case 0:
-						console.log(ctx.query);
+						console.log('anime: ' + ctx.query.text);
 						_context.next = 3;
 						return _superagent2.default.get(apiUrl + '/anime?filter[text]=' + ctx.query.text).then(function (animus) {
-							console.log(animus.body);
-							media = animus.body.data[0];
+							if (animus.body.data[0]) {
+								media = animus.body.data[0];
+								console.log(media.attributes.canonicalTitle);
+							} else {
+								ctx.status = 404;
+								throw new Error('Not Found');
+							}
 						});
 
 					case 3:
@@ -76,7 +81,6 @@ exports.default = function () {
 								"fallback": '@' + ctx.query.user_name + '\n' + media.attributes.canonicalTitle + '\nRating: ' + rating + '\nType: ' + type + '\nEpisodes: ' + media.attributes.episodeCount + '\nLength: ' + media.attributes.episodeLength + ' minutes' +
 								// '\nGenres: ' + genres +
 								'\nSynopsis: ' + media.attributes.synopsis
-								// '\nStatus: ' + ctx.status
 							}]
 						};
 

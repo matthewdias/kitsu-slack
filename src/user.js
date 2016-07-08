@@ -5,11 +5,17 @@ const apiUrl = 'https://hbv3-api-edge.herokuapp.com/api/edge';
 
 export default async (ctx, next) => {
 	var profile;
-	console.log(ctx.query);
+	console.log('user: ' + ctx.query.text);
 	await superagent.get(apiUrl + '/users?filter[name]=' + ctx.query.text)
 		.then(user => {
-			console.log(user.body);
-			profile = user.body.data[0];
+			if(user.body.data[0]) {
+				profile = user.body.data[0];
+				console.log(profile.attributes.name);
+			}
+			else {
+				ctx.status = 404;
+				throw new Error('Not Found');
+			}
 		});
 
 	ctx.status = 200;
@@ -36,12 +42,7 @@ export default async (ctx, next) => {
 						"title": "Waifu/Husbando",
 						"value": profile.attributes.waifuOrHusbando,
 						"short": true
-					},
-					// {
-					// 	"title": "Status",
-					// 	"value": ctx.status,
-					// 	"short": true
-					// },
+					}
 				],
 				"fallback":
 					'@' + ctx.query.user_name +
@@ -49,7 +50,6 @@ export default async (ctx, next) => {
 					'\nAbout: ' + profile.attributes.about +
 					'\nBio: ' + profile.attributes.bio +
 					'\nWaifu/Husbando: ' + profile.attributes.waifuOrHusbando
-					// '\nStatus: ' + ctx.status
 			}
 		]
 	}

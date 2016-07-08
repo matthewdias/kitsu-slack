@@ -5,11 +5,17 @@ const apiUrl = 'https://hbv3-api-edge.herokuapp.com/api/edge';
 
 export default async (ctx, next) => {
 	var media;
-	console.log(ctx.query);
+	console.log('anime: ' + ctx.query.text);
 	await superagent.get(apiUrl + '/anime?filter[text]=' + ctx.query.text)
 		.then(animus => {
-			console.log(animus.body);
-			media = animus.body.data[0];
+			if(animus.body.data[0]) {
+				media = animus.body.data[0];
+				console.log(media.attributes.canonicalTitle);
+			}
+			else {
+				ctx.status = 404;
+				throw new Error('Not Found');
+			}
 		});
 
 	// var genres = media.relationships.genres.data.map(genre => genre.id);
@@ -52,12 +58,7 @@ export default async (ctx, next) => {
 						"title": "Length",
 						"value": media.attributes.episodeLength,
 						"short": true
-					},
-					// {
-					// 	"title": "Status",
-					// 	"value": ctx.status,
-					// 	"short": true
-					// },
+					}
 				],
 				"fallback":
 					'@' + ctx.query.user_name +
@@ -68,7 +69,6 @@ export default async (ctx, next) => {
 					'\nLength: ' + media.attributes.episodeLength + ' minutes' +
 					// '\nGenres: ' + genres +
 					'\nSynopsis: ' + media.attributes.synopsis
-					// '\nStatus: ' + ctx.status
 			}
 		]
 	}

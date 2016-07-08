@@ -26,11 +26,16 @@ exports.default = function () {
 			while (1) {
 				switch (_context.prev = _context.next) {
 					case 0:
-						console.log(ctx.query);
+						console.log('user: ' + ctx.query.text);
 						_context.next = 3;
 						return _superagent2.default.get(apiUrl + '/users?filter[name]=' + ctx.query.text).then(function (user) {
-							console.log(user.body);
-							profile = user.body.data[0];
+							if (user.body.data[0]) {
+								profile = user.body.data[0];
+								console.log(profile.attributes.name);
+							} else {
+								ctx.status = 404;
+								throw new Error('Not Found');
+							}
 						});
 
 					case 3:
@@ -58,7 +63,6 @@ exports.default = function () {
 									"short": true
 								}],
 								"fallback": '@' + ctx.query.user_name + '\n' + profile.attributes.name + '\nAbout: ' + profile.attributes.about + '\nBio: ' + profile.attributes.bio + '\nWaifu/Husbando: ' + profile.attributes.waifuOrHusbando
-								// '\nStatus: ' + ctx.status
 							}]
 						};
 

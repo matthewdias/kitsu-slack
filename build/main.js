@@ -28,6 +28,7 @@ var app = new _koa2.default();
 
 app.use(function () {
 	var _ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(ctx, next) {
+		var status;
 		return regeneratorRuntime.wrap(function _callee$(_context) {
 			while (1) {
 				switch (_context.prev = _context.next) {
@@ -37,17 +38,19 @@ app.use(function () {
 						return next();
 
 					case 3:
-						_context.next = 9;
+						_context.next = 10;
 						break;
 
 					case 5:
 						_context.prev = 5;
 						_context.t0 = _context['catch'](0);
 
-						ctx.body = { message: _context.t0.message, status: _context.t0.status };
-						ctx.status = _context.t0.status || 500;
+						ctx.body = _context.t0.message;
+						status = ctx.status || 500;
 
-					case 9:
+						console.log(status + ': ' + _context.t0.message);
+
+					case 10:
 					case 'end':
 						return _context.stop();
 				}

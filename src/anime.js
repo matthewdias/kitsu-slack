@@ -5,8 +5,8 @@ const apiUrl = 'https://hbv3-api-edge.herokuapp.com/api/edge';
 
 export default async (ctx, next) => {
 	var media;
-	console.log('anime: ' + ctx.query.text);
-	await superagent.get(apiUrl + '/anime?filter[text]=' + ctx.query.text)
+	console.log('anime: ' + ctx.request.body.text);
+	await superagent.get(apiUrl + '/anime?filter[text]=' + ctx.request.body.text)
 		.then(animus => {
 			if(animus.body.data[0]) {
 				media = animus.body.data[0];
@@ -30,7 +30,7 @@ export default async (ctx, next) => {
 		"attachments": [
 			{
 				"color": "#EC8662",
-				"pretext": '@' + ctx.query.user_name,
+				"pretext": '@' + ctx.request.body.user_name,
 				"mrkdwn_in": ["text"],
 				"title": media.attributes.canonicalTitle,
 				"title_link": media.links.self,
@@ -61,7 +61,7 @@ export default async (ctx, next) => {
 					}
 				],
 				"fallback":
-					'@' + ctx.query.user_name +
+					'@' + ctx.request.body.user_name +
 					'\n' + media.attributes.canonicalTitle +
 					'\nRating: ' + rating +
 					'\nType: ' + type +

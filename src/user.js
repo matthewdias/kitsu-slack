@@ -5,8 +5,8 @@ const apiUrl = 'https://hbv3-api-edge.herokuapp.com/api/edge';
 
 export default async (ctx, next) => {
 	var profile;
-	console.log('user: ' + ctx.query.text);
-	await superagent.get(apiUrl + '/users?filter[name]=' + ctx.query.text)
+	console.log('user: ' + ctx.request.body.text);
+	await superagent.get(apiUrl + '/users?filter[name]=' + ctx.request.body.text)
 		.then(user => {
 			if(user.body.data[0]) {
 				profile = user.body.data[0];
@@ -25,7 +25,7 @@ export default async (ctx, next) => {
 		"attachments": [
 			{
 				"color": "#EC8662",
-				"pretext": '@' + ctx.query.user_name,
+				"pretext": '@' + ctx.request.body.user_name,
 				"mrkdwn_in": ["text"],
 				"title": profile.attributes.name,
 				"title_link": profile.links.self,
@@ -45,7 +45,7 @@ export default async (ctx, next) => {
 					}
 				],
 				"fallback":
-					'@' + ctx.query.user_name +
+					'@' + ctx.request.body.user_name +
 					'\n' + profile.attributes.name +
 					'\nAbout: ' + profile.attributes.about +
 					'\nBio: ' + profile.attributes.bio +

@@ -1,11 +1,11 @@
 import 'babel-polyfill';
 import Koa from 'koa';
 import cors from 'koa-cors';
+import parser from 'koa-bodyparser';
 import user from './user';
 import anime from './anime';
 
 var router = require('koa-router')();
-var koaBody = require('koa-body')();
 var app = new Koa();
 
 app.use(async (ctx, next) => {
@@ -18,12 +18,14 @@ app.use(async (ctx, next) => {
 	}
 });
 
-router.get('/user', user);
-router.get('/anime', anime);
+router.post('/user', user);
+router.post('/anime', anime);
 router.get('/auth', (ctx, next) => {
-	ctx.body = 'If you see this, you\'re done.';
+	console.log('code: ' + ctx.query.code);
+	ctx.body = 'All done here.';
 });
 
+app.use(parser());
 app.use(router.routes());
 app.use(router.allowedMethods());
 app.use(cors());

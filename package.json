@@ -29,6 +29,9 @@
     "koa-bodyparser": "^2.2.0",
     "koa-cors": "0.0.16",
     "koa-router": "^7.0.1",
+    "mysql": "^2.11.1",
+    "pg": "^6.0.2",
+    "sequelize": "^3.23.4",
     "superagent": "^2.0.0",
     "superagent-jsonapify": "^1.4.1"
   }

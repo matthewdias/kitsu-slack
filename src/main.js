@@ -4,6 +4,7 @@ import cors from 'koa-cors';
 import parser from 'koa-bodyparser';
 import user from './user';
 import anime from './anime';
+import login from './login'
 
 var router = require('koa-router')();
 var app = new Koa();
@@ -20,7 +21,8 @@ app.use(async (ctx, next) => {
 
 router.post('/user', user);
 router.post('/anime', anime);
-router.get('/auth', (ctx, next) => {
+router.get('/login', login)
+router.get('/auth', async (ctx, next) => {
 	console.log('code: ' + ctx.query.code);
 	ctx.body = 'All done here.';
 });

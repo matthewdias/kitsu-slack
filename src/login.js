@@ -45,7 +45,7 @@ export default async (ctx, next) => {
   		  	  		return User.create({
   		  	  			id: ctx.query.user_id,
   		  	  			hbname: username,
-  		  	  			token: ctx.body.access_token
+  		  	  			token: res.body.access_token
   		  	  		});
   		  	  	}).then((user) => {
   		  	  		console.log(user.get({

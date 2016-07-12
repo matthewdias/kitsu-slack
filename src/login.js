@@ -17,7 +17,8 @@ var User = sequelize.define('user', {
 		type: Sequelize.STRING
 	},
 	hbname: Sequelize.STRING,
-	token: Sequelize.STRING
+	token: Sequelize.STRING,
+	refresh: Sequelize.STRING
 });
 
 export default async (ctx, next) => {
@@ -34,19 +35,28 @@ export default async (ctx, next) => {
   		.redirects(0)
   		.end(function(err, res) {
   		  	if (err || !res.ok) {
+  		  		console.log('Login Error: ' + username);
   		  		ctx.status = 404;
-				// throw new Error(err);
   		  	} else {
-  		  	  	console.log(res.body.access_token);
-  		  	  	console.log(res.body.expires_in);
-  		  	  	console.log(res.body.refresh_token);
+  		  		var newData = {
+  	  				hbname: username,
+	  	  			token: res.body.access_token,
+	  	  			refresh: res.body.refresh_token
+  	  			}
 
   		  	  	sequelize.sync().then(() => {
-  		  	  		return User.create({
-  		  	  			id: ctx.query.user_id,
-  		  	  			hbname: username,
-  		  	  			token: res.body.access_token
+  		  	  		return User.findOrCreate({
+  		  	  			where: { id: ctx.query.user_id },
+  		  	  			defaults: newData
   		  	  		});
+  		  	  	}).then((user, created) => {
+  		  	  		console.log(created);
+  		  	  		if(!created) {
+  		  	  			user.update(newData).then((user) => {
+  		  	  				console.log('updated');
+  		  	  				return user;
+  		  	  			});
+  		  	  		}
   		  	  	}).then((user) => {
   		  	  		console.log(user.get({
   		  	  			plain: true

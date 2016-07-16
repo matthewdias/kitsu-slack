@@ -21,6 +21,9 @@ app.use(async (ctx, next) => {
 
 router.post('/user', user);
 router.post('/anime', anime);
+router.post('/action', () => {
+	console.log('action');
+});
 router.get('/login', login)
 router.get('/auth', async (ctx, next) => {
 	console.log('code: ' + ctx.query.code);

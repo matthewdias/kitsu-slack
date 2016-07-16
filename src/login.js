@@ -8,7 +8,11 @@ if(process.env.DATABASE_URL) {
 	});
 }
 else {
-	sequelize = new Sequelize('localhb', 'matthew', null);
+	sequelize = new Sequelize('localhb', 'Matthew', null, {
+		host: 'localhost',
+		dialect: 'postgres',
+		protocol: 'postgres'
+	});
 }
 
 var User = sequelize.define('user', {
@@ -36,7 +40,7 @@ export default async (ctx, next) => {
   		.end(function(err, res) {
   		  	if (err || !res.ok) {
   		  		console.log('Login Error: ' + username);
-  		  		ctx.status = 404;
+  		  		// ctx.status = 404;
   		  	} else {
   		  		var newData = {
   	  				hbname: username,
@@ -45,22 +49,23 @@ export default async (ctx, next) => {
   	  			}
 
   		  	  	sequelize.sync().then(() => {
-  		  	  		return User.findOrCreate({
-  		  	  			where: { id: ctx.query.user_id },
+  		  	  		return User.findCreateFind({
+  		  	  			where: { id: ctx.query.team_id + '/' + ctx.query.user_id },
   		  	  			defaults: newData
-  		  	  		});
-  		  	  	}).then((user, created) => {
-  		  	  		console.log(created);
-  		  	  		if(!created) {
+  		  	  		})[0];
+  		  	  	}).then((user) => {
+  		  	  		if(user) {
+	  		  	  		console.log(user);
+	  		  	  		console.log(user.changed());
   		  	  			user.update(newData).then((user) => {
   		  	  				console.log('updated');
-  		  	  				return user;
+  		  	  				// return user;
+  		  	  			}).then((user) => {
+  		  	  				console.log(user.get({
+  		  	  					plain: true
+  		  	  				}));
   		  	  			});
   		  	  		}
-  		  	  	}).then((user) => {
-  		  	  		console.log(user.get({
-  		  	  			plain: true
-  		  	  		}));
   		  	  	});
 
   		  	  	// ctx.status = 200;

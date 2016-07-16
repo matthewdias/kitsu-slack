@@ -32,6 +32,7 @@ export default async (ctx, next) => {
 				"color": "#EC8662",
 				"pretext": '@' + ctx.request.body.user_name,
 				"mrkdwn_in": ["text"],
+				"callback_id": 'anime/' + media.id,
 				"title": media.attributes.canonicalTitle,
 				"title_link": media.links.self,
 				"text": media.attributes.synopsis,
@@ -68,7 +69,35 @@ export default async (ctx, next) => {
 					'\nEpisodes: ' + media.attributes.episodeCount +
 					'\nLength: ' + media.attributes.episodeLength + ' minutes' +
 					// '\nGenres: ' + genres +
-					'\nSynopsis: ' + media.attributes.synopsis
+					'\nSynopsis: ' + media.attributes.synopsis,
+				"actions": [
+	                {
+	                    "name": "current",
+	                    "text": "Currently Watching",
+	                    "style": "primary",
+	                    "type": "button"
+	                },
+	                {
+	                    "name": "planned",
+	                    "text": "Plan to Watch",
+	                    "type": "button"
+	                },
+	                {
+	                    "name": "completed",
+	                    "text": "Completed",
+	                    "type": "button"
+	                },
+	                {
+	                    "name": "hold",
+	                    "text": "On Hold",
+	                    "type": "button"
+	                },
+	                {
+	                    "name": "dropped",
+	                    "text": "Dropped",
+	                    "type": "button"
+	                }
+	            ]
 			}
 		]
 	}

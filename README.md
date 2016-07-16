@@ -4,6 +4,10 @@ Run: `npm install && npm start`
 
 TODO: 
 - [x] error checking
+- [ ] token validation
+    - auth
+    - command
+    - buttons
 - [ ] genres
 - [ ] slack buttons
 - [ ] real image urls

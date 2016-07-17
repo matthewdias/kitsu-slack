@@ -1,4 +1,5 @@
 import superagent from 'superagent';
+import Sequelize from 'sequelize'
 import sequelize from './db';
 
 var User = sequelize.define('user', {

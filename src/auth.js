@@ -12,6 +12,7 @@ var Team = sequelize.define('team', {
 
 export default async (ctx, next) => {
     console.log(ctx.query)
+    console.log(process.env.CLIENT)
     superagent
         .post('https://slack.com/api/oauth.access')
         .send({

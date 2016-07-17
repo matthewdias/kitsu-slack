@@ -25,14 +25,14 @@ export default async (ctx, next) => {
                 console.log('Login Error: ' + err);
                 // ctx.status = 404;
             } else {
-                sequelize.sync().then(() => {
-                    return Team.findCreateFind({
-                        where: { id: team_id },
-                        defaults: {
-                            token: res.body.access_token;
-                        }
-                    })[0];
-                });
+                // sequelize.sync().then(() => {
+                //     return Team.findCreateFind({
+                //         where: { id: team_id },
+                //         defaults: {
+                //             token: res.body.access_token;
+                //         }
+                //     })[0];
+                // });
 
                 // ctx.status = 200;
                 ctx.body = "Logged In"

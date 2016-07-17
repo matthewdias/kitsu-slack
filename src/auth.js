@@ -11,7 +11,7 @@ var Team = sequelize.define('team', {
 });
 
 export default async (ctx, next) => {
-    console.log(res.body)
+    console.log(ctx.query)
     superagent
         .post('https://slack.com/api/oauth.access')
         .send({
@@ -26,6 +26,7 @@ export default async (ctx, next) => {
                 console.log('Login Error: ' + err);
                 // ctx.status = 404;
             } else {
+                console.log(res.body)
                 // sequelize.sync().then(() => {
                 //     return Team.findCreateFind({
                 //         where: { id: team_id },

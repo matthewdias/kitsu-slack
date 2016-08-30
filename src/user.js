@@ -1,12 +1,11 @@
 import superagent from 'superagent'
 import superagentJsonapify from 'superagent-jsonapify'
 superagentJsonapify(superagent)
-const apiUrl = 'https://hbv3-api-edge.herokuapp.com/api/edge'
 
 export default async (ctx, next) => {
   var profile
   console.log('user: ' + ctx.request.body.text)
-  await superagent.get(apiUrl + '/users?filter[name]=' + ctx.request.body.text)
+  await superagent.get(process.env.API_URL + '/users?filter[name]=' + ctx.request.body.text)
     .then(user => {
       if (user.body.data[0]) {
         profile = user.body.data[0]
@@ -29,7 +28,7 @@ export default async (ctx, next) => {
         'title': profile.attributes.name,
         'title_link': profile.links.self,
         'text': profile.attributes.bio,
-        // "thumb_url": apiUrl + profile.attributes.avatar,
+        // "thumb_url": process.env.API_URL + profile.attributes.avatar,
         'thumb_url': 'https://i.imgur.com/so56rpG.jpg',
         'fields': [
           {

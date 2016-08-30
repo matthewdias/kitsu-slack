@@ -1,44 +1,34 @@
-import superagent from 'superagent';
+import superagent from 'superagent'
 import Sequelize from 'sequelize'
-import sequelize from './db';
+import sequelize from './db'
 
 var Team = sequelize.define('team', {
-    id: {
-        primaryKey: true,
-        type: Sequelize.STRING
-    },
-    token: Sequelize.STRING,
-});
+  id: {
+    primaryKey: true,
+    type: Sequelize.STRING
+  },
+  token: Sequelize.STRING
+})
 
 export default async (ctx, next) => {
-    console.log(ctx.query)
-    console.log(process.env.CLIENT)
-    superagent
-        .post('https://slack.com/api/oauth.access')
-        .send({
-            "client_id": process.env.CLIENT,
-            "client_secret": process.env.SECRET,
-            "code": ctx.query.code
-        })
-        .set('Content-Type', 'application/json; charset=utf-8')
-        .redirects(0)
-        .end(function(err, res) {
-            if (err || !res.ok) {
-                console.log('Login Error: ' + err);
-                // ctx.status = 404;
-            } else {
-                console.log(res.body)
-                // sequelize.sync().then(() => {
-                //     return Team.findCreateFind({
-                //         where: { id: team_id },
-                //         defaults: {
-                //             token: res.body.access_token;
-                //         }
-                //     })[0];
-                // });
-
-                // ctx.status = 200;
-                ctx.body = "Logged In"
+  ctx.body = 'Logging In'
+  superagent
+    .post('https://slack.com/api/oauth.access')
+    .send('client_id=' + process.env.CLIENT)
+    .send('client_secret=' + process.env.SECRET)
+    .send('code=' + ctx.query.code)
+    .end(function (err, res) {
+      if (res.body.ok == false) {
+        console.log('Login Error: ' + res.body.error)
+      } else {
+        sequelize.sync().then(() => {
+          return Team.findCreateFind({
+            where: { id: res.body.team_id },
+            defaults: {
+              token: res.body.access_token
             }
-        });
+          })[0]
+        })
+      }
+    })
 }

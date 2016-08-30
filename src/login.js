@@ -16,7 +16,7 @@ export default async (ctx, next) => {
   var username = ctx.query.text.split(' ')[0]
   var password = ctx.query.text.substr(username.length + 1)
   superagent
-    .post('https://hbv3-api-edge.herokuapp.com/oauth/token')
+    .post(process.env.API_URL + '/oauth/token')
     .send({
       'password': password,
       'username': username,

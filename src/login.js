@@ -25,9 +25,8 @@ export default async (ctx, next) => {
     .set('Content-Type', 'application/json; charset=utf-8')
     .redirects(0)
     .end(function (err, res) {
-      if (err || !res.ok) {
-        console.log('Login Error: ' + username)
-      // ctx.status = 404
+      if (err) {
+        console.log('Login Error: ' + err)
       } else {
         var newData = {
           hbname: username,

@@ -13,8 +13,8 @@ var User = sequelize.define('user', {
 })
 
 export default async (ctx, next) => {
-  var username = ctx.query.text.split(' ')[0]
-  var password = ctx.query.text.substr(username.length + 1)
+  var username = ctx.request.body.text.split(' ')[0]
+  var password = ctx.request.body.text.substr(username.length + 1)
   superagent
     .post(process.env.API_URL + '/oauth/token')
     .send({

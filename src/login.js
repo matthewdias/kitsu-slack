@@ -16,7 +16,7 @@ export default async (ctx, next) => {
   var username = ctx.request.body.text.split(' ')[0]
   var password = ctx.request.body.text.substr(username.length + 1)
   superagent
-    .post(process.env.API_URL + '/oauth/token')
+    .post('https://matthewdias.dynet.com:32770' + '/oauth/token')
     .send({
       'password': password,
       'username': username,
@@ -26,7 +26,7 @@ export default async (ctx, next) => {
     .redirects(0)
     .end(function (err, res) {
       if (err) {
-        console.log('Login Error: ' + err)
+        console.log('Login Error: ' + username + err)
       } else {
         var newData = {
           hbname: username,

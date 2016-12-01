@@ -41,7 +41,7 @@ export default async (ctx, next, kitsu) => {
       }
     })
 
-    // ctx.status = 200
+    ctx.status = 200
     ctx.body = 'Logged In'
   })
 }

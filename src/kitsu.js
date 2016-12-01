@@ -1,6 +1,6 @@
 import OAuth2 from 'client-oauth2'
 import JsonApi from 'devour-client'
-const baseUrl = process.env.API_URL
+const baseUrl = process.env.KITSU_HOST + '/api'
 
 class Kitsu {
   constructor() {
@@ -15,12 +15,19 @@ class Kitsu {
     this.jsonApi.define('user', {
       name: '',
       about: '',
-      bio: '',
+      website: '',
       waifuOrHusbando: '',
       waifu: {
         jsonApi: 'hasOne',
         type: 'characters'
       },
+      gender: '',
+      location: '',
+      birthday: '',
+      createdAt: '',
+      followersCount: '',
+      followingCount: '',
+      lifeSpentOnAnime: '',
       avatar: { original: '' }
     })
 
@@ -41,7 +48,12 @@ class Kitsu {
       posterImage: { original: '' },
       episodeCount: '',
       episodeLength: '',
-      showType: ''
+      showType: '',
+      startDate: '',
+      ageRating: '',
+      ageRatingGuide: '',
+      nsfw: '',
+      youtubeVideoId: ''
     }, { collectionPath: 'anime' })
 
     this.jsonApi.define('libraryEntry', {
@@ -78,7 +90,8 @@ class Kitsu {
   searchUsers(name) {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('user', {
-        filter: { name }
+        filter: { name },
+        include: 'waifu'
       }).then((users) => {
         pass(users[0])
       })

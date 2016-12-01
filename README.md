@@ -9,6 +9,7 @@ TODO:
     - command
     - buttons
 - [ ] genres
+- [ ] manga
 - [ ] slack buttons
 - [ ] real image urls
 - [ ] elasticsearch

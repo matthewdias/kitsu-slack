@@ -1,14 +1,15 @@
 import 'babel-polyfill'
 import Koa from 'koa'
+import parser from 'koa-bodyparser'
+import Router from 'koa-router'
 import cors from 'koa-cors'
-// import parser from 'koa-bodyparser'
 import Kitsu from './kitsu'
 import user from './user'
 import anime from './anime'
 import login from './login'
 import auth from './auth'
 
-const router = require('koa-router')()
+const router = new Router()
 const app = new Koa()
 const kitsu = new Kitsu()
 
@@ -22,15 +23,15 @@ app.use(async (ctx, next) => {
   }
 })
 
-router.post('/user', (ctx, next) => { user(ctx, next, kitsu) })
-router.post('/anime', (ctx, next) => { anime(ctx, next, kitsu) })
+router.post('/user', async (ctx, next) => { await user(ctx, next, kitsu) })
+router.post('/anime', async (ctx, next) => { await anime(ctx, next, kitsu) })
 router.post('/action', () => {
   console.log('action')
 })
-router.post('/login', (ctx, next) => { login(ctx, next, kitsu) })
+router.post('/login', async (ctx, next) => { await login(ctx, next, kitsu) })
 router.get('/auth', auth)
 
-// app.use(parser())
+app.use(parser())
 app.use(router.routes())
 app.use(router.allowedMethods())
 app.use(cors())

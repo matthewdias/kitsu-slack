@@ -4,13 +4,13 @@ Run: `npm install && npm start`
 
 TODO: 
 - [x] error checking
+- [ ] genres
+- [ ] manga
 - [ ] token validation
     - auth
     - command
     - buttons
-- [ ] genres
-- [ ] manga
 - [ ] slack buttons
-- [ ] real image urls
-- [ ] elasticsearch
+    - library
+    - follow
 - [ ] rate limit

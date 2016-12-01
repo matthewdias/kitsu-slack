@@ -121,7 +121,7 @@ export default async (ctx, next, kitsu) => {
         response_type: 'in_channel',
         link_names: true,
         attachments: [{
-          color: '#DE433E',
+          color: '#F65440',
           mrkdwn_in: ['text'],
           callback_id: 'anime/' + anime.id,
           title: anime.canonicalTitle,

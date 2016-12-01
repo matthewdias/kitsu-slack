@@ -28,7 +28,7 @@ class Kitsu {
       followersCount: '',
       followingCount: '',
       lifeSpentOnAnime: '',
-      avatar: { original: '' }
+      avatar: { large: '' }
     })
 
     this.jsonApi.define('character', {
@@ -45,7 +45,7 @@ class Kitsu {
       slug: '',
       synopsis: '',
       averageRating: '',
-      posterImage: { original: '' },
+      posterImage: { large: '' },
       episodeCount: '',
       episodeLength: '',
       showType: '',

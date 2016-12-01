@@ -127,7 +127,7 @@ export default async (ctx, next, kitsu) => {
           title: anime.canonicalTitle,
           title_link,
           text,
-          image_url: anime.posterImage ? anime.posterImage.original : null,
+          image_url: anime.posterImage ? anime.posterImage.large : null,
           fields,
           fallback,
           actions

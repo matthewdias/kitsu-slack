@@ -126,7 +126,7 @@ export default async (ctx, next, kitsu) => {
           title: user.name,
           title_link,
           text,
-          thumb_url: user.avatar ? user.avatar.original : null,
+          thumb_url: user.avatar ? user.avatar.large : null,
           fields,
           fallback
         }]

@@ -1,7 +1,7 @@
 {
-  "name": "hbslackbot",
+  "name": "kitsu-slack",
   "version": "0.1.0",
-  "description": "Query Hummingbird.me info from slack",
+  "description": "Query Kitsu.io from slack",
   "main": "main.js",
   "scripts": {
     "start": "npm run build && node build/main.js",
@@ -11,20 +11,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/matthewdias/hbslackbot.git"
+    "url": "git+https://github.com/matthewdias/kitsu-slack.git"
   },
   "author": "matthewdias",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/matthewdias/hbslackbot/issues"
+    "url": "https://github.com/matthewdias/kitsu-slack/issues"
   },
-  "homepage": "https://github.com/matthewdias/hbslackbot#readme",
+  "homepage": "https://github.com/matthewdias/kitsu-slack#readme",
   "dependencies": {
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-polyfill": "^6.9.1",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-0": "^6.5.0",
+    "client-oauth2": "^3.2.0",
+    "devour-client": "^1.4.0",
     "koa": "^2.0.0",
     "koa-bodyparser": "^2.2.0",
     "koa-cors": "0.0.16",
@@ -32,7 +34,6 @@
     "mysql": "^2.11.1",
     "pg": "^6.0.2",
     "sequelize": "^3.23.4",
-    "superagent": "^2.0.0",
-    "superagent-jsonapify": "^1.4.1"
+    "superagent": "^3.1.0"
   }
 }

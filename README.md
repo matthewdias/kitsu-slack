@@ -4,6 +4,7 @@ Run: `npm install && npm start`
 
 TODO: 
 - [x] error checking
+- [ ] fix life spent
 - [ ] genres
 - [ ] manga
 - [ ] token validation
@@ -13,4 +14,5 @@ TODO:
 - [ ] slack buttons
     - library
     - follow
+- [ ] query by @user
 - [ ] rate limit

@@ -130,7 +130,7 @@ export default async (ctx, next, kitsu) => {
           image_url: anime.posterImage ? anime.posterImage.large : null,
           fields,
           fallback,
-          actions
+          // actions
         }]
       }
 

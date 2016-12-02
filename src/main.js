@@ -3,6 +3,7 @@ import Koa from 'koa'
 import parser from 'koa-bodyparser'
 import Router from 'koa-router'
 import cors from 'koa-cors'
+import serve from 'koa-static'
 import Kitsu from './kitsu'
 import user from './user'
 import anime from './anime'
@@ -39,4 +40,5 @@ app.use(parser())
 app.use(router.routes())
 app.use(router.allowedMethods())
 app.use(cors())
+app.use(serve('../static'))
 app.listen(process.env.PORT || 3000)

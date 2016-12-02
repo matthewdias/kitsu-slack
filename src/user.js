@@ -12,6 +12,7 @@ export default async (ctx, next, kitsu) => {
     query.replace('ex ', '')
     extended = true
   }
+  console.log(query)
   await kitsu.searchUsers(encodeURI(query)).then((user) => {
     if (user) {
       console.log(user.name)

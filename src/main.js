@@ -18,6 +18,7 @@ const kitsu = new Kitsu()
 
 app.use(async (ctx, next) => {
   try {
+    console.log(ctx.request.method)
     await next()
   } catch (err) {
     ctx.body = err.message

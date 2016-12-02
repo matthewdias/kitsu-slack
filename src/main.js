@@ -8,6 +8,7 @@ import user from './user'
 import anime from './anime'
 import manga from './manga'
 import login from './login'
+import help from './help'
 import auth from './auth'
 
 const router = new Router()
@@ -31,6 +32,7 @@ router.post('/action', () => {
   console.log('action')
 })
 router.post('/login', async (ctx, next) => { await login(ctx, next, kitsu) })
+router.post('/help', async (ctx, next) => { await help(ctx, next) })
 router.get('/auth', auth)
 
 app.use(parser())

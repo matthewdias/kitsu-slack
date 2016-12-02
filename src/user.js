@@ -97,7 +97,7 @@ export default async (ctx, next, kitsu) => {
           { interval: 'hour', value: 60 },
           { interval: 'minute', value: 1 }
         ]
-        let time = ''
+        let time = []
         multiples.map((multiple) => {
           let { interval, value } = multiple
           let amount = Math.floor(lifeSpentOnAnime / value)
@@ -105,10 +105,10 @@ export default async (ctx, next, kitsu) => {
             lifeSpentOnAnime -= amount * value
             if (amount > 1)
               interval += 's'
-            time += `${amount} ${interval}, `
+            time.push(`${amount} ${interval}`)
           }
         })
-        time = time.substring(0, time.lastIndexOf(', '))
+        time = time.join(', ')
         fields.push({
           title: ':expressionless: Life Spent On Anime',
           value: time,

@@ -78,6 +78,17 @@ export default async (ctx, next, kitsu) => {
         fallback += `\nAge Rating: ${ageRating}`
       }
 
+      if (anime.genres) {
+        let genres = anime.genres.map(genre => genre.name)
+        genres = genres.join(', ')
+        fields.push({
+          title: ':performing_arts: Genres',
+          value: genres,
+          short: true
+        })
+        fallback += `\nGenres: ${genres}`
+      }
+
       if (youtubeVideoId) {
         youtubeVideoId = `https://www.youtube.com/watch?v=${youtubeVideoId}`
         fields.push({

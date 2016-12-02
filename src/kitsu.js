@@ -53,8 +53,16 @@ class Kitsu {
       ageRating: '',
       ageRatingGuide: '',
       nsfw: '',
-      youtubeVideoId: ''
+      youtubeVideoId: '',
+      genres: {
+        jsonApi: 'hasOne',
+        type: 'genres'
+      }
     }, { collectionPath: 'anime' })
+
+    this.jsonApi.define('genre', {
+      name: ''
+    })
 
     this.jsonApi.define('libraryEntry', {
       status: '',
@@ -101,7 +109,8 @@ class Kitsu {
   searchAnime(text) {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('anime', {
-        filter: { text }
+        filter: { text },
+        include: 'genres'
       }).then((anime) => {
         pass(anime[0])
       })

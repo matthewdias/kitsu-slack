@@ -5,7 +5,6 @@ export default async (ctx, next, kitsu) => {
   await kitsu.searchAnime(encodeURI(ctx.request.body.text)).then(anime => {
     if (anime) {
       console.log(anime.canonicalTitle)
-      console.log(anime)
       let text = ''
       let fields = []
       let title_link = process.env.KITSU_HOST + '/anime/' + anime.slug

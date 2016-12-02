@@ -55,7 +55,7 @@ class Kitsu {
       nsfw: '',
       youtubeVideoId: '',
       genres: {
-        jsonApi: 'hasOne',
+        jsonApi: 'hasMany',
         type: 'genres'
       }
     }, { collectionPath: 'anime' })

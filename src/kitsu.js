@@ -36,11 +36,6 @@ class Kitsu {
     })
 
     this.jsonApi.define('anime', {
-      titles: {
-        en: '',
-        en_jp: '',
-        ja_jp: ''
-      },
       canonicalTitle: '',
       slug: '',
       synopsis: '',
@@ -59,6 +54,22 @@ class Kitsu {
         type: 'genres'
       }
     }, { collectionPath: 'anime' })
+
+    this.jsonApi.define('manga', {
+      canonicalTitle: '',
+      slug: '',
+      synopsis: '',
+      averageRating: '',
+      posterImage: { large: '' },
+      chapterCount: '',
+      volumeCount: '',
+      mangaType: '',
+      startDate: '',
+      genres: {
+        jsonApi: 'hasMany',
+        type: 'genres'
+      }
+    }, { collectionPath: 'manga' })
 
     this.jsonApi.define('genre', {
       name: ''
@@ -99,7 +110,8 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('user', {
         filter: { name },
-        include: 'waifu'
+        include: 'waifu',
+        page: { limit: 1 }
       }).then((users) => {
         pass(users[0])
       })
@@ -110,9 +122,22 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('anime', {
         filter: { text },
-        include: 'genres'
+        include: 'genres',
+        page: { limit: 1 }
       }).then((anime) => {
         pass(anime[0])
+      })
+    })
+  }
+
+  searchManga(text) {
+    return new Promise((pass, fail) => {
+      this.jsonApi.findAll('manga', {
+        filter: { text },
+        include: 'genres',
+        page: { limit: 1 }
+      }).then((manga) => {
+        pass(manga[0])
       })
     })
   }

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build && node build/main.js",
     "clean": "rm -rf build && mkdir build",
-    "build-server": "babel src -d build -s",
+    "build-server": "babel src -d build -s; cp -r static build",
     "build": "npm run clean && npm run build-server"
   },
   "repository": {

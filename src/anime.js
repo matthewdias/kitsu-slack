@@ -5,11 +5,11 @@ export default async (ctx, next, kitsu) => {
   console.log('anime: ' + query)
   let extended = false
   if (query.indexOf('extended ') == 0) {
-    query.replace('extended ', '')
+    query = query.replace('extended ', '')
     extended = true
   }
   if (query.indexOf('ex ') == 0) {
-    query.replace('ex ', '')
+    query = query.replace('ex ', '')
     extended = true
   }
   await kitsu.searchAnime(encodeURI(query)).then(anime => {

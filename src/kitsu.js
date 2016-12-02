@@ -106,10 +106,10 @@ class Kitsu {
     })
   }
 
-  searchUsers(name) {
+  searchUsers(query) {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('user', {
-        filter: { name },
+        filter: { query },
         include: 'waifu',
         page: { limit: 1 }
       }).then((users) => {

@@ -1,79 +1,92 @@
 import moment from 'moment'
 
 export default async (ctx, next, kitsu) => {
-  console.log('manga: ' + ctx.request.body.text)
-  await kitsu.searchManga(encodeURI(ctx.request.body.text)).then(manga => {
+  let query = ctx.request.body.text
+  console.log('manga: ' + query)
+  let extended = false
+  if (query.includes('extended')) {
+    query.replace('extended', '')
+    extended = true
+  }
+  if (query.includes('ex')) {
+    query.replace('ex', '')
+    extended = true
+  }
+  await kitsu.searchManga(encodeURI(query)).then(manga => {
     if (manga) {
       console.log(manga.canonicalTitle)
       let text = ''
       let fields = []
       let title_link = process.env.KITSU_HOST + '/manga/' + manga.slug
       let fallback = manga.canonicalTitle + ' - ' + title_link
-      let { averageRating, mangaType, startDate } = manga
 
       if (manga.synopsis) {
         text = manga.synopsis
         fallback += `\n${manga.synopsis}`
       }
 
-      if (averageRating) {
-        averageRating = averageRating.toString().slice(0, 4)
-        fields.push({
-          title: ':bar_chart: Rating',
-          value: averageRating,
-          short: true
-        })
-        fallback += `\nRating: ${averageRating}`
-      }
+      if (extended) {
+        let { averageRating, mangaType, startDate } = manga
 
-      if (mangaType) {
-        mangaType = mangaType.charAt(0).toUpperCase() + mangaType.slice(1)
-        fields.push({
-          title: ':blue_book: Type',
-          value: mangaType,
-          short: true
-        })
-        fallback += `\nType: ${mangaType}`
-      }
+        if (averageRating) {
+          averageRating = averageRating.toString().slice(0, 4)
+          fields.push({
+            title: ':bar_chart: Rating',
+            value: averageRating,
+            short: true
+          })
+          fallback += `\nRating: ${averageRating}`
+        }
 
-      if (manga.chapterCount) {
-        fields.push({
-          title: ':bookmark: Chapters',
-          value: manga.chapterCount,
-          short: true
-        })
-        fallback += `\nChapters: ${manga.chapterCount}`
-      }
+        if (mangaType) {
+          mangaType = mangaType.charAt(0).toUpperCase() + mangaType.slice(1)
+          fields.push({
+            title: ':blue_book: Type',
+            value: mangaType,
+            short: true
+          })
+          fallback += `\nType: ${mangaType}`
+        }
 
-      if (manga.volumeCount) {
-        fields.push({
-          title: ':books: Volumes',
-          value: manga.volumeCount,
-          short: true
-        })
-        fallback += `\nVolumes: ${manga.volumeCount} minutes`
-      }
+        if (manga.chapterCount) {
+          fields.push({
+            title: ':bookmark: Chapters',
+            value: manga.chapterCount,
+            short: true
+          })
+          fallback += `\nChapters: ${manga.chapterCount}`
+        }
 
-      if (startDate) {
-        let date = moment(startDate, 'YYYY[-]MM[-]DD')
-        startDate = `${date.format('MMMM Do YYYY')} (${date.fromNow()})`
-        fields.push({
-          title: ':spiral_calendar_pad: Date',
-          value: startDate,
-          short: true
-        })
-        fallback += `\nDate: ${startDate}`
-      }
+        if (manga.volumeCount) {
+          fields.push({
+            title: ':books: Volumes',
+            value: manga.volumeCount,
+            short: true
+          })
+          fallback += `\nVolumes: ${manga.volumeCount} minutes`
+        }
 
-      if (manga.genres) {
-        let genres = manga.genres.map(genre => genre.name)
-        genres = genres.join(', ')
-        fields.push({
-          title: ':performing_arts: Genres',
-          value: genres,
-          short: true
-        })
-        fallback += `\nGenres: ${genres}`
+        if (startDate) {
+          let date = moment(startDate, 'YYYY[-]MM[-]DD')
+          startDate = `${date.format('MMMM Do YYYY')} (${date.fromNow()})`
+          fields.push({
+            title: ':spiral_calendar_pad: Date',
+            value: startDate,
+            short: true
+          })
+          fallback += `\nDate: ${startDate}`
+        }
+
+        if (manga.genres) {
+          let genres = manga.genres.map(genre => genre.name)
+          genres = genres.join(', ')
+          fields.push({
+            title: ':performing_arts: Genres',
+            value: genres,
+            short: true
+          })
+          fallback += `\nGenres: ${genres}`
+        }
       }
 
       let actions = [
@@ -115,11 +128,17 @@ export default async (ctx, next, kitsu) => {
           title: manga.canonicalTitle,
           title_link,
           text,
-          image_url: manga.posterImage ? manga.posterImage.large : null,
           fields,
           fallback,
           // actions
         }]
+      }
+
+      let image = manga.posterImage ? manga.posterImage.large : null
+      if (image) {
+        if (extended)
+          body.attachments[0].image_url = image
+        else body.attachments[0].thumb_url = image
       }
 
       ctx.status = 200

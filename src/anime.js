@@ -24,6 +24,7 @@ export default async (ctx, next, kitsu) => {
         text = anime.synopsis
         fallback += `\n${anime.synopsis}`
       }
+
       if (extended) {
         let { averageRating, showType, startDate, youtubeVideoId, ageRating, ageRatingGuide, nsfw } = anime
 
@@ -157,9 +158,11 @@ export default async (ctx, next, kitsu) => {
       }
 
       let image = anime.posterImage ? anime.posterImage.large : null
-      if (extended)
-        body.attachments[0].image_url = image
-      else body.attachments[0].thumb_url = image
+      if (image) {
+        if (extended)
+          body.attachments[0].image_url = image
+        else body.attachments[0].thumb_url = image
+      }
 
       ctx.status = 200
       ctx.body = body

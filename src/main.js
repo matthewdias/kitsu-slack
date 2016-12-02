@@ -26,7 +26,7 @@ app.use(async (ctx, next) => {
         throw new Error('Forbidden')
       }
     }
-    await next()
+    else await next()
   } catch (err) {
     ctx.body = err.message
     let status = ctx.status || 500

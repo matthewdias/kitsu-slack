@@ -6,6 +6,7 @@ import cors from 'koa-cors'
 import Kitsu from './kitsu'
 import user from './user'
 import anime from './anime'
+import manga from './manga'
 import login from './login'
 import auth from './auth'
 
@@ -25,6 +26,7 @@ app.use(async (ctx, next) => {
 
 router.post('/user', async (ctx, next) => { await user(ctx, next, kitsu) })
 router.post('/anime', async (ctx, next) => { await anime(ctx, next, kitsu) })
+router.post('manga', async (ctx, next) => { await manga(ctx, next, kitsu) })
 router.post('/action', () => {
   console.log('action')
 })

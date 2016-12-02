@@ -4,12 +4,12 @@ export default async (ctx, next, kitsu) => {
   let query = ctx.request.body.text
   console.log('user: ' + query)
   let extended = false
-  if (query.includes('extended')) {
-    query.replace('extended', '')
+  if (query.indexOf('extended ') == 0) {
+    query.replace('extended ', '')
     extended = true
   }
-  if (query.includes('ex')) {
-    query.replace('ex', '')
+  if (query.indexOf('ex ') == 0) {
+    query.replace('ex ', '')
     extended = true
   }
   await kitsu.searchUsers(encodeURI(query)).then((user) => {

@@ -26,7 +26,7 @@ app.use(async (ctx, next) => {
 
 router.post('/user', async (ctx, next) => { await user(ctx, next, kitsu) })
 router.post('/anime', async (ctx, next) => { await anime(ctx, next, kitsu) })
-router.post('manga', async (ctx, next) => { await manga(ctx, next, kitsu) })
+router.post('/manga', async (ctx, next) => { await manga(ctx, next, kitsu) })
 router.post('/action', () => {
   console.log('action')
 })

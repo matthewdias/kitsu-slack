@@ -103,6 +103,7 @@ export default async (ctx, next, kitsu) => {
           let amount = Math.floor(lifeSpentOnAnime / value)
           if (amount > 0) {
             lifeSpentOnAnime -= amount * value
+            console.log(value)
             if (value > 1)
               interval += 's'
             time += `${amount} ${interval}, `

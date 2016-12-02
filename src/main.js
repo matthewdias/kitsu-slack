@@ -18,7 +18,14 @@ const kitsu = new Kitsu()
 
 app.use(async (ctx, next) => {
   try {
-    console.log(ctx.request.method)
+    if (ctx.request.method == 'POST') {
+      if (ctx.request.body.token == process.env.VERIFICATION)
+        await next()
+      else {
+        ctx.status = 403
+        throw new Error('Forbidden')
+      }
+    }
     await next()
   } catch (err) {
     ctx.body = err.message

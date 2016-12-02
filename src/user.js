@@ -141,7 +141,10 @@ export default async (ctx, next, kitsu) => {
           text,
           thumb_url: user.avatar ? user.avatar.large : null,
           fields,
-          fallback
+          fallback,
+          footer: 'Kitsu API',
+          footer_icon: 'https://kitsu-slack.herokuapp.com/icon.png',
+          ts: moment().unix()
         }]
       }
 

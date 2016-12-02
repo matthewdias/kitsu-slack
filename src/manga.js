@@ -130,6 +130,9 @@ export default async (ctx, next, kitsu) => {
           text,
           fields,
           fallback,
+          footer: 'Kitsu API',
+          footer_icon: 'https://kitsu-slack.herokuapp.com/icon.png',
+          ts: moment().unix()
           // actions
         }]
       }

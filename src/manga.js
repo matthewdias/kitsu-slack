@@ -65,6 +65,17 @@ export default async (ctx, next, kitsu) => {
         fallback += `\nDate: ${startDate}`
       }
 
+      if (manga.genres) {
+        let genres = manga.genres.map(genre => genre.name)
+        genres = genres.join(', ')
+        fields.push({
+          title: ':performing_arts: Genres',
+          value: genres,
+          short: true
+        })
+        fallback += `\nGenres: ${genres}`
+      }
+
       let actions = [
         {
           name: 'current',

@@ -16,9 +16,10 @@ const router = new Router()
 const app = new Koa()
 const kitsu = new Kitsu()
 
-app.use(async (ctx, next) => {
+router.use(async (ctx, next) => {
   try {
     if (ctx.request.method == 'POST') {
+      console.log(ctx.request)
       if (ctx.request.body.token == process.env.VERIFICATION)
         await next()
       else {

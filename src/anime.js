@@ -21,7 +21,7 @@ export default async (ctx, next, kitsu) => {
         fields.push({
           title: ':bar_chart: Rating',
           value: averageRating,
-          short: false
+          short: true
         })
         fallback += `\nRating: ${averageRating}`
       }
@@ -31,7 +31,7 @@ export default async (ctx, next, kitsu) => {
         fields.push({
           title: ':vhs: Type',
           value: showType,
-          short: false
+          short: true
         })
         fallback += `\nType: ${showType}`
       }
@@ -40,7 +40,7 @@ export default async (ctx, next, kitsu) => {
         fields.push({
           title: ':clapper: Episodes',
           value: anime.episodeCount,
-          short: false
+          short: true
         })
         fallback += `\nEpisodes: ${anime.episodeCount}`
       }
@@ -49,7 +49,7 @@ export default async (ctx, next, kitsu) => {
         fields.push({
           title: ':watch: Length',
           value: anime.episodeLength,
-          short: false
+          short: true
         })
         fallback += `\nLength: ${anime.episodeLength} minutes`
       }
@@ -60,7 +60,7 @@ export default async (ctx, next, kitsu) => {
         fields.push({
           title: ':spiral_calendar_pad: Date',
           value: startDate,
-          short: false
+          short: true
         })
         fallback += `\nDate: ${startDate}`
       }
@@ -73,7 +73,7 @@ export default async (ctx, next, kitsu) => {
         fields.push({
           title: ':love_hotel: Age Rating',
           value: ageRating,
-          short: false
+          short: true
         })
         fallback += `\nAge Rating: ${ageRating}`
       }
@@ -83,7 +83,7 @@ export default async (ctx, next, kitsu) => {
         fields.push({
           title: ':film_frames: Trailer',
           value: youtubeVideoId,
-          short: false
+          short: true
         })
         fallback += `\nTrailer: ${youtubeVideoId}`
       }

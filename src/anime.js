@@ -1,102 +1,114 @@
 import moment from 'moment'
 
 export default async (ctx, next, kitsu) => {
-  console.log('anime: ' + ctx.request.body.text)
-  await kitsu.searchAnime(encodeURI(ctx.request.body.text)).then(anime => {
+  let query = ctx.request.body.text
+  console.log('anime: ' + query)
+  let extended = false
+  if (query.includes('extended')) {
+    query.replace('extended', '')
+    extended = true
+  }
+  if (query.includes('ex')) {
+    query.replace('ex', '')
+    extended = true
+  }
+  await kitsu.searchAnime(encodeURI(query)).then(anime => {
     if (anime) {
       console.log(anime.canonicalTitle)
       let text = ''
       let fields = []
       let title_link = process.env.KITSU_HOST + '/anime/' + anime.slug
       let fallback = anime.canonicalTitle + ' - ' + title_link
-      let { averageRating, showType, startDate, youtubeVideoId, ageRating, ageRatingGuide, nsfw } = anime
 
       if (anime.synopsis) {
         text = anime.synopsis
         fallback += `\n${anime.synopsis}`
       }
+      if (extended) {
+        let { averageRating, showType, startDate, youtubeVideoId, ageRating, ageRatingGuide, nsfw } = anime
 
-      if (averageRating) {
-        averageRating = averageRating.toString().slice(0, 4)
-        fields.push({
-          title: ':bar_chart: Rating',
-          value: averageRating,
-          short: true
-        })
-        fallback += `\nRating: ${averageRating}`
-      }
+        if (averageRating) {
+          averageRating = averageRating.toString().slice(0, 4)
+          fields.push({
+            title: ':bar_chart: Rating',
+            value: averageRating,
+            short: true
+          })
+          fallback += `\nRating: ${averageRating}`
+        }
 
-      if (showType) {
-        showType = showType.charAt(0).toUpperCase() + showType.slice(1)
-        fields.push({
-          title: ':vhs: Type',
-          value: showType,
-          short: true
-        })
-        fallback += `\nType: ${showType}`
-      }
+        if (showType) {
+          showType = showType.charAt(0).toUpperCase() + showType.slice(1)
+          fields.push({
+            title: ':vhs: Type',
+            value: showType,
+            short: true
+          })
+          fallback += `\nType: ${showType}`
+        }
 
-      if (anime.episodeCount) {
-        fields.push({
-          title: ':clapper: Episodes',
-          value: anime.episodeCount,
-          short: true
-        })
-        fallback += `\nEpisodes: ${anime.episodeCount}`
-      }
+        if (anime.episodeCount) {
+          fields.push({
+            title: ':clapper: Episodes',
+            value: anime.episodeCount,
+            short: true
+          })
+          fallback += `\nEpisodes: ${anime.episodeCount}`
+        }
 
-      if (anime.episodeLength) {
-        fields.push({
-          title: ':watch: Length',
-          value: anime.episodeLength,
-          short: true
-        })
-        fallback += `\nLength: ${anime.episodeLength} minutes`
-      }
+        if (anime.episodeLength) {
+          fields.push({
+            title: ':watch: Length',
+            value: anime.episodeLength,
+            short: true
+          })
+          fallback += `\nLength: ${anime.episodeLength} minutes`
+        }
 
-      if (startDate) {
-        let date = moment(startDate, 'YYYY[-]MM[-]DD')
-        startDate = `${date.format('MMMM Do YYYY')} (${date.fromNow()})`
-        fields.push({
-          title: ':spiral_calendar_pad: Date',
-          value: startDate,
-          short: true
-        })
-        fallback += `\nDate: ${startDate}`
-      }
+        if (startDate) {
+          let date = moment(startDate, 'YYYY[-]MM[-]DD')
+          startDate = `${date.format('MMMM Do YYYY')} (${date.fromNow()})`
+          fields.push({
+            title: ':spiral_calendar_pad: Date',
+            value: startDate,
+            short: true
+          })
+          fallback += `\nDate: ${startDate}`
+        }
 
-      if (ageRating) {
-        if (ageRatingGuide)
-          ageRating += ': ' + ageRatingGuide
-        if (nsfw)
-          ageRating += ' (NSFW)'
-        fields.push({
-          title: ':love_hotel: Age Rating',
-          value: ageRating,
-          short: true
-        })
-        fallback += `\nAge Rating: ${ageRating}`
-      }
+        if (ageRating) {
+          if (ageRatingGuide)
+            ageRating += ': ' + ageRatingGuide
+          if (nsfw)
+            ageRating += ' (NSFW)'
+          fields.push({
+            title: ':love_hotel: Age Rating',
+            value: ageRating,
+            short: true
+          })
+          fallback += `\nAge Rating: ${ageRating}`
+        }
 
-      if (anime.genres) {
-        let genres = anime.genres.map(genre => genre.name)
-        genres = genres.join(', ')
-        fields.push({
-          title: ':performing_arts: Genres',
-          value: genres,
-          short: true
-        })
-        fallback += `\nGenres: ${genres}`
-      }
+        if (anime.genres) {
+          let genres = anime.genres.map(genre => genre.name)
+          genres = genres.join(', ')
+          fields.push({
+            title: ':performing_arts: Genres',
+            value: genres,
+            short: true
+          })
+          fallback += `\nGenres: ${genres}`
+        }
 
-      if (youtubeVideoId) {
-        youtubeVideoId = `https://www.youtube.com/watch?v=${youtubeVideoId}`
-        fields.push({
-          title: ':film_frames: Trailer',
-          value: youtubeVideoId,
-          short: true
-        })
-        fallback += `\nTrailer: ${youtubeVideoId}`
+        if (youtubeVideoId) {
+          youtubeVideoId = `https://www.youtube.com/watch?v=${youtubeVideoId}`
+          fields.push({
+            title: ':film_frames: Trailer',
+            value: youtubeVideoId,
+            short: true
+          })
+          fallback += `\nTrailer: ${youtubeVideoId}`
+        }
       }
 
       let actions = [
@@ -138,12 +150,16 @@ export default async (ctx, next, kitsu) => {
           title: anime.canonicalTitle,
           title_link,
           text,
-          image_url: anime.posterImage ? anime.posterImage.large : null,
           fields,
           fallback,
           // actions
         }]
       }
+
+      let image = anime.posterImage ? anime.posterImage.large : null
+      if (extended)
+        body.attachments[0].image_url = image
+      else body.attachments[0].thumb_url = image
 
       ctx.status = 200
       ctx.body = body

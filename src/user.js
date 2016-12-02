@@ -1,8 +1,9 @@
 import moment from 'moment'
 
 export default async (ctx, next, kitsu) => {
-  console.log('user: ' + ctx.request.body.text)
-  await kitsu.searchUsers(ctx.request.body.text).then((user) => {
+  let query = ctx.request.body.text
+  console.log('user: ' + query)
+  await kitsu.searchUsers(query).then((user) => {
     if (user) {
       console.log(user.name)
       let text = ''

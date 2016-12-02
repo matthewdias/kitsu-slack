@@ -5,8 +5,8 @@ const baseUrl = process.env.KITSU_HOST + '/api'
 class Kitsu {
   constructor() {
     this.auth = new OAuth2({
-      clientId: '202a06b488f1d7f9b92b7f61ab5720d64e6d5e1989427308e5f62472a01227c5',
-      clientSecret: '2b6dac58f737484d2d314826c83f357b9a0aa2c33d5e6b6322feb9b2b8fb234f',
+      clientId: process.env.KITSU_CLIENT,
+      clientSecret: process.env.KITSU_SECRET,
       accessTokenUri: baseUrl + '/oauth/token'
     })
 
@@ -33,6 +33,17 @@ class Kitsu {
 
     this.jsonApi.define('character', {
       name: ''
+    })
+
+    this.jsonApi.define('follow', {
+      follower: {
+        jsonApi: 'hasOne',
+        type: 'users'
+      },
+      followed: {
+        jsonApi: 'hasOne',
+        type: 'users'
+      }
     })
 
     this.jsonApi.define('anime', {
@@ -83,8 +94,7 @@ class Kitsu {
       private: '',
       rating: '',
       media: {
-        jsonApi: 'hasOne',
-        type: 'anime'
+        jsonApi: 'hasOne'
       },
       user: {
         jsonApi: 'hasOne',
@@ -97,13 +107,16 @@ class Kitsu {
     this.jsonApi.headers['Authorization'] = `Bearer ${token}`
   }
 
+  unauthenticate() {
+    delete this.jsonApi.headers['Authorization']
+  }
+
   login(username, password) {
-    return new Promise((pass, fail ) => {
-      this.auth.owner.getToken(username, password).then((user) => {
-        this.authenticate(user.accessToken)
-        pass(user)
-      })
-    })
+    return this.auth.owner.getToken(username, password)
+  }
+
+  getUser(id) {
+    return this.jsonApi.find('user', id)
   }
 
   searchUsers(query) {
@@ -142,52 +155,53 @@ class Kitsu {
     })
   }
 
-  createEntry(entry) {
+  searchFollows(follower, followed) {
     return new Promise((pass, fail) => {
-      this.jsonApi.create('libraryEntry', entry).then((entry) => {
-        pass(entry)
+      this.jsonApi.findAll('follow', {
+        filter: { follower, followed },
+        include: 'follower,followed'
+      }).then((follows) => {
+        pass(follows[0])
       })
     })
+  }
+
+  createFollow(follow) {
+    return this.jsonApi.create('follow', follow)
+  }
+
+  removeFollow(id) {
+    return this.jsonApi.destroy('follow', id)
+  }
+
+  createEntry(entry) {
+    return this.jsonApi.create('libraryEntry', entry)
   }
 
   getEntry(id) {
-    return new Promise((pass, fail) => {
-      this.jsonApi.find('libraryEntry', id).then((entry) => {
-        pass(entry)
-      })
-    })
+    return this.jsonApi.find('libraryEntry', id)
   }
 
-  getEntryForAnime(id) {
+  getEntryForMedia(type, userId, mediaId) {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('libraryEntry', {
-        filter: {
-          userId: localStorage.getItem('id'),
-          mediaId: id
-        }
+        filter: { userId, mediaId },
+        include: 'media'
       }).then((entries) => {
-        if (entries[0])
-          pass(entries[0])
-        else
-          fail(Error('none'))
+        entries = entries.filter((entry) => {
+          return entry.media.type == type
+        })
+        pass(entries[0])
       })
     })
   }
 
   updateEntry(entry) {
-    return new Promise((pass, fail) => {
-      this.jsonApi.update('libraryEntry', entry).then((entry) => {
-        pass(entry)
-      })
-    })
+    return this.jsonApi.update('libraryEntry', entry)
   }
 
   removeEntry(id) {
-    return new Promise((pass, fail) => {
-      this.jsonApi.destroy('libraryEntry', id).then((entry) => {
-        pass(entry)
-      })
-    })
+    return this.jsonApi.destroy('libraryEntry', id)
   }
 }
 

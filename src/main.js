@@ -4,11 +4,14 @@ import parser from 'koa-bodyparser'
 import Router from 'koa-router'
 import cors from 'koa-cors'
 import serve from 'koa-static'
+import ratelimit from 'koa-ratelimit'
+import redis from 'redis'
 import Kitsu from './kitsu'
 import user from './user'
 import anime from './anime'
 import manga from './manga'
 import login from './login'
+import action from './action'
 import help from './help'
 import auth from './auth'
 
@@ -16,36 +19,43 @@ const router = new Router()
 const app = new Koa()
 const kitsu = new Kitsu()
 
+app.use(parser())
+app.use(ratelimit({
+  db: redis.createClient(process.env.REDIS_URL),
+  duration: parseInt(process.env.RATELIMIT_DURATION),
+  max: parseInt(process.env.RATELIMIT_MAX),
+  id: (ctx) => {
+    let { method, body } = ctx.request
+    if (body.user_id)
+      return body.user_id
+    else return ctx.ip
+  }
+}))
+
 router.use(async (ctx, next) => {
   try {
-    if (ctx.request.method == 'POST') {
-      console.log(ctx.request)
-      if (ctx.request.body.token == process.env.VERIFICATION)
-        await next()
-      else {
-        ctx.status = 403
-        throw new Error('Forbidden')
-      }
+    let { method, body } = ctx.request
+    let token = process.env.VERIFICATION
+    if (method == 'POST' && body.token != token && JSON.parse(body.payload).token != token) {
+      ctx.status = 403
+      throw new Error('Forbidden')
     }
-    else await next()
+    await next()
   } catch (err) {
-    ctx.body = err.message
     let status = ctx.status || 500
-    console.log(status + ': ' + err.message)
+    console.log(`${status}: ${err}`)
+    ctx.body = 'Error: ' + err.message
   }
 })
 
 router.post('/user', async (ctx, next) => { await user(ctx, next, kitsu) })
 router.post('/anime', async (ctx, next) => { await anime(ctx, next, kitsu) })
 router.post('/manga', async (ctx, next) => { await manga(ctx, next, kitsu) })
-router.post('/action', () => {
-  console.log('action')
-})
 router.post('/login', async (ctx, next) => { await login(ctx, next, kitsu) })
+router.post('/action', async (ctx, next) => { await action(ctx, next, kitsu) })
 router.post('/help', async (ctx, next) => { await help(ctx, next) })
 router.get('/auth', auth)
 
-app.use(parser())
 app.use(router.routes())
 app.use(router.allowedMethods())
 app.use(cors())

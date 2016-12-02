@@ -103,13 +103,12 @@ export default async (ctx, next, kitsu) => {
           let amount = Math.floor(lifeSpentOnAnime / value)
           if (amount > 0) {
             lifeSpentOnAnime -= amount * value
-            console.log(value)
-            if (value > 1)
+            if (amount > 1)
               interval += 's'
             time += `${amount} ${interval}, `
           }
         })
-        time = time.substring(0, time.length - 2)
+        time = time.substring(0, time.lastIndexOf(', '))
         fields.push({
           title: ':expressionless: Life Spent On Anime',
           value: time,

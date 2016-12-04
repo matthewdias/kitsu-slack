@@ -15,6 +15,7 @@ head over to ${process.env.KITSU_HOST} to get started.
 
 \`\`\`
 /user [(ex)tended] [username] - Lookup a User
+/user [(ex)tended] [@username] - Lookup by Slack name
 /anime [(ex)tended] [anime title] - Lookup an Anime
 /manga [(ex)tended] [manga title] - Lookup a Manga
 /login [username] [password] - Login to Kitsu

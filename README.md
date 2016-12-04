@@ -1,4 +1,4 @@
-This bot lets you retrieve information from Kitsu.io.
+This app lets you retrieve information from Kitsu.io.
 You can search users, anime, and manga in the default
 compact mode, or in extended mode. By logging in with
 your Kitsu credentials via \`/login\`, you can enable

@@ -164,9 +164,15 @@ export default async (ctx, next, kitsu) => {
     let entry = await kitsu.getEntryForMedia('anime', kitsuid, callback_id)
 
     if (action.value == 'remove') {
-      await kitsu.removeEntry(entry.id)
-      kitsu.unauthenticate()
-      ctx.body = 'Removed.'
+      if (entry) {
+        await kitsu.removeEntry(entry.id)
+        kitsu.unauthenticate()
+        ctx.body = 'Removed.'
+      }
+      else {
+        kitsu.unauthenticate()
+        ctx.body = 'Not yet in library.'
+      }
       return
     }
 
@@ -190,7 +196,7 @@ export default async (ctx, next, kitsu) => {
     return
   }
 
-  if (action.name == 'manga') {
+  if (action.name == ''manga'') {
     body.attachments[0].title = 'Edit ' + title
     body.attachments[0].actions = []
     let statuses = [
@@ -244,23 +250,25 @@ export default async (ctx, next, kitsu) => {
   if (action.name == 'mangaentry') {
     kitsu.authenticate(token)
     let entry = await kitsu.getEntryForMedia('manga', kitsuid, callback_id)
-    let data = { status: action.value }
 
-    if (entry) {
-      if (action.value == 'remove') {
-        try {
-          await kitsu.removeEntry(entry.id)
-        }
-        catch (error) {
-          ctx.body = 'Not yet in library.'
-          kitsu.unauthenticate()
-          return
-        }
+    if (action.value == 'remove') {
+      if (entry) {
+        await kitsu.removeEntry(entry.id)
         kitsu.unauthenticate()
         ctx.body = 'Removed.'
-        return
       }
+      else {
+        kitsu.unauthenticate()
+        ctx.body = 'Not yet in library.'
+      }
+      return
+    }
 
+    let data = {
+      status: action.value
+    }
+
+    if (entry) {
       data.id = entry.id
       await kitsu.updateEntry(data)
       kitsu.unauthenticate()
@@ -268,7 +276,7 @@ export default async (ctx, next, kitsu) => {
       return
     }
 
-    data.media = { id: callback_id, type: manga }
+    data.media = { id: callback_id, type: 'manga' }
     data.user = { id: kitsuid }
     await kitsu.createEntry(data)
     kitsu.unauthenticate()

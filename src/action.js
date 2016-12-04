@@ -196,7 +196,7 @@ export default async (ctx, next, kitsu) => {
     return
   }
 
-  if (action.name == ''manga'') {
+  if (action.name == 'manga') {
     body.attachments[0].title = 'Edit ' + title
     body.attachments[0].actions = []
     let statuses = [

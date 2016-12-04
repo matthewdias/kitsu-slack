@@ -23,7 +23,7 @@ head over to ${process.env.KITSU_HOST} to get started.
 
 #### Privacy Policy
 
-You're Kitsu credentials are not stored. They are
+Your Kitsu credentials are not stored. They are
 exchanged for a key which is stored in a private
 database which is used to make authenticated requests
 to the Kitsu API on your behalf.`

@@ -20,4 +20,4 @@ head over to [Kitsu.io](https://staging.kitsu.io) to get started.
 
 #### Privacy Policy
 
-You're Kitsu credentials are not stored. They are exchanged for a key which is stored in a private database which is used to make authenticated requests to the Kitsu API on your behalf.
+Your Kitsu credentials are not stored. They are exchanged for a key which is stored in a private database which is used to make authenticated requests to the Kitsu API on your behalf.

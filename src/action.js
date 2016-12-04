@@ -244,26 +244,23 @@ export default async (ctx, next, kitsu) => {
   if (action.name == 'mangaentry') {
     kitsu.authenticate(token)
     let entry = await kitsu.getEntryForMedia('manga', kitsuid, callback_id)
-
-    if (action.value == 'remove') {
-      try {
-        await kitsu.removeEntry(entry.id)
-      }
-      catch (error) {
-        ctx.body = 'Not yet in library.'
-        kitsu.unauthenticate()
-        return
-      }
-      kitsu.unauthenticate()
-      ctx.body = 'Removed.'
-      return
-    }
-
-    let data = {
-      status: action.value
-    }
+    let data = { status: action.value }
 
     if (entry) {
+      if (action.value == 'remove') {
+        try {
+          await kitsu.removeEntry(entry.id)
+        }
+        catch (error) {
+          ctx.body = 'Not yet in library.'
+          kitsu.unauthenticate()
+          return
+        }
+        kitsu.unauthenticate()
+        ctx.body = 'Removed.'
+        return
+      }
+
       data.id = entry.id
       await kitsu.updateEntry(data)
       kitsu.unauthenticate()

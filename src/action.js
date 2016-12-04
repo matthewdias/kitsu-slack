@@ -76,7 +76,14 @@ export default async (ctx, next, kitsu) => {
   if (action.name == 'follow') {
     if (action.value == 'unfollow') {
       kitsu.authenticate(token)
-      await kitsu.removeFollow(callback_id)
+      try {
+        await kitsu.removeFollow(callback_id)
+      }
+      catch (error) {
+        ctx.body = 'Not yet follwing.'
+        kitsu.unauthenticate()
+        return
+      }
       kitsu.unauthenticate()
       ctx.body = 'Unfollowed.'
       return
@@ -84,10 +91,17 @@ export default async (ctx, next, kitsu) => {
 
     if (action.value == 'follow') {
       kitsu.authenticate(token)
-      await kitsu.createFollow({
-        follower: { id: kitsuid },
-        followed: { id: callback_id }
-      })
+      try {
+        await kitsu.createFollow({
+          follower: { id: kitsuid },
+          followed: { id: callback_id }
+        })
+      }
+      catch (error) {
+        ctx.body = 'Already following.'
+        kitsu.unauthenticate()
+        return
+      }
       kitsu.unauthenticate()
       ctx.body = 'Followed.'
       return
@@ -232,7 +246,14 @@ export default async (ctx, next, kitsu) => {
     let entry = await kitsu.getEntryForMedia('manga', kitsuid, callback_id)
 
     if (action.value == 'remove') {
-      await kitsu.removeEntry(entry.id)
+      try {
+        await kitsu.removeEntry(entry.id)
+      }
+      catch (error) {
+        ctx.body = 'Not yet in library.'
+        kitsu.unauthenticate()
+        return
+      }
       kitsu.unauthenticate()
       ctx.body = 'Removed.'
       return

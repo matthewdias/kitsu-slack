@@ -11,7 +11,7 @@ additional features, specifically following users and
 adding/editing media. If you don't have an account,
 head over to ${process.env.KITSU_HOST} to get started.
 
-#### Commands
+Commands:
 
 \`\`\`
 /user [(ex)tended] [username] - Lookup a User
@@ -22,7 +22,7 @@ head over to ${process.env.KITSU_HOST} to get started.
 /kitsuhelp - Show this message
 \`\`\`
 
-#### Privacy Policy
+Privacy Policy:
 
 Your Kitsu credentials are not stored. They are
 exchanged for a key which is stored in a private

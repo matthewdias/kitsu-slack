@@ -1,4 +1,4 @@
-This app lets you retrieve information from Kitsu.io. You can search users, anime, and manga in the default compact mode, or in extended mode. By logging in with your Kitsu credentials via `/login`, you can enable additional features, specifically following users and adding/editing media. If you don't have an account, head over to [Kitsu.io](https://staging.kitsu.io) to get started.
+This app lets you retrieve information from Kitsu. You can search users, anime, and manga in the default compact mode, or in extended mode. By logging in with your Kitsu credentials via `/login`, you can enable additional features, specifically following users and adding/editing media. If you don't have an account, head over to [Kitsu](https://kitsu.io) to get started.
 
 #### Commands
 

@@ -12,6 +12,8 @@ class Kitsu {
 
     this.jsonApi = new JsonApi({ apiUrl: baseUrl + '/edge' })
 
+    this.jsonApi.headers['User-Agent'] = 'Slack/1.0.0'
+
     this.jsonApi.define('user', {
       name: '',
       about: '',

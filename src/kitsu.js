@@ -18,11 +18,11 @@ class Kitsu {
       name: '',
       about: '',
       website: '',
-      waifuOrHusbando: '',
-      waifu: {
-        jsonApi: 'hasOne',
-        type: 'characters'
-      },
+      // waifuOrHusbando: '',
+      // waifu: {
+        // jsonApi: 'hasOne',
+        // type: 'characters'
+      // },
       gender: '',
       location: '',
       birthday: '',
@@ -132,7 +132,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('user', {
         filter: { query },
-        include: 'waifu',
+        // include: 'waifu',
         page: { limit: 1 }
       }).then((users) => {
         pass(users[0])

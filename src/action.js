@@ -20,7 +20,14 @@ export default async (ctx, next, kitsu) => {
     return
   }
 
-  let { kitsuid, token } = user
+  let { kitsuid, token, refresh, updatedAt } = user
+  if (updatedAt) {
+    kitsu.refresh(token, refresh)
+    // kitsu.refresh(token, refresh).then((user) => {
+
+    // })
+  }
+
   if (kitsuid == callback_id) {
     ctx.body = { text: 'You can\'t follow yourself.', replace_original: false }
     return

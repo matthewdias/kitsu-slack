@@ -117,6 +117,13 @@ class Kitsu {
     return this.auth.owner.getToken(username, password)
   }
 
+  refresh(token, refresh) {
+    let authToken = this.auth.createToken(token, refresh)
+    authToken.refresh().then((user) => {
+      console.log(user)
+    })
+  }
+
   getUser(id) {
     return this.jsonApi.find('user', id)
   }

@@ -14,6 +14,7 @@ export default async (ctx, next, kitsu) => {
   let action = actions[0]
   console.log('action: ' + action.name + (action.value ? (': ' + action.value) : ''))
 
+  let userId = user.id
   user = await getUser(team.id, user.id)
   if (!user) {
     ctx.body = { text: 'Please login to Kitsu first using /login', replace_original: false }
@@ -22,11 +23,10 @@ export default async (ctx, next, kitsu) => {
   let { kitsuid, token, refresh, updatedAt } = user
   if (moment().diff(moment(updatedAt), 'days') > 20) {
     let authToken = await kitsu.refresh(token, refresh)
-    console.log(authToken.data)
     token = authToken.data.access_token
     refresh = authToken.data.refresh_token
     let defaults = { kitsuid, token, refresh }
-    setUser(team.id, user.id, defaults)
+    setUser(team.id, userId, defaults)
   }
 
   if (kitsuid == callback_id) {

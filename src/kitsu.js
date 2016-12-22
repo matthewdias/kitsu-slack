@@ -119,9 +119,7 @@ class Kitsu {
 
   refresh(token, refresh) {
     let authToken = this.auth.createToken(token, refresh)
-    authToken.refresh().then((user) => {
-      console.log(user)
-    })
+    return authToken.refresh()
   }
 
   getUser(id) {

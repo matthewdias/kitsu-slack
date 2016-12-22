@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { getUser } from './db'
+import { getUser, setUser } from './db'
 
 export default async (ctx, next, kitsu) => {
   let payload = JSON.parse(ctx.request.body.payload)
@@ -19,13 +19,14 @@ export default async (ctx, next, kitsu) => {
     ctx.body = { text: 'Please login to Kitsu first using /login', replace_original: false }
     return
   }
-
   let { kitsuid, token, refresh, updatedAt } = user
-  if (updatedAt) {
-    kitsu.refresh(token, refresh)
-    // kitsu.refresh(token, refresh).then((user) => {
-
-    // })
+  if (moment().diff(moment(updatedAt), 'days') > 20) {
+    console.log(true)
+    let authToken = await kitsu.refresh(token, refresh)
+    token = authToken.data.accessToken
+    refresh = authToken.data.refreshToken
+    let defaults = { kitsuid, token, refresh }
+    setUser(team.id, user.id, defaults)
   }
 
   if (kitsuid == callback_id) {
@@ -87,7 +88,7 @@ export default async (ctx, next, kitsu) => {
         await kitsu.removeFollow(callback_id)
       }
       catch (error) {
-        ctx.body = 'Not yet follwing.'
+        ctx.body = 'Not yet following.'
         kitsu.unauthenticate()
         return
       }

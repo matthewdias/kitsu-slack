@@ -39,13 +39,16 @@ const getTeam = (id) => {
 }
 
 const setUser = (teamId, userId, defaults) => {
+  console.log(teamId + '/' + userId)
   return sequelize.sync().then(() => {
+    console.log(teamId + '/' + userId)
     return User.findCreateFind({
       where: { id: teamId + '/' + userId },
       defaults
     })
   }).then((users) => {
     let user = users[0]
+    console.log(user)
     user.update(defaults)
   })
 }

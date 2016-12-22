@@ -22,9 +22,9 @@ export default async (ctx, next, kitsu) => {
   let { kitsuid, token, refresh, updatedAt } = user
   if (moment().diff(moment(updatedAt), 'days') > 20) {
     let authToken = await kitsu.refresh(token, refresh)
-    console.log(authToken)
-    token = authToken.data.accessToken
-    refresh = authToken.data.refreshToken
+    console.log(authToken.data)
+    token = authToken.data.access_token
+    refresh = authToken.data.refresh_token
     let defaults = { kitsuid, token, refresh }
     setUser(team.id, user.id, defaults)
   }

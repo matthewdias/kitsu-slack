@@ -18,11 +18,11 @@ class Kitsu {
       name: '',
       about: '',
       website: '',
-      waifuOrHusbando: '',
-      waifu: {
-        jsonApi: 'hasOne',
-        type: 'characters'
-      },
+      // waifuOrHusbando: '',
+      // waifu: {
+        // jsonApi: 'hasOne',
+        // type: 'characters'
+      // },
       gender: '',
       location: '',
       birthday: '',
@@ -62,10 +62,10 @@ class Kitsu {
       ageRatingGuide: '',
       nsfw: '',
       youtubeVideoId: '',
-      genres: {
-        jsonApi: 'hasMany',
-        type: 'genres'
-      }
+      // genres: {
+      //   jsonApi: 'hasMany',
+      //   type: 'genres'
+      // }
     }, { collectionPath: 'anime' })
 
     this.jsonApi.define('manga', {
@@ -78,10 +78,10 @@ class Kitsu {
       volumeCount: '',
       subtype: '',
       startDate: '',
-      genres: {
-        jsonApi: 'hasMany',
-        type: 'genres'
-      }
+      // genres: {
+      //   jsonApi: 'hasMany',
+      //   type: 'genres'
+      // }
     }, { collectionPath: 'manga' })
 
     this.jsonApi.define('genre', {
@@ -135,7 +135,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('user', {
         filter: { query },
-        include: 'waifu',
+        // include: 'waifu',
         page: { limit: 1 }
       }).then((users) => {
         pass(users[0])
@@ -147,7 +147,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('anime', {
         filter: { text },
-        include: 'genres',
+        // include: 'genres',
         page: { limit: 1 }
       }).then((anime) => {
         pass(anime[0])
@@ -159,7 +159,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('manga', {
         filter: { text },
-        include: 'genres',
+        // include: 'genres',
         page: { limit: 1 }
       }).then((manga) => {
         pass(manga[0])

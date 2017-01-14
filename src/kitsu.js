@@ -95,8 +95,13 @@ class Kitsu {
       reconsumeCount: '',
       private: '',
       rating: '',
-      media: {
-        jsonApi: 'hasOne'
+      anime: {
+        jsonApi: 'hasOne',
+        type: 'anime'
+      },
+      manga: {
+        jsonApi: 'hasOne',
+        type: 'manga'
       },
       user: {
         jsonApi: 'hasOne',
@@ -189,15 +194,23 @@ class Kitsu {
     return this.jsonApi.find('libraryEntry', id)
   }
 
-  getEntryForMedia(type, userId, mediaId) {
+  getEntryForAnime(userId, animeId) {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('libraryEntry', {
-        filter: { userId, mediaId },
-        include: 'media'
+        filter: { userId, animeId },
+        include: 'anime'
       }).then((entries) => {
-        entries = entries.filter((entry) => {
-          return entry.media.type == type
-        })
+        pass(entries[0])
+      })
+    })
+  }
+
+  getEntryForManga(userId, mangaId) {
+    return new Promise((pass, fail) => {
+      this.jsonApi.findAll('libraryEntry', {
+        filter: { userId, mangaId },
+        include: 'manga'
+      }).then((entries) => {
         pass(entries[0])
       })
     })

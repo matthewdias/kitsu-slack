@@ -140,7 +140,7 @@ export default async (ctx, next, kitsu) => {
       })
     })
     kitsu.authenticate(token)
-    let entry = await kitsu.getEntryForMedia('anime', kitsuid, callback_id)
+    let entry = await kitsu.getEntryForAnime(kitsuid, callback_id)
     kitsu.unauthenticate()
     if (entry) {
       body.attachments[0].actions.map((attachment) => {
@@ -169,7 +169,7 @@ export default async (ctx, next, kitsu) => {
 
   if (action.name == 'animeentry') {
     kitsu.authenticate(token)
-    let entry = await kitsu.getEntryForMedia('anime', kitsuid, callback_id)
+    let entry = await kitsu.getEntryForAnime(kitsuid, callback_id)
 
     if (action.value == 'remove') {
       if (entry) {
@@ -196,7 +196,7 @@ export default async (ctx, next, kitsu) => {
       return
     }
 
-    data.media = { id: callback_id, type: 'anime' }
+    data.anime = { id: callback_id }
     data.user = { id: kitsuid }
     await kitsu.createEntry(data)
     kitsu.unauthenticate()
@@ -228,7 +228,7 @@ export default async (ctx, next, kitsu) => {
       })
     })
     kitsu.authenticate(token)
-    let entry = await kitsu.getEntryForMedia('manga', kitsuid, callback_id)
+    let entry = await kitsu.getEntryForManga(kitsuid, callback_id)
     kitsu.unauthenticate()
     if (entry) {
       body.attachments[0].actions.map((attachment) => {
@@ -257,7 +257,7 @@ export default async (ctx, next, kitsu) => {
 
   if (action.name == 'mangaentry') {
     kitsu.authenticate(token)
-    let entry = await kitsu.getEntryForMedia('manga', kitsuid, callback_id)
+    let entry = await kitsu.getEntryForManga(kitsuid, callback_id)
 
     if (action.value == 'remove') {
       if (entry) {
@@ -284,7 +284,7 @@ export default async (ctx, next, kitsu) => {
       return
     }
 
-    data.media = { id: callback_id, type: 'manga' }
+    data.manga = { id: callback_id }
     data.user = { id: kitsuid }
     await kitsu.createEntry(data)
     kitsu.unauthenticate()

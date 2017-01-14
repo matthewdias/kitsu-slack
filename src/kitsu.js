@@ -56,7 +56,7 @@ class Kitsu {
       posterImage: { large: '' },
       episodeCount: '',
       episodeLength: '',
-      showType: '',
+      subtype: '',
       startDate: '',
       ageRating: '',
       ageRatingGuide: '',
@@ -76,7 +76,7 @@ class Kitsu {
       posterImage: { large: '' },
       chapterCount: '',
       volumeCount: '',
-      mangaType: '',
+      subtype: '',
       startDate: '',
       // genres: {
       //   jsonApi: 'hasMany',

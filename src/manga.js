@@ -33,7 +33,7 @@ export default async (ctx, next, kitsu) => {
     }
 
     if (extended) {
-      let { averageRating, mangaType, startDate } = manga
+      let { averageRating, subtype, startDate } = manga
 
       if (averageRating) {
         averageRating = averageRating.toString().slice(0, 4)
@@ -45,14 +45,14 @@ export default async (ctx, next, kitsu) => {
         fallback += `\nRating: ${averageRating}`
       }
 
-      if (mangaType) {
-        mangaType = mangaType.charAt(0).toUpperCase() + mangaType.slice(1)
+      if (subtype) {
+        subtype = subtype.charAt(0).toUpperCase() + subtype.slice(1)
         fields.push({
           title: ':blue_book: Type',
-          value: mangaType,
+          value: subtype,
           short: true
         })
-        fallback += `\nType: ${mangaType}`
+        fallback += `\nType: ${subtype}`
       }
 
       if (manga.chapterCount) {

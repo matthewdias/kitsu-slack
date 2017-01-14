@@ -33,7 +33,7 @@ export default async (ctx, next, kitsu) => {
     }
 
     if (extended) {
-      let { averageRating, showType, startDate, youtubeVideoId, ageRating, ageRatingGuide, nsfw } = anime
+      let { averageRating, subtype, startDate, youtubeVideoId, ageRating, ageRatingGuide, nsfw } = anime
 
       if (averageRating) {
         averageRating = averageRating.toString().slice(0, 4)
@@ -45,14 +45,14 @@ export default async (ctx, next, kitsu) => {
         fallback += `\nRating: ${averageRating}`
       }
 
-      if (showType) {
-        showType = showType.charAt(0).toUpperCase() + showType.slice(1)
+      if (subtype) {
+        subtype = subtype.charAt(0).toUpperCase() + subtype.slice(1)
         fields.push({
           title: ':vhs: Type',
-          value: showType,
+          value: subtype,
           short: true
         })
-        fallback += `\nType: ${showType}`
+        fallback += `\nType: ${subtype}`
       }
 
       if (anime.episodeCount) {

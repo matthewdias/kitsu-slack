@@ -12,6 +12,7 @@ import anime from './anime'
 import manga from './manga'
 import login from './login'
 import action from './action'
+import event from './event'
 import help from './help'
 import auth from './auth'
 
@@ -36,9 +37,18 @@ router.use(async (ctx, next) => {
   try {
     let { method, body } = ctx.request
     let token = process.env.VERIFICATION
-    if (method == 'POST' && body.token != token && JSON.parse(body.payload).token != token) {
-      ctx.status = 403
-      throw new Error('Forbidden')
+    if (method == 'POST') {
+      let valid = true
+      if (body.token) {
+        valid = body.token == token
+      }
+      else {
+        valid = JSON.parse(body.payload).token == token
+      }
+      if (!valid) {
+        ctx.status = 403
+        throw new Error('Forbidden')
+      }
     }
     await next()
   } catch (err) {
@@ -53,6 +63,7 @@ router.post('/anime', async (ctx, next) => { await anime(ctx, next, kitsu) })
 router.post('/manga', async (ctx, next) => { await manga(ctx, next, kitsu) })
 router.post('/login', async (ctx, next) => { await login(ctx, next, kitsu) })
 router.post('/action', async (ctx, next) => { await action(ctx, next, kitsu) })
+router.post('/event', async (ctx, next) => { await event(ctx, next, kitsu) })
 router.post('/help', async (ctx, next) => { await help(ctx, next) })
 router.get('/auth', auth)
 

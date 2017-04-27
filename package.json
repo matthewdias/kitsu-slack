@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/matthewdias/kitsu-slack#readme",
   "dependencies": {
+    "@slack/client": "^3.9.0",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-polyfill": "^6.9.1",

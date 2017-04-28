@@ -173,7 +173,7 @@ class Kitsu {
       this.jsonApi.findAll('user', {
         filter: { name },
         page: { limit: 1 },
-        fields: { user: ['name'].join() }
+        fields: { users: ['name'].join() }
       }).then((users) => {
         pass(users[0])
       })
@@ -187,8 +187,8 @@ class Kitsu {
         include: 'waifu',
         page: { limit: 1 },
         fields: {
-          user: extended ? this.userFields.join() : this.compactUserFields.join(),
-          waifu: this.characterFields.join()
+          users: extended ? this.userFields.join() : this.compactUserFields.join(),
+          characters: this.characterFields.join()
         }
       }).then((users) => {
         pass(users[0])
@@ -259,7 +259,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('libraryEntry', {
         filter: { userId, animeId },
-        fields: { libraryEntry: this.libraryEntryFields.join() }
+        fields: { libraryEntries: this.libraryEntryFields.join() }
       }).then((entries) => {
         pass(entries[0])
       })
@@ -270,7 +270,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('libraryEntry', {
         filter: { userId, mangaId },
-        fields: { libraryEntry: this.libraryEntryFields.join() }
+        fields: { libraryEntries: this.libraryEntryFields.join() }
       }).then((entries) => {
         pass(entries[0])
       })

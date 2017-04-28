@@ -17,7 +17,6 @@ class Kitsu {
     this.jsonApi.define('user', {
       name: '',
       about: '',
-      website: '',
       waifuOrHusbando: '',
       waifu: {
         jsonApi: 'hasOne',
@@ -29,7 +28,6 @@ class Kitsu {
       createdAt: '',
       followersCount: '',
       followingCount: '',
-      lifeSpentOnAnime: '',
       avatar: { medium: '' }
     })
 
@@ -74,7 +72,6 @@ class Kitsu {
       startDate: '',
       ageRating: '',
       ageRatingGuide: '',
-      nsfw: '',
       youtubeVideoId: '',
       genres: {
         jsonApi: 'hasMany',

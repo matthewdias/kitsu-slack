@@ -33,7 +33,7 @@ export default async (ctx, next, kitsu) => {
     }
 
     if (extended) {
-      let { averageRating, subtype, startDate, youtubeVideoId, ageRating, ageRatingGuide, nsfw } = anime
+      let { averageRating, subtype, startDate, youtubeVideoId, ageRating, ageRatingGuide } = anime
 
       if (averageRating) {
         averageRating = averageRating.toString().slice(0, 4)
@@ -87,8 +87,6 @@ export default async (ctx, next, kitsu) => {
       if (ageRating) {
         if (ageRatingGuide)
           ageRating += ': ' + ageRatingGuide
-        if (nsfw)
-          ageRating += ' (NSFW)'
         fields.push({
           title: ':love_hotel: Age Rating',
           value: ageRating,

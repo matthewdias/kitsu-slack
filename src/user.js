@@ -74,16 +74,7 @@ export default async (ctx, next, kitsu) => {
     }
 
     if (extended) {
-      let { gender, birthday, createdAt, lifeSpentOnAnime } = user
-
-      if (user.website) {
-        fields.push({
-          title: ':link: Website(s)',
-          value: user.website,
-          short: true
-        })
-        fallback += `\nWebsite(s): ${user.website}`
-      }
+      let { gender, birthday, createdAt } = user
 
       if (user.waifuOrHusbando) {
         fields.push({
@@ -148,34 +139,6 @@ export default async (ctx, next, kitsu) => {
         short: true
       })
       fallback += `\nFollowing: ${user.followingCount}`
-
-      if (lifeSpentOnAnime) {
-        let multiples = [
-          { interval: 'year', value: 525600 },
-          { interval: 'month', value: 43200 },
-          { interval: 'day', value: 1440 },
-          { interval: 'hour', value: 60 },
-          { interval: 'minute', value: 1 }
-        ]
-        let time = []
-        multiples.map((multiple) => {
-          let { interval, value } = multiple
-          let amount = Math.floor(lifeSpentOnAnime / value)
-          if (amount > 0) {
-            lifeSpentOnAnime -= amount * value
-            if (amount > 1)
-              interval += 's'
-            time.push(`${amount} ${interval}`)
-          }
-        })
-        time = time.join(', ')
-        fields.push({
-          title: ':expressionless: Life Spent On Anime',
-          value: time,
-          short: true
-        })
-        fallback += `\nLife Spent On Anime: ${time}`
-      }
     }
 
     let body = {

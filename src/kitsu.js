@@ -102,6 +102,8 @@ class Kitsu {
       volumeCount: '',
       subtype: '',
       startDate: '',
+      ageRating: '',
+      ageRatingGuide: '',
       genres: {
         jsonApi: 'hasMany',
         type: 'genres'
@@ -115,7 +117,9 @@ class Kitsu {
       'chapterCount',
       'volumeCount',
       'subtype',
-      'startDate'
+      'startDate',
+      'ageRating',
+      'ageRatingGuide'
     ]
 
     this.jsonApi.define('genre', {

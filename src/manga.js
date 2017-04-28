@@ -33,7 +33,7 @@ export default async (ctx, next, kitsu) => {
     }
 
     if (extended) {
-      let { averageRating, subtype, startDate } = manga
+      let { averageRating, subtype, startDate, ageRating, ageRatingGuide } = manga
 
       if (averageRating) {
         averageRating = averageRating.toString().slice(0, 4)
@@ -82,6 +82,17 @@ export default async (ctx, next, kitsu) => {
           short: true
         })
         fallback += `\nDate: ${startDate}`
+      }
+
+      if (ageRating) {
+        if (ageRatingGuide)
+          ageRating += ': ' + ageRatingGuide
+        fields.push({
+          title: ':love_hotel: Age Rating',
+          value: ageRating,
+          short: true
+        })
+        fallback += `\nAge Rating: ${ageRating}`
       }
 
       if (manga.genres) {

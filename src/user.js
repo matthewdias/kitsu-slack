@@ -55,7 +55,7 @@ export default async (ctx, next, kitsu) => {
     else ctx.body = 'No such Slack user.'
   }
   else try {
-    user = await kitsu.searchUsers(encodeURI(query))
+    user = await kitsu.searchUsers(encodeURI(query), extended)
   }
   catch (error) {
     ctx.status = 404

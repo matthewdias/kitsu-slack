@@ -33,9 +33,23 @@ class Kitsu {
       avatar: { medium: '' }
     })
 
+    this.compactUserFields = ['name', 'about', 'avatar']
+    this.userFields = [
+      ...this.compactUserFields,
+      'waifuOrHusbando',
+      'gender',
+      'location',
+      'birthday',
+      'createdAt',
+      'followersCount',
+      'followingCount'
+    ]
+
     this.jsonApi.define('character', {
       name: ''
     })
+
+    this.characterFields = ['name']
 
     this.jsonApi.define('follow', {
       follower: {
@@ -68,6 +82,19 @@ class Kitsu {
       }
     }, { collectionPath: 'anime' })
 
+    this.compactAnimeFields = ['canonicalTitle', 'slug', 'synopsis', 'posterImage']
+    this.animeFields = [
+      ...this.compactAnimeFields,
+      'averageRating',
+      'episodeCount',
+      'episodeLength',
+      'subtype',
+      'startDate',
+      'ageRating',
+      'ageRatingGuide',
+      'youtubeVideoId'
+    ]
+
     this.jsonApi.define('manga', {
       canonicalTitle: '',
       slug: '',
@@ -84,17 +111,24 @@ class Kitsu {
       }
     }, { collectionPath: 'manga' })
 
+    this.compactMangaFields = ['canonicalTitle', 'slug', 'synopsis', 'posterImage']
+    this.mangaFields = [
+      ...this.compactMangaFields,
+      'averageRating',
+      'chapterCount',
+      'volumeCount',
+      'subtype',
+      'startDate'
+    ]
+
     this.jsonApi.define('genre', {
       name: ''
     })
 
+    this.genreFields = ['name']
+
     this.jsonApi.define('libraryEntry', {
       status: '',
-      progress: '',
-      reconsuming: '',
-      reconsumeCount: '',
-      private: '',
-      rating: '',
       anime: {
         jsonApi: 'hasOne',
         type: 'anime'
@@ -108,6 +142,8 @@ class Kitsu {
         type: 'users'
       }
     }, { collectionPath: 'library-entries' })
+
+    this.libraryEntryFields = ['status']
   }
 
   authenticate(token) {
@@ -131,36 +167,60 @@ class Kitsu {
     return this.jsonApi.find('user', id)
   }
 
-  searchUsers(query) {
+  getUserId(name) {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('user', {
-        filter: { query },
-        include: 'waifu',
-        page: { limit: 1 }
+        filter: { name },
+        page: { limit: 1 },
+        fields: { user: ['name'].join() }
       }).then((users) => {
         pass(users[0])
       })
     })
   }
 
-  searchAnime(text) {
+  searchUsers(query, extended) {
+    return new Promise((pass, fail) => {
+      this.jsonApi.findAll('user', {
+        filter: { query },
+        include: 'waifu',
+        page: { limit: 1 },
+        fields: {
+          user: extended ? this.userFields.join() : this.compactUserFields.join(),
+          waifu: this.characterFields.join()
+        }
+      }).then((users) => {
+        pass(users[0])
+      })
+    })
+  }
+
+  searchAnime(text, extended) {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('anime', {
         filter: { text },
         include: 'genres',
-        page: { limit: 1 }
+        page: { limit: 1 },
+        fields: {
+          anime: extended ? this.animeFields.join() : this.compactAnimeFields.join(),
+          genres: this.genreFields.join()
+        }
       }).then((anime) => {
         pass(anime[0])
       })
     })
   }
 
-  searchManga(text) {
+  searchManga(text, extended) {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('manga', {
         filter: { text },
         include: 'genres',
-        page: { limit: 1 }
+        page: { limit: 1 },
+        fields: {
+          manga: extended ? this.mangaFields.join() : this.compactMangaFields.join(),
+          genres: this.genreFields.join()
+        }
       }).then((manga) => {
         pass(manga[0])
       })
@@ -198,7 +258,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('libraryEntry', {
         filter: { userId, animeId },
-        include: 'anime'
+        fields: { libraryEntry: this.libraryEntryFields.join() }
       }).then((entries) => {
         pass(entries[0])
       })
@@ -209,7 +269,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('libraryEntry', {
         filter: { userId, mangaId },
-        include: 'manga'
+        fields: { libraryEntry: this.libraryEntryFields.join() }
       }).then((entries) => {
         pass(entries[0])
       })

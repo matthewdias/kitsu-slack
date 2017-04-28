@@ -14,7 +14,7 @@ export default async (ctx, next, kitsu) => {
   }
   let manga
   try {
-    manga = await kitsu.searchManga(encodeURI(query))
+    manga = await kitsu.searchManga(encodeURI(query), extended)
   }
   catch (error) {
     ctx.status = 404

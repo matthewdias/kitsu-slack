@@ -14,7 +14,7 @@ export default async (ctx, next, kitsu) => {
   }
   let anime
   try {
-    anime = await kitsu.searchAnime(encodeURI(query))
+    anime = await kitsu.searchAnime(encodeURI(query), extended)
   }
   catch (error) {
     ctx.status = 404

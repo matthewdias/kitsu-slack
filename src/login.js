@@ -16,9 +16,9 @@ export default async (ctx, next, kitsu) => {
   ctx.status = 200
   ctx.body = 'Logged In'
 
-  let user = await kitsu.searchUsers(username)
+  let userId = await kitsu.getUserId(username)
   let defaults = {
-    kitsuid: user.id,
+    kitsuid: userId,
     token: auth.accessToken,
     refresh: auth.refreshToken
   }

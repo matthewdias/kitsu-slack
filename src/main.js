@@ -64,7 +64,7 @@ router.post('/manga', async (ctx, next) => { await manga(ctx, next, kitsu) })
 router.post('/login', async (ctx, next) => { await login(ctx, next, kitsu) })
 router.post('/action', async (ctx, next) => { await action(ctx, next, kitsu) })
 router.post('/event', async (ctx, next) => { await event(ctx, next, kitsu) })
-router.post('/help', async (ctx, next) => { await help(ctx, next) })
+router.post('/help', help)
 router.get('/auth', auth)
 
 app.use(router.routes())

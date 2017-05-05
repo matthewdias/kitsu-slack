@@ -1,14 +1,12 @@
 import moment from 'moment'
-import fetch from 'node-fetch'
-import qs from 'qs'
+import { WebClient } from '@slack/client'
 import { getTeam, getUser } from './db'
 
 const atUser = async (teamid, username) => {
   let { token } = await getTeam(teamid)
-  let body = qs.stringify({ token })
-  let headers = { 'Content-Type': 'application/json; charset=utf-8' }
-  let res = await fetch('https://slack.com/api/users.list?' + body, headers )
-  body = await res.json()
+  let slack = new WebClient(token)
+  let body = await slack.users.list()
+    .catch((err) => { throw new Error(err) })
   if (body.ok == false)
     console.log('Error: ' + body.error)
   else {

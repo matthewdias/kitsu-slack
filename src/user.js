@@ -42,7 +42,7 @@ export default async (ctx, next, kitsu) => {
       let u = await getUser(team_id, id)
       if (u) {
         try {
-          user = await kitsu.getUser(u.kitsuid)
+          user = await kitsu.getUser(u.kitsuid, extended)
         }
         catch (error) {
           ctx.status = 404

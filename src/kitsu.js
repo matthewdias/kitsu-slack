@@ -164,8 +164,14 @@ class Kitsu {
     return authToken.refresh()
   }
 
-  getUser(id) {
-    return this.jsonApi.find('user', id)
+  getUser(id, extended) {
+    return this.jsonApi.find('user', id, {
+      include: extended ? 'waifu' : '',
+      fields: {
+        users: extended ? this.userFields.join() : this.compactUserFields.join(),
+        characters: this.characterFields.join()
+      }
+    })
   }
 
   getUserId(name) {
@@ -184,7 +190,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('user', {
         filter: { query },
-        include: 'waifu',
+        include: extended ? 'waifu' : '',
         page: { limit: 1 },
         fields: {
           users: extended ? this.userFields.join() : this.compactUserFields.join(),
@@ -200,7 +206,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('anime', {
         filter: { text },
-        include: 'genres',
+        include: extended ? 'genres' : '',
         page: { limit: 1 },
         fields: {
           anime: extended ? this.animeFields.join() : this.compactAnimeFields.join(),
@@ -216,7 +222,7 @@ class Kitsu {
     return new Promise((pass, fail) => {
       this.jsonApi.findAll('manga', {
         filter: { text },
-        include: 'genres',
+        include: extended ? 'genres' : '',
         page: { limit: 1 },
         fields: {
           manga: extended ? this.mangaFields.join() : this.compactMangaFields.join(),

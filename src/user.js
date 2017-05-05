@@ -74,14 +74,14 @@ export default async (ctx, next, kitsu) => {
     if (extended) {
       let { gender, birthday, createdAt } = user
 
-      if (user.waifuOrHusbando) {
-        fields.push({
-          title: ':wedding: ' + user.waifuOrHusbando,
-          value: user.waifu.name,
-          short: true
-        })
-        fallback += `\n${user.waifuOrHusbando}: ${user.waifu.name}`
-      }
+      // if (user.waifuOrHusbando) {
+      //   fields.push({
+      //     title: ':wedding: ' + user.waifuOrHusbando,
+      //     value: user.waifu.name,
+      //     short: true
+      //   })
+      //   fallback += `\n${user.waifuOrHusbando}: ${user.waifu.name}`
+      // }
 
       if (gender && gender != 'secret') {
         gender = gender.charAt(0).toUpperCase() + gender.slice(1)

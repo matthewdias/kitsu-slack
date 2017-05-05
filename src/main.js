@@ -65,8 +65,7 @@ router.post('/login', async (ctx, next) => { await login(ctx, next, kitsu) })
 router.post('/action', async (ctx, next) => { await action(ctx, next, kitsu) })
 router.post('/event', async (ctx, next) => { await event(ctx, next, kitsu) })
 router.post('/help', async (ctx, next) => { await help(ctx, next) })
-router.get('/auth', async (ctx, next) => { await auth(ctx, next) },
-  (ctx, next, team) => { ctx.redirect(`slack://open?team=${team}`) })
+router.get('/auth', auth)
 
 app.use(router.routes())
 app.use(router.allowedMethods())

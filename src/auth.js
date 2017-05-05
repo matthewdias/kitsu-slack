@@ -5,7 +5,7 @@ const { CLIENT, SECRET } = process.env
 
 export default async (ctx, next) => {
   let slack = new WebClient()
-  let body = await slack.oauth.access(CLIENT, SECRET, ctx.query.code, { })
+  let body = await slack.oauth.access(CLIENT, SECRET, ctx.query.code)
     .catch((err) => { throw new Error(err) })
   if (body.ok === false) {
     let error = 'Login Error: ' + body.error

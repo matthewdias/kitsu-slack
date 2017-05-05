@@ -75,7 +75,7 @@ export default async (ctx, next, kitsu) => {
       if (anime.episodeLength) {
         fields.push({
           title: ':watch: Length',
-          value: anime.episodeLength + 'minutes',
+          value: anime.episodeLength + ' minutes',
           short: true
         })
         fallback += `\nLength: ${anime.episodeLength} minutes`

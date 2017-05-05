@@ -7,13 +7,14 @@ const atUser = async (teamid, username) => {
   let slack = new WebClient(token)
   let body = await slack.users.list()
     .catch((err) => { throw new Error(err) })
-  if (body.ok == false)
+  if (body.ok === false) {
     console.log('Error: ' + body.error)
-  else {
+  } else {
     let user
     body.members.forEach((member) => {
-      if (!user && member.name == username)
+      if (!user && member.name === username) {
         user = member.id
+      }
     })
     if (user) {
       return user
@@ -25,16 +26,16 @@ export default async (ctx, next, kitsu) => {
   let query = ctx.request.body.text
   console.log('user: ' + query)
   let extended = false
-  if (query.indexOf('extended ') == 0) {
+  if (query.indexOf('extended ') === 0) {
     query = query.substring(9)
     extended = true
   }
-  if (query.indexOf('ex ') == 0) {
+  if (query.indexOf('ex ') === 0) {
     query = query.substring(3)
     extended = true
   }
   let user
-  if (query.indexOf('@') == 0) {
+  if (query.indexOf('@') === 0) {
     query = query.substring(1)
     let { team_id } = ctx.request.body
     let id = await atUser(team_id, query)
@@ -43,27 +44,24 @@ export default async (ctx, next, kitsu) => {
       if (u) {
         try {
           user = await kitsu.getUser(u.kitsuid, extended)
-        }
-        catch (error) {
+        } catch (error) {
           ctx.status = 404
         }
-      }
-      else ctx.body = 'User has not logged in.'
+      } else ctx.body = 'User has not logged in.'
+    } else ctx.body = 'No such Slack user.'
+  } else {
+    try {
+      user = await kitsu.searchUsers(encodeURI(query), extended)
+    } catch (error) {
+      ctx.status = 404
+      return
     }
-    else ctx.body = 'No such Slack user.'
-  }
-  else try {
-    user = await kitsu.searchUsers(encodeURI(query), extended)
-  }
-  catch (error) {
-    ctx.status = 404
-    return
   }
   if (user) {
     console.log(user.name)
     let text = ''
     let fields = []
-    let title_link = process.env.KITSU_HOST + '/users/' +  user.name
+    let title_link = process.env.KITSU_HOST + '/users/' + user.name
     let fallback = user.name + ' - ' + title_link
 
     if (user.about) {
@@ -83,7 +81,7 @@ export default async (ctx, next, kitsu) => {
       //   fallback += `\n${user.waifuOrHusbando}: ${user.waifu.name}`
       // }
 
-      if (gender && gender != 'secret') {
+      if (gender && gender !== 'secret') {
         gender = gender.charAt(0).toUpperCase() + gender.slice(1)
         fields.push({
           title: ':man-woman-girl-boy: Gender',

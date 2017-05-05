@@ -8,8 +8,7 @@ export default async (ctx, next, kitsu) => {
     callback_id,
     team,
     user,
-    original_message,
-    response_url
+    original_message
   } = payload
   let action = actions[0]
   console.log('action: ' + action.name + (action.value ? (': ' + action.value) : ''))
@@ -29,7 +28,7 @@ export default async (ctx, next, kitsu) => {
     setUser(team.id, userId, defaults)
   }
 
-  if (kitsuid == callback_id) {
+  if (kitsuid === callback_id) {
     ctx.body = { text: 'You can\'t follow yourself.', replace_original: false }
     return
   }
@@ -42,7 +41,7 @@ export default async (ctx, next, kitsu) => {
     body.replace_original = false
   }
 
-  if (action.name == 'user') {
+  if (action.name === 'user') {
     let follow = await kitsu.searchFollows(kitsuid, callback_id)
     if (follow) {
       body.attachments[0].callback_id = follow.id
@@ -56,12 +55,11 @@ export default async (ctx, next, kitsu) => {
           value: 'unfollow',
           confirm: {
             title: 'Unfollow ' + title,
-            text: `Are you sure you want to unfollow ${title}?`,
+            text: `Are you sure you want to unfollow ${title}?`
           }
         }
       ]
-    }
-    else {
+    } else {
       body.attachments[0].title = 'Follow ' + title
       body.attachments[0].actions = [
         {
@@ -72,7 +70,7 @@ export default async (ctx, next, kitsu) => {
           value: 'follow',
           confirm: {
             title: 'Follow ' + title,
-            text: `Are you sure you want to follow ${title}?`,
+            text: `Are you sure you want to follow ${title}?`
           }
         }
       ]
@@ -81,13 +79,12 @@ export default async (ctx, next, kitsu) => {
     return
   }
 
-  if (action.name == 'follow') {
-    if (action.value == 'unfollow') {
+  if (action.name === 'follow') {
+    if (action.value === 'unfollow') {
       kitsu.authenticate(token)
       try {
         await kitsu.removeFollow(callback_id)
-      }
-      catch (error) {
+      } catch (error) {
         ctx.body = 'Not yet following.'
         kitsu.unauthenticate()
         return
@@ -97,15 +94,14 @@ export default async (ctx, next, kitsu) => {
       return
     }
 
-    if (action.value == 'follow') {
+    if (action.value === 'follow') {
       kitsu.authenticate(token)
       try {
         await kitsu.createFollow({
           follower: { id: kitsuid },
           followed: { id: callback_id }
         })
-      }
-      catch (error) {
+      } catch (error) {
         ctx.body = 'Already following.'
         kitsu.unauthenticate()
         return
@@ -116,7 +112,7 @@ export default async (ctx, next, kitsu) => {
     }
   }
 
-  if (action.name == 'anime') {
+  if (action.name === 'anime') {
     body.attachments[0].title = 'Edit ' + title
     body.attachments[0].actions = []
     let statuses = [
@@ -124,7 +120,7 @@ export default async (ctx, next, kitsu) => {
       { text: 'Plan to Watch', value: 'planned' },
       { text: 'Completed', value: 'completed' },
       { text: 'On Hold', value: 'on_hold' },
-      { text: 'Dropped', value: 'dropped' },
+      { text: 'Dropped', value: 'dropped' }
     ]
     statuses.map((status) => {
       let { text, value } = status
@@ -144,8 +140,9 @@ export default async (ctx, next, kitsu) => {
     kitsu.unauthenticate()
     if (entry) {
       body.attachments[0].actions.map((attachment) => {
-        if (attachment.value == entry.status)
+        if (attachment.value === entry.status) {
           attachment.style = 'primary'
+        }
       })
       body.attachments.push({
         callback_id,
@@ -158,7 +155,7 @@ export default async (ctx, next, kitsu) => {
           value: 'remove',
           confirm: {
             title: 'Confirm',
-            text: `Are you sure you want to remove ${title}?`,
+            text: `Are you sure you want to remove ${title}?`
           }
         }]
       })
@@ -167,17 +164,16 @@ export default async (ctx, next, kitsu) => {
     return
   }
 
-  if (action.name == 'animeentry') {
+  if (action.name === 'animeentry') {
     kitsu.authenticate(token)
     let entry = await kitsu.getEntryForAnime(kitsuid, callback_id)
 
-    if (action.value == 'remove') {
+    if (action.value === 'remove') {
       if (entry) {
         await kitsu.removeEntry(entry.id)
         kitsu.unauthenticate()
         ctx.body = 'Removed.'
-      }
-      else {
+      } else {
         kitsu.unauthenticate()
         ctx.body = 'Not yet in library.'
       }
@@ -204,7 +200,7 @@ export default async (ctx, next, kitsu) => {
     return
   }
 
-  if (action.name == 'manga') {
+  if (action.name === 'manga') {
     body.attachments[0].title = 'Edit ' + title
     body.attachments[0].actions = []
     let statuses = [
@@ -212,7 +208,7 @@ export default async (ctx, next, kitsu) => {
       { text: 'Plan to Read', value: 'planned' },
       { text: 'Completed', value: 'completed' },
       { text: 'On Hold', value: 'on_hold' },
-      { text: 'Dropped', value: 'dropped' },
+      { text: 'Dropped', value: 'dropped' }
     ]
     statuses.map((status) => {
       let { text, value } = status
@@ -232,8 +228,9 @@ export default async (ctx, next, kitsu) => {
     kitsu.unauthenticate()
     if (entry) {
       body.attachments[0].actions.map((attachment) => {
-        if (attachment.value == entry.status)
+        if (attachment.value === entry.status) {
           attachment.style = 'primary'
+        }
       })
       body.attachments.push({
         callback_id,
@@ -246,7 +243,7 @@ export default async (ctx, next, kitsu) => {
           value: 'remove',
           confirm: {
             title: 'Confirm',
-            text: `Are you sure you want to remove ${title}?`,
+            text: `Are you sure you want to remove ${title}?`
           }
         }]
       })
@@ -255,17 +252,16 @@ export default async (ctx, next, kitsu) => {
     return
   }
 
-  if (action.name == 'mangaentry') {
+  if (action.name === 'mangaentry') {
     kitsu.authenticate(token)
     let entry = await kitsu.getEntryForManga(kitsuid, callback_id)
 
-    if (action.value == 'remove') {
+    if (action.value === 'remove') {
       if (entry) {
         await kitsu.removeEntry(entry.id)
         kitsu.unauthenticate()
         ctx.body = 'Removed.'
-      }
-      else {
+      } else {
         kitsu.unauthenticate()
         ctx.body = 'Not yet in library.'
       }
@@ -289,6 +285,5 @@ export default async (ctx, next, kitsu) => {
     await kitsu.createEntry(data)
     kitsu.unauthenticate()
     ctx.body = 'Added.'
-    return
   }
 }

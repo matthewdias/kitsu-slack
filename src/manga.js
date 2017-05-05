@@ -4,19 +4,18 @@ export default async (ctx, next, kitsu) => {
   let query = ctx.request.body.text
   console.log('manga: ' + query)
   let extended = false
-  if (query.indexOf('extended ') == 0) {
+  if (query.indexOf('extended ') === 0) {
     query = query.substring(9)
     extended = true
   }
-  if (query.indexOf('ex ') == 0) {
+  if (query.indexOf('ex ') === 0) {
     query = query.substring(3)
     extended = true
   }
   let manga
   try {
     manga = await kitsu.searchManga(encodeURI(query), extended)
-  }
-  catch (error) {
+  } catch (error) {
     ctx.status = 404
     return
   }
@@ -93,8 +92,9 @@ export default async (ctx, next, kitsu) => {
       }
 
       if (ageRating) {
-        if (ageRatingGuide)
+        if (ageRatingGuide) {
           ageRating += ': ' + ageRatingGuide
+        }
         fields.push({
           title: ':love_hotel: Age Rating',
           value: ageRating,
@@ -140,9 +140,9 @@ export default async (ctx, next, kitsu) => {
 
     let image = manga.posterImage ? manga.posterImage.large : null
     if (image) {
-      if (extended)
+      if (extended) {
         body.attachments[0].image_url = image
-      else body.attachments[0].thumb_url = image
+      } else body.attachments[0].thumb_url = image
     }
 
     ctx.status = 200

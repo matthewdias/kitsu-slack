@@ -3,7 +3,7 @@ import JsonApi from 'devour-client'
 const baseUrl = process.env.KITSU_HOST + '/api'
 
 class Kitsu {
-  constructor() {
+  constructor () {
     this.auth = new OAuth2({
       clientId: process.env.KITSU_CLIENT,
       clientSecret: process.env.KITSU_SECRET,
@@ -151,24 +151,24 @@ class Kitsu {
     this.libraryEntryFields = ['status']
   }
 
-  authenticate(token) {
+  authenticate (token) {
     this.jsonApi.headers['Authorization'] = `Bearer ${token}`
   }
 
-  unauthenticate() {
+  unauthenticate () {
     delete this.jsonApi.headers['Authorization']
   }
 
-  login(username, password) {
+  login (username, password) {
     return this.auth.owner.getToken(username, password)
   }
 
-  refresh(token, refresh) {
+  refresh (token, refresh) {
     let authToken = this.auth.createToken(token, refresh)
     return authToken.refresh()
   }
 
-  getUser(id, extended) {
+  getUser (id, extended) {
     return this.jsonApi.find('user', id, {
       include: 'waifu',
       fields: {
@@ -178,20 +178,20 @@ class Kitsu {
     })
   }
 
-  getUserId(name) {
-    return new Promise((pass, fail) => {
+  getUserId (name) {
+    return new Promise((resolve, reject) => {
       this.jsonApi.findAll('user', {
         filter: { name },
         page: { limit: 1 },
         fields: { users: ['name'].join() }
       }).then((users) => {
-        pass(users[0])
+        resolve(users[0])
       })
     })
   }
 
-  searchUsers(query, extended) {
-    return new Promise((pass, fail) => {
+  searchUsers (query, extended) {
+    return new Promise((resolve, reject) => {
       this.jsonApi.findAll('user', {
         filter: { query },
         include: 'waifu',
@@ -201,13 +201,13 @@ class Kitsu {
           characters: this.characterFields.join()
         }
       }).then((users) => {
-        pass(users[0])
+        resolve(users[0])
       })
     })
   }
 
-  searchAnime(text, extended) {
-    return new Promise((pass, fail) => {
+  searchAnime (text, extended) {
+    return new Promise((resolve, reject) => {
       this.jsonApi.findAll('anime', {
         filter: { text },
         include: 'genres',
@@ -217,13 +217,13 @@ class Kitsu {
           genres: this.genreFields.join()
         }
       }).then((anime) => {
-        pass(anime[0])
+        resolve(anime[0])
       })
     })
   }
 
-  searchManga(text, extended) {
-    return new Promise((pass, fail) => {
+  searchManga (text, extended) {
+    return new Promise((resolve, reject) => {
       this.jsonApi.findAll('manga', {
         filter: { text },
         include: 'genres',
@@ -233,65 +233,65 @@ class Kitsu {
           genres: this.genreFields.join()
         }
       }).then((manga) => {
-        pass(manga[0])
+        resolve(manga[0])
       })
     })
   }
 
-  searchFollows(follower, followed) {
-    return new Promise((pass, fail) => {
+  searchFollows (follower, followed) {
+    return new Promise((resolve, reject) => {
       this.jsonApi.findAll('follow', {
         filter: { follower, followed },
         include: 'follower,followed'
       }).then((follows) => {
-        pass(follows[0])
+        resolve(follows[0])
       })
     })
   }
 
-  createFollow(follow) {
+  createFollow (follow) {
     return this.jsonApi.create('follow', follow)
   }
 
-  removeFollow(id) {
+  removeFollow (id) {
     return this.jsonApi.destroy('follow', id)
   }
 
-  createEntry(entry) {
+  createEntry (entry) {
     return this.jsonApi.create('libraryEntry', entry)
   }
 
-  getEntry(id) {
+  getEntry (id) {
     return this.jsonApi.find('libraryEntry', id)
   }
 
-  getEntryForAnime(userId, animeId) {
-    return new Promise((pass, fail) => {
+  getEntryForAnime (userId, animeId) {
+    return new Promise((resolve, reject) => {
       this.jsonApi.findAll('libraryEntry', {
         filter: { userId, animeId },
         fields: { libraryEntries: this.libraryEntryFields.join() }
       }).then((entries) => {
-        pass(entries[0])
+        resolve(entries[0])
       })
     })
   }
 
-  getEntryForManga(userId, mangaId) {
-    return new Promise((pass, fail) => {
+  getEntryForManga (userId, mangaId) {
+    return new Promise((resolve, reject) => {
       this.jsonApi.findAll('libraryEntry', {
         filter: { userId, mangaId },
         fields: { libraryEntries: this.libraryEntryFields.join() }
       }).then((entries) => {
-        pass(entries[0])
+        resolve(entries[0])
       })
     })
   }
 
-  updateEntry(entry) {
+  updateEntry (entry) {
     return this.jsonApi.update('libraryEntry', entry)
   }
 
-  removeEntry(id) {
+  removeEntry (id) {
     return this.jsonApi.destroy('libraryEntry', id)
   }
 }

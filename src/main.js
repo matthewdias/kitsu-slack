@@ -26,10 +26,10 @@ app.use(ratelimit({
   duration: parseInt(process.env.RATELIMIT_DURATION),
   max: parseInt(process.env.RATELIMIT_MAX),
   id: (ctx) => {
-    let { method, body } = ctx.request
-    if (body.user_id)
+    let { body } = ctx.request
+    if (body.user_id) {
       return body.user_id
-    else return ctx.ip
+    } else return ctx.ip
   }
 }))
 
@@ -37,13 +37,12 @@ router.use(async (ctx, next) => {
   try {
     let { method, body } = ctx.request
     let token = process.env.VERIFICATION
-    if (method == 'POST') {
+    if (method === 'POST') {
       let valid = true
       if (body.token) {
-        valid = body.token == token
-      }
-      else {
-        valid = JSON.parse(body.payload).token == token
+        valid = body.token === token
+      } else {
+        valid = JSON.parse(body.payload).token === token
       }
       if (!valid) {
         ctx.status = 403

@@ -66,6 +66,7 @@ router.post('/action', async (ctx, next) => { await action(ctx, next, kitsu) })
 router.post('/event', async (ctx, next) => { await event(ctx, next, kitsu) })
 router.post('/help', help)
 router.get('/auth', auth)
+router.get('/health', async (ctx, next) => { ctx.body = 'healthy' })
 
 app.use(router.routes())
 app.use(router.allowedMethods())

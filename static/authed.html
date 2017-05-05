@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- <title>Authed</title> -->
+  </head>
+  <body>
+    Logged in.
+    <a href="#" onclick="redirect()">Back to slack</a>
+    <script>
+      function redirect() {
+        let team = /team=([^&]+)/.exec(window.location.href)[1];
+        let target = 'slack://open' + (team ? `?team=${team}` : '')
+        window.open(target)
+      }
+    </script>
+  </body>
+</html>

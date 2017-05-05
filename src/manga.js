@@ -39,10 +39,10 @@ export default async (ctx, next, kitsu) => {
         averageRating = averageRating.toString().slice(0, 4)
         fields.push({
           title: ':bar_chart: Rating',
-          value: averageRating,
+          value: averageRating + '%',
           short: true
         })
-        fallback += `\nRating: ${averageRating}`
+        fallback += `\nRating: ${averageRating}%`
       }
 
       if (subtype) {

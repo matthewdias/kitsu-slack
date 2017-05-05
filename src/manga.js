@@ -33,16 +33,24 @@ export default async (ctx, next, kitsu) => {
     }
 
     if (extended) {
-      let { averageRating, subtype, startDate, ageRating, ageRatingGuide } = manga
+      let { averageRating, popularityRank, subtype, startDate, ageRating, ageRatingGuide } = manga
 
       if (averageRating) {
-        averageRating = averageRating.toString().slice(0, 4)
         fields.push({
           title: ':bar_chart: Rating',
           value: averageRating + '%',
           short: true
         })
         fallback += `\nRating: ${averageRating}%`
+      }
+
+      if (popularityRank) {
+        fields.push({
+          title: ':star: Popularity',
+          value: '#' + popularityRank,
+          short: true
+        })
+        fallback += `\nPopularity: #${popularityRank}`
       }
 
       if (subtype) {

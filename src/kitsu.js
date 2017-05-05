@@ -65,6 +65,7 @@ class Kitsu {
       slug: '',
       synopsis: '',
       averageRating: '',
+      popularityRank: '',
       posterImage: { large: '' },
       episodeCount: '',
       episodeLength: '',
@@ -83,6 +84,7 @@ class Kitsu {
     this.animeFields = [
       ...this.compactAnimeFields,
       'averageRating',
+      'popularityRank',
       'episodeCount',
       'episodeLength',
       'subtype',
@@ -97,6 +99,7 @@ class Kitsu {
       slug: '',
       synopsis: '',
       averageRating: '',
+      popularityRank: '',
       posterImage: { large: '' },
       chapterCount: '',
       volumeCount: '',
@@ -114,6 +117,7 @@ class Kitsu {
     this.mangaFields = [
       ...this.compactMangaFields,
       'averageRating',
+      'popularityRank',
       'chapterCount',
       'volumeCount',
       'subtype',

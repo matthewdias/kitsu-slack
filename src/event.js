@@ -1,5 +1,7 @@
 import { WebClient } from '@slack/client'
 import { getTeam } from './db'
+import { animeAttachment } from './anime'
+import { mangaAttachment } from './manga'
 import { userAttachment } from './user'
 
 const route = async (path, route, children) => {
@@ -51,7 +53,14 @@ export default async (ctx, next, kitsu) => {
           unfurl = { text: mediaKind + '/quotes' }
         })
         if (!unfurl) {
-          unfurl = { text: mediaKind + '/show' }
+          if (mediaKind === 'anime') {
+            let anime = await kitsu.findAnime(match)
+            unfurl = animeAttachment(anime)
+          }
+          if (mediaKind === 'manga') {
+            let manga = await kitsu.findManga(match)
+            unfurl = mangaAttachment(manga)
+          }
         }
       })
       if (!unfurl) {

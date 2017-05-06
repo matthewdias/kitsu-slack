@@ -222,6 +222,22 @@ class Kitsu {
     })
   }
 
+  findAnime (slug, extended) {
+    return new Promise((resolve, reject) => {
+      this.jsonApi.findAll('anime', {
+        filter: { slug },
+        include: 'genres',
+        page: { limit: 1 },
+        fields: {
+          anime: extended ? this.animeFields.join() : this.compactAnimeFields.join(),
+          genres: this.genreFields.join()
+        }
+      }).then((anime) => {
+        resolve(anime[0])
+      })
+    })
+  }
+
   searchAnime (text, extended) {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('anime', {
@@ -234,6 +250,22 @@ class Kitsu {
         }
       }).then((anime) => {
         resolve(anime[0])
+      })
+    })
+  }
+
+  findManga (slug, extended) {
+    return new Promise((resolve, reject) => {
+      this.jsonApi.findAll('manga', {
+        filter: { slug },
+        include: 'genres',
+        page: { limit: 1 },
+        fields: {
+          manga: extended ? this.mangaFields.join() : this.compactMangaFields.join(),
+          genres: this.genreFields.join()
+        }
+      }).then((manga) => {
+        resolve(manga[0])
       })
     })
   }

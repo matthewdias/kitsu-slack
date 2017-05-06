@@ -157,10 +157,12 @@ export default async (ctx, next, kitsu) => {
       unfurl = { text: 'about' }
     })
 
-    if (unfurl) {
-      await slack.chat.unfurl(message_ts, channel, {
-        [url]: unfurl
-      }).catch((err) => { throw new Error(err) })
+    if (!unfurl) {
+      unfurl = { text: 'kitsu' }
     }
+
+    await slack.chat.unfurl(message_ts, channel, {
+      [url]: unfurl
+    }).catch((err) => { throw new Error(err) })
   }))
 }

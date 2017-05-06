@@ -168,6 +168,18 @@ class Kitsu {
     return authToken.refresh()
   }
 
+  getUserId (name) {
+    return new Promise((resolve, reject) => {
+      this.jsonApi.findAll('user', {
+        filter: { name },
+        page: { limit: 1 },
+        fields: { users: ['name'].join() }
+      }).then((users) => {
+        resolve(users[0].id)
+      })
+    })
+  }
+
   getUser (id, extended) {
     return this.jsonApi.find('user', id, {
       include: 'waifu',
@@ -178,12 +190,16 @@ class Kitsu {
     })
   }
 
-  getUserId (name) {
+  findUser (name, extended) {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('user', {
         filter: { name },
+        include: 'waifu',
         page: { limit: 1 },
-        fields: { users: ['name'].join() }
+        fields: {
+          users: extended ? this.userFields.join() : this.compactUserFields.join(),
+          characters: this.characterFields.join()
+        }
       }).then((users) => {
         resolve(users[0])
       })

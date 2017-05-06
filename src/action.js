@@ -16,7 +16,11 @@ export default async (ctx, next, kitsu) => {
   let userId = user.id
   user = await getUser(team.id, user.id)
   if (!user) {
-    ctx.body = { text: 'Please login to Kitsu first using /login', replace_original: false }
+    ctx.body = {
+      text: 'Please login to Kitsu first using /login',
+      response_type: 'ephemeral',
+      replace_original: false
+    }
     return
   }
   let { kitsuid, token, refresh, updatedAt } = user
@@ -29,7 +33,11 @@ export default async (ctx, next, kitsu) => {
   }
 
   if (kitsuid === callback_id) {
-    ctx.body = { text: 'You can\'t follow yourself.', replace_original: false }
+    ctx.body = {
+      text: 'You can\'t follow yourself.',
+      response_type: 'ephemeral',
+      replace_original: false
+    }
     return
   }
   let body = { attachments: [{ callback_id }] }

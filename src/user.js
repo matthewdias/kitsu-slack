@@ -2,7 +2,7 @@ import moment from 'moment'
 import { WebClient } from '@slack/client'
 import { getTeam, getUser } from './db'
 
-export async function userAttachment (user, extended) {
+export function userAttachment (user, extended) {
   let text = ''
   let fields = []
   let title_link = process.env.KITSU_HOST + '/users/' + user.name
@@ -163,7 +163,7 @@ export default async (ctx, next, kitsu) => {
     let body = {
       response_type: 'in_channel',
       link_names: true,
-      attachments: [await userAttachment(user, extended)]
+      attachments: [userAttachment(user, extended)]
     }
 
     ctx.status = 200

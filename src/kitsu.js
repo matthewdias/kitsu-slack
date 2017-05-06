@@ -149,6 +149,63 @@ class Kitsu {
     }, { collectionPath: 'library-entries' })
 
     this.libraryEntryFields = ['status']
+
+    this.jsonApi.define('post', {
+      content: '',
+      commentsCount: '',
+      postLikesCount: '',
+      spoiler: '',
+      nsfw: '',
+      createdAt: '',
+      editedAt: '',
+      user: {
+        jsonApi: 'hasOne',
+        type: 'users'
+      },
+      targetUser: {
+        jsonApi: 'hasOne',
+        type: 'users'
+      },
+      targetGroup: {
+        jsonApi: 'hasOne',
+        type: 'groups'
+      },
+      media: {
+        jsonApi: 'hasOne'
+      }
+    })
+
+    this.postFields = [
+      'content',
+      'commentsCount',
+      'postLikesCount',
+      'spoiler',
+      'nsfw',
+      'createdAt',
+      'editedAt'
+    ]
+
+    this.jsonApi.define('group', {
+      slug: '',
+      about: '',
+      name: '',
+      membersCount: '',
+      nsfw: '',
+      privacy: '',
+      tagline: '',
+      avatar: { medium: '' }
+    })
+
+    this.groupFields = [
+      'slug',
+      'about',
+      'name',
+      'membersCount',
+      'nsfw',
+      'privacy',
+      'tagline',
+      'avatar'
+    ]
   }
 
   authenticate (token) {
@@ -168,6 +225,7 @@ class Kitsu {
     return authToken.refresh()
   }
 
+  // users
   getUserId (name) {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('user', {
@@ -222,6 +280,7 @@ class Kitsu {
     })
   }
 
+  // anime
   findAnime (slug, extended) {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('anime', {
@@ -254,6 +313,7 @@ class Kitsu {
     })
   }
 
+  // manga
   findManga (slug, extended) {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('manga', {
@@ -286,6 +346,21 @@ class Kitsu {
     })
   }
 
+  // posts
+  getPost (id) {
+    return this.jsonApi.find('post', id, {
+      include: 'user,targetUser,targetGroup,media',
+      fields: {
+        posts: this.postFields.join(),
+        users: this.compactUserFields.join(),
+        groups: this.groupFields.join(),
+        anime: this.compactAnimeFields.join(),
+        manga: this.compactMangaFields.join()
+      }
+    })
+  }
+
+  // actions
   searchFollows (follower, followed) {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('follow', {

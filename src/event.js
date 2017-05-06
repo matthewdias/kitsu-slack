@@ -3,6 +3,7 @@ import { getTeam } from './db'
 import { animeAttachment } from './anime'
 import { mangaAttachment } from './manga'
 import { userAttachment } from './user'
+import { postAttachment } from './post'
 
 const route = async (path, route, children) => {
   let match = route.exec(path)
@@ -92,7 +93,8 @@ export default async (ctx, next, kitsu) => {
 
     await route(url, /\/posts/, async (path, match) => {
       await route(path, /\/\d+/, async (path, match) => {
-        unfurl = { text: 'posts/show' }
+        let post = await kitsu.getPost(match)
+        unfurl = postAttachment(post)
       })
     })
 

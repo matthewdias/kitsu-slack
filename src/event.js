@@ -38,33 +38,11 @@ export default async (ctx, next, kitsu) => {
       let mediaKind = match
       await route(path, /\/[a-z0-9_-]+/, async (path, match) => {
         if (mediaKind === 'anime') {
-          await route(path, /\/episodes/, async (path, match) => {
-            unfurl = { text: mediaKind + '/episodes' }
-          })
-        }
-        if (mediaKind === 'manga') {
-          await route(path, /\/chapters/, async (path, match) => {
-            unfurl = { text: mediaKind + '/chapters' }
-          })
-        }
-        await route(path, /\/characters/, async (path, match) => {
-          unfurl = { text: mediaKind + '/characters' }
-        })
-        await route(path, /\/reviews/, async (path, match) => {
-          unfurl = { text: mediaKind + '/reviews' }
-        })
-        await route(path, /\/quotes/, async (path, match) => {
-          unfurl = { text: mediaKind + '/quotes' }
-        })
-        if (!unfurl) {
-          if (mediaKind === 'anime') {
-            let anime = await kitsu.findAnime(match)
-            unfurl = animeAttachment(anime)
-          }
-          if (mediaKind === 'manga') {
-            let manga = await kitsu.findManga(match)
-            unfurl = mangaAttachment(manga)
-          }
+          let anime = await kitsu.findAnime(match)
+          unfurl = animeAttachment(anime)
+        } else if (mediaKind === 'manga') {
+          let manga = await kitsu.findManga(match)
+          unfurl = mangaAttachment(manga)
         }
       })
       if (!unfurl) {
@@ -79,9 +57,6 @@ export default async (ctx, next, kitsu) => {
       await route(path, /\/[a-zA-Z0-9_]+/, async (path, match) => {
         await route(path, /\/library/, async (path, match) => {
           unfurl = { text: 'users/library' }
-        })
-        await route(path, /\/reviews/, async (path, match) => {
-          unfurl = { text: 'users/reviews' }
         })
         if (!unfurl) {
           let user = await kitsu.findUser(match)
@@ -106,18 +81,7 @@ export default async (ctx, next, kitsu) => {
 
     await route(url, /\/groups/, async (path, match) => {
       await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
-        await route(path, /\/rules/, async (path, match) => {
-          unfurl = { text: 'groups/rules' }
-        })
-        await route(path, /\/members/, async (path, match) => {
-          unfurl = { text: 'groups/members' }
-        })
-        await route(path, /\/leaders/, async (path, match) => {
-          unfurl = { text: 'groups/leaders' }
-        })
-        if (!unfurl) {
-          unfurl = { text: 'groups/show' }
-        }
+        unfurl = { text: 'groups/show' }
       })
       if (!unfurl) {
         unfurl = pageAttacment(match)

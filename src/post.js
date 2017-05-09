@@ -22,7 +22,7 @@ export function postAttachment (post, extended) {
   title += targetGroup ? `to ${targetGroup.name}` : ''
   let fallback = title + ' - ' + title_link
 
-  nsfw = nsfw || targetGroup.nsfw
+  nsfw = (targetGroup && targetGroup.nsfw) || nsfw
 
   if (nsfw) {
     text += ':smirk: [NSFW]'

@@ -25,12 +25,12 @@ export function postAttachment (post, extended) {
   nsfw = (targetGroup && targetGroup.nsfw) || nsfw
 
   if (nsfw) {
-    text += ':smirk: [NSFW]'
+    text += ':smirk: `NSFW`'
     fallback += '\n[NSFW]'
   }
 
   if (spoiler) {
-    text += '\n:exclamation: [SPOILER]'
+    text += '\n:exclamation: `SPOILER`'
     fallback += '\n[SPOILER]'
   }
 

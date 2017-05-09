@@ -74,3 +74,36 @@ export function groupAttachment (group, extended) {
 
   return attachment
 }
+
+export default async (ctx, next, kitsu) => {
+  let query = ctx.request.body.text
+  console.log('group: ' + query)
+  let extended = false
+  if (query.indexOf('extended ') === 0) {
+    query = query.substring(9)
+    extended = true
+  }
+  if (query.indexOf('ex ') === 0) {
+    query = query.substring(3)
+    extended = true
+  }
+  let group
+  try {
+    group = await kitsu.searchGroup(encodeURI(query), extended)
+  } catch (error) {
+    ctx.status = 404
+    return
+  }
+  if (group) {
+    console.log(group.name)
+
+    let body = {
+      response_type: 'in_channel',
+      link_names: true,
+      attachments: [groupAttachment(group, extended)]
+    }
+
+    ctx.status = 200
+    ctx.body = body
+  }
+}

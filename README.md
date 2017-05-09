@@ -7,6 +7,7 @@ This app lets you retrieve information from Kitsu. You can search users, anime, 
 /user [(ex)tended] [@username] - Lookup by Slack name
 /anime [(ex)tended] [anime title] - Lookup an Anime
 /manga [(ex)tended] [manga title] - Lookup a Manga
+/group [(ex)tended] [group name] - Lookup a Group
 /login [username] [password] - Login to Kitsu
 /kitsuhelp - Show this message
 ```

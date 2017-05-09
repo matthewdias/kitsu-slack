@@ -10,6 +10,7 @@ import Kitsu from './kitsu'
 import user from './user'
 import anime from './anime'
 import manga from './manga'
+import group from './group'
 import login from './login'
 import action from './action'
 import event from './event'
@@ -60,6 +61,7 @@ router.use(async (ctx, next) => {
 router.post('/user', async (ctx, next) => { await user(ctx, next, kitsu) })
 router.post('/anime', async (ctx, next) => { await anime(ctx, next, kitsu) })
 router.post('/manga', async (ctx, next) => { await manga(ctx, next, kitsu) })
+router.post('/group', async (ctx, next) => { await group(ctx, next, kitsu) })
 router.post('/login', async (ctx, next) => { await login(ctx, next, kitsu) })
 router.post('/action', async (ctx, next) => { await action(ctx, next, kitsu) })
 router.post('/event', async (ctx, next) => { await event(ctx, next, kitsu) })

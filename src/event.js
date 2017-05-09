@@ -7,6 +7,7 @@ import { postAttachment } from './post'
 import { commentAttachment } from './comment'
 import { reviewAttachment } from './review'
 import { pageAttacment } from './page'
+import { groupAttachment } from './group'
 
 const route = async (path, route, children) => {
   let match = route.exec(path)
@@ -81,7 +82,8 @@ export default async (ctx, next, kitsu) => {
 
     await route(url, /\/groups/, async (path, match) => {
       await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
-        unfurl = { text: 'groups/show' }
+        let group = await kitsu.findGroup(match)
+        unfurl = groupAttachment(group)
       })
       if (!unfurl) {
         unfurl = pageAttacment(match)

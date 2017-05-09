@@ -225,20 +225,26 @@ class Kitsu {
       membersCount: '',
       nsfw: '',
       privacy: '',
-      tagline: '',
-      avatar: { medium: '' }
+      avatar: { medium: '' },
+      category: {
+        jsonApi: 'hasOne',
+        type: 'groupCategories'
+      }
     })
 
-    this.compactGroupFields = ['name', 'nsfw']
+    this.compactGroupFields = ['name', 'about', 'slug', 'avatar', 'nsfw']
     this.groupFields = [
       ...this.compactGroupFields,
-      'slug',
-      'about',
       'membersCount',
       'privacy',
-      'tagline',
-      'avatar'
+      'category'
     ]
+
+    this.jsonApi.define('groupCategory', {
+      name: ''
+    })
+
+    this.groupCategoryFields = ['name']
 
     this.jsonApi.define('review', {
       content: '',
@@ -400,6 +406,39 @@ class Kitsu {
         }
       }).then((manga) => {
         resolve(manga[0])
+      })
+    })
+  }
+
+  // groups
+  findGroup (slug, extended) {
+    return new Promise((resolve, reject) => {
+      this.jsonApi.findAll('group', {
+        filter: { slug },
+        include: 'category',
+        page: { limit: 1 },
+        fields: {
+          groups: extended ? this.groupFields.join() : this.compactGroupFields.join(),
+          groupCategories: this.groupCategoryFields.join()
+        }
+      }).then((groups) => {
+        resolve(groups[0])
+      })
+    })
+  }
+
+  searchGroup (query, extended) {
+    return new Promise((resolve, reject) => {
+      this.jsonApi.findAll('group', {
+        filter: { query },
+        include: 'category',
+        page: { limit: 1 },
+        fields: {
+          groups: extended ? this.groupFields.join() : this.compactGroupFields.join(),
+          groupCategories: this.groupCategoryFields.join()
+        }
+      }).then((groups) => {
+        resolve(groups[0])
       })
     })
   }

@@ -18,8 +18,8 @@ export function postAttachment (post, extended) {
   let fields = []
   let title_link = process.env.KITSU_HOST + '/posts/' + post.id
   let title = 'Post by ' + user.name
-  title += targetUser ? `to ${targetUser.name}` : ''
-  title += targetGroup ? `to ${targetGroup.name}` : ''
+  title += targetUser ? ` to ${targetUser.name}` : ''
+  title += targetGroup ? ` to ${targetGroup.name}` : ''
   let fallback = title + ' - ' + title_link
 
   nsfw = (targetGroup && targetGroup.nsfw) || nsfw
@@ -32,15 +32,22 @@ export function postAttachment (post, extended) {
   if (spoiler) {
     text += '\n:exclamation: [SPOILER]'
     fallback += '\n[SPOILER]'
-    if (media) {
-      text += ` - <https://kitsu.io/${media.type}/${media.slug}|${media.canonicalTitle}>`
-      fallback += ` - ${media.canonicalTitle}`
-    }
   }
 
   if (!spoiler && !nsfw && post.content) {
     text = post.content
     fallback += `\n${post.content}`
+  }
+
+  if (media) {
+    let type = media.type.charAt(0).toUpperCase() + media.type.slice(1)
+    let mediaTitle = (type === 'Anime' ? ':tv: ' : ':orange_book: ') + type
+    fields.push({
+      title: mediaTitle,
+      value: `<https://kitsu.io/${type}/${media.slug}|${media.canonicalTitle}>`,
+      short: true
+    })
+    fallback += `\n${type}: ${media.canonicalTitle}`
   }
 
   if (commentsCount) {

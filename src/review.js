@@ -1,38 +1,28 @@
 import moment from 'moment'
 
-export function commentAttachment (comment, extended) {
+export function reviewAttachment (review, extended) {
   let {
     content,
-    repliesCount,
     likesCount,
+    rating,
+    spoiler,
     createdAt,
-    editedAt,
-    user,
-    post
-  } = comment
+    media,
+    user
+  } = review
 
   let text = ''
   let fields = []
-  let title_link = process.env.KITSU_HOST + '/comments/' + comment.id
-  let title = `Comment by ${user.name} on ${post.user.name}'s post`
+  let title_link = process.env.KITSU_HOST + '/reviews/' + review.id
+  let title = 'Review by ' + user.name
   let fallback = title + ' - ' + title_link
 
-  let nsfw = (post.targetGroup && post.targetGroup.nsfw) || post.nsfw
-
-  if (!post.spoiler && !nsfw && content) {
+  if (!spoiler && content) {
     text += content
     fallback += `\n${content}`
   }
 
-  if (nsfw) {
-    fields.push({
-      value: ':smirk: `NSFW`',
-      short: true
-    })
-    fallback += '\n[NSFW]'
-  }
-
-  if (post.spoiler) {
+  if (spoiler) {
     fields.push({
       value: ':exclamation: `SPOILER`',
       short: true
@@ -40,13 +30,25 @@ export function commentAttachment (comment, extended) {
     fallback += '\n[SPOILER]'
   }
 
-  if (repliesCount) {
+  if (media) {
+    let type = media.type.charAt(0).toUpperCase() + media.type.slice(1)
+    let mediaTitle = (type === 'Anime' ? ':tv: ' : ':orange_book: ') + type
     fields.push({
-      title: ':speech_balloon: Replies',
-      value: repliesCount,
+      title: mediaTitle,
+      value: `<https://kitsu.io/${media.type}/${media.slug}|${media.canonicalTitle}>`,
       short: true
     })
-    fallback += `\nReplies: ${repliesCount}`
+    fallback += `\n${type}: ${media.canonicalTitle}`
+  }
+
+  if (rating) {
+    rating = `${rating / 2} / 10`
+    fields.push({
+      title: ':star: Rating',
+      value: rating,
+      short: true
+    })
+    fallback += `\nRating: ${rating}`
   }
 
   if (likesCount) {
@@ -61,27 +63,17 @@ export function commentAttachment (comment, extended) {
   if (createdAt) {
     let time = moment.utc(createdAt).fromNow()
     fields.push({
-      title: ':clock3: Commented',
+      title: ':clock3: Reviewed',
       value: time,
       short: true
     })
-    fallback += `\nCommented: ${time}`
-  }
-
-  if (editedAt) {
-    let time = moment.utc(editedAt).fromNow()
-    fields.push({
-      title: ':pencil2: Edited',
-      value: time,
-      short: true
-    })
-    fallback += `\nEdited: ${time}`
+    fallback += `\nReviewed: ${time}`
   }
 
   let attachment = {
     color: '#F65440',
     mrkdwn_in: ['text', 'fields'],
-    callback_id: comment.id,
+    callback_id: review.id,
     title,
     title_link,
     text,

@@ -61,6 +61,8 @@ class Kitsu {
       }
     })
 
+    this.compactMediaFields = ['canonicalTitle', 'slug', 'synopsis', 'posterImage']
+
     this.jsonApi.define('anime', {
       canonicalTitle: '',
       slug: '',
@@ -81,9 +83,8 @@ class Kitsu {
       }
     }, { collectionPath: 'anime' })
 
-    this.compactAnimeFields = ['canonicalTitle', 'slug', 'synopsis', 'posterImage']
     this.animeFields = [
-      ...this.compactAnimeFields,
+      ...this.compactMediaFields,
       'averageRating',
       'popularityRank',
       'episodeCount',
@@ -115,9 +116,8 @@ class Kitsu {
       }
     }, { collectionPath: 'manga' })
 
-    this.compactMangaFields = ['canonicalTitle', 'slug', 'synopsis', 'posterImage']
     this.mangaFields = [
-      ...this.compactMangaFields,
+      ...this.compactMediaFields,
       'averageRating',
       'popularityRank',
       'chapterCount',
@@ -239,6 +239,31 @@ class Kitsu {
       'tagline',
       'avatar'
     ]
+
+    this.jsonApi.define('review', {
+      content: '',
+      likesCount: '',
+      rating: '',
+      spoiler: '',
+      createdAt: '',
+      media: {
+        jsonApi: 'hasOne'
+      },
+      user: {
+        jsonApi: 'hasOne',
+        type: 'users'
+      }
+    })
+
+    this.reviewFields = [
+      'content',
+      'likesCount',
+      'rating',
+      'spoiler',
+      'createdAt',
+      'media',
+      'user'
+    ]
   }
 
   authenticate (token) {
@@ -321,7 +346,7 @@ class Kitsu {
         include: 'genres',
         page: { limit: 1 },
         fields: {
-          anime: extended ? this.animeFields.join() : this.compactAnimeFields.join(),
+          anime: extended ? this.animeFields.join() : this.compactMediaFields.join(),
           genres: this.genreFields.join()
         }
       }).then((anime) => {
@@ -337,7 +362,7 @@ class Kitsu {
         include: 'genres',
         page: { limit: 1 },
         fields: {
-          anime: extended ? this.animeFields.join() : this.compactAnimeFields.join(),
+          anime: extended ? this.animeFields.join() : this.compactMediaFields.join(),
           genres: this.genreFields.join()
         }
       }).then((anime) => {
@@ -354,7 +379,7 @@ class Kitsu {
         include: 'genres',
         page: { limit: 1 },
         fields: {
-          manga: extended ? this.mangaFields.join() : this.compactMangaFields.join(),
+          manga: extended ? this.mangaFields.join() : this.compactMediaFields.join(),
           genres: this.genreFields.join()
         }
       }).then((manga) => {
@@ -370,7 +395,7 @@ class Kitsu {
         include: 'genres',
         page: { limit: 1 },
         fields: {
-          manga: extended ? this.mangaFields.join() : this.compactMangaFields.join(),
+          manga: extended ? this.mangaFields.join() : this.compactMediaFields.join(),
           genres: this.genreFields.join()
         }
       }).then((manga) => {
@@ -387,8 +412,8 @@ class Kitsu {
         posts: this.postFields.join(),
         users: this.compactUserFields.join(),
         groups: this.groupFields.join(),
-        anime: this.compactAnimeFields.join(),
-        manga: this.compactMangaFields.join()
+        anime: this.compactMediaFields.join(),
+        manga: this.compactMediaFields.join()
       }
     })
   }
@@ -402,6 +427,19 @@ class Kitsu {
         users: this.compactUserFields.join(),
         posts: this.compactPostFields.join(),
         groups: this.compactGroupFields.join()
+      }
+    })
+  }
+
+  // reviews
+  getReview (id) {
+    return this.jsonApi.find('review', id, {
+      include: 'user,media',
+      fields: {
+        reviews: this.reviewFields.join(),
+        users: this.compactUserFields.join(),
+        anime: this.compactMediaFields.join(),
+        manga: this.compactMediaFields.join()
       }
     })
   }

@@ -44,7 +44,7 @@ export function postAttachment (post, extended) {
     let mediaTitle = (type === 'Anime' ? ':tv: ' : ':orange_book: ') + type
     fields.push({
       title: mediaTitle,
-      value: `<https://kitsu.io/${type}/${media.slug}|${media.canonicalTitle}>`,
+      value: `<https://kitsu.io/${media.type}/${media.slug}|${media.canonicalTitle}>`,
       short: true
     })
     fallback += `\n${type}: ${media.canonicalTitle}`

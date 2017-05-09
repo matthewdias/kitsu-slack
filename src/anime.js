@@ -98,7 +98,7 @@ export function animeAttachment (anime, extended) {
       youtubeVideoId = `https://www.youtube.com/watch?v=${youtubeVideoId}`
       fields.push({
         title: ':film_frames: Trailer',
-        value: youtubeVideoId,
+        value: `<${youtubeVideoId}|Watch Here>`,
         short: true
       })
       fallback += `\nTrailer: ${youtubeVideoId}`

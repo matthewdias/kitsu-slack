@@ -178,7 +178,9 @@ class Kitsu {
       }
     })
 
+    this.compactPostFields = ['user', 'nsfw', 'spoiler', 'targetGroup']
     this.postFields = [
+      ...this.compactPostFields,
       'content',
       'commentsCount',
       'postLikesCount',
@@ -186,10 +188,34 @@ class Kitsu {
       'nsfw',
       'createdAt',
       'editedAt',
-      'user',
       'targetUser',
-      'targetGroup',
       'media'
+    ]
+
+    this.jsonApi.define('comment', {
+      content: '',
+      repliesCount: '',
+      likesCount: '',
+      createdAt: '',
+      editedAt: '',
+      user: {
+        jsonApi: 'hasOne',
+        type: 'users'
+      },
+      post: {
+        jsonApi: 'hasOne',
+        type: 'posts'
+      }
+    })
+
+    this.commentFields = [
+      'content',
+      'repliesCount',
+      'likesCount',
+      'createdAt',
+      'editedAt',
+      'user',
+      'post'
     ]
 
     this.jsonApi.define('group', {
@@ -203,12 +229,12 @@ class Kitsu {
       avatar: { medium: '' }
     })
 
+    this.compactGroupFields = ['name', 'nsfw']
     this.groupFields = [
+      ...this.compactGroupFields,
       'slug',
       'about',
-      'name',
       'membersCount',
-      'nsfw',
       'privacy',
       'tagline',
       'avatar'
@@ -363,6 +389,19 @@ class Kitsu {
         groups: this.groupFields.join(),
         anime: this.compactAnimeFields.join(),
         manga: this.compactMangaFields.join()
+      }
+    })
+  }
+
+  // comments
+  getComment (id) {
+    return this.jsonApi.find('comment', id, {
+      include: 'user,post.user,post.targetGroup',
+      fields: {
+        comments: this.commentFields.join(),
+        users: this.compactUserFields.join(),
+        posts: this.compactPostFields.join(),
+        groups: this.compactGroupFields.join()
       }
     })
   }

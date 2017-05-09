@@ -4,6 +4,7 @@ import { animeAttachment } from './anime'
 import { mangaAttachment } from './manga'
 import { userAttachment } from './user'
 import { postAttachment } from './post'
+import { commentAttachment } from './comment'
 
 const route = async (path, route, children) => {
   let match = route.exec(path)
@@ -100,7 +101,8 @@ export default async (ctx, next, kitsu) => {
 
     await route(url, /\/comments/, async (path, match) => {
       await route(path, /\/\d+/, async (path, match) => {
-        unfurl = { text: 'comments/show' }
+        let comment = await kitsu.getComment(match)
+        unfurl = commentAttachment(comment)
       })
     })
 

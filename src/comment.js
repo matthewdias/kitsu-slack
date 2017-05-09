@@ -1,31 +1,26 @@
 import moment from 'moment'
 
-export function postAttachment (post, extended) {
+export function commentAttachment (comment, extended) {
   let {
     content,
-    commentsCount,
-    postLikesCount,
-    spoiler,
-    nsfw,
+    repliesCount,
+    likesCount,
     createdAt,
     editedAt,
     user,
-    targetUser,
-    targetGroup,
-    media
-  } = post
+    post
+  } = comment
 
   let text = ''
   let fields = []
-  let title_link = process.env.KITSU_HOST + '/posts/' + post.id
-  let title = 'Post by ' + user.name
-  title += targetUser ? ` to ${targetUser.name}` : ''
-  title += targetGroup ? ` to ${targetGroup.name}` : ''
+  let title_link = process.env.KITSU_HOST + '/comments/' + post.id
+  let title = 'Comment by ' + user.name
+  title += ` on ${post.user.name}'s post`
   let fallback = title + ' - ' + title_link
 
-  nsfw = (targetGroup && targetGroup.nsfw) || nsfw
+  let nsfw = (post.targetGroup && post.targetGroup.nsfw) || post.nsfw
 
-  if (!spoiler && !nsfw && content) {
+  if (!post.spoiler && !nsfw && content) {
     text += content
     fallback += `\n${content}`
   }
@@ -38,7 +33,7 @@ export function postAttachment (post, extended) {
     fallback += '\n[NSFW]'
   }
 
-  if (spoiler) {
+  if (post.spoiler) {
     fields.push({
       value: ':exclamation: `SPOILER`',
       short: true
@@ -46,43 +41,32 @@ export function postAttachment (post, extended) {
     fallback += '\n[SPOILER]'
   }
 
-  if (media) {
-    let type = media.type.charAt(0).toUpperCase() + media.type.slice(1)
-    let mediaTitle = (type === 'Anime' ? ':tv: ' : ':orange_book: ') + type
+  if (repliesCount) {
     fields.push({
-      title: mediaTitle,
-      value: `<https://kitsu.io/${media.type}/${media.slug}|${media.canonicalTitle}>`,
+      title: ':speech_balloon: Replies',
+      value: repliesCount,
       short: true
     })
-    fallback += `\n${type}: ${media.canonicalTitle}`
+    fallback += `\nReplies: ${repliesCount}`
   }
 
-  if (commentsCount) {
-    fields.push({
-      title: ':speech_balloon: Comments',
-      value: commentsCount,
-      short: true
-    })
-    fallback += `\nComments: ${commentsCount}`
-  }
-
-  if (postLikesCount) {
+  if (likesCount) {
     fields.push({
       title: ':heart: Likes',
-      value: postLikesCount,
+      value: likesCount,
       short: true
     })
-    fallback += `\nLikes: ${postLikesCount}`
+    fallback += `\nLikes: ${likesCount}`
   }
 
   if (createdAt) {
     let time = moment.utc(createdAt).fromNow()
     fields.push({
-      title: ':clock3: Posted',
+      title: ':clock3: Commented',
       value: time,
       short: true
     })
-    fallback += `\nPosted: ${time}`
+    fallback += `\nCommented: ${time}`
   }
 
   if (editedAt) {
@@ -98,7 +82,7 @@ export function postAttachment (post, extended) {
   let attachment = {
     color: '#F65440',
     mrkdwn_in: ['text', 'fields'],
-    callback_id: post.id,
+    callback_id: comment.id,
     title,
     title_link,
     text,

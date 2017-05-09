@@ -40,7 +40,8 @@ class Kitsu {
       'birthday',
       'createdAt',
       'followersCount',
-      'followingCount'
+      'followingCount',
+      'waifu'
     ]
 
     this.jsonApi.define('character', {
@@ -91,7 +92,8 @@ class Kitsu {
       'startDate',
       'ageRating',
       'ageRatingGuide',
-      'youtubeVideoId'
+      'youtubeVideoId',
+      'genres'
     ]
 
     this.jsonApi.define('manga', {
@@ -123,7 +125,8 @@ class Kitsu {
       'subtype',
       'startDate',
       'ageRating',
-      'ageRatingGuide'
+      'ageRatingGuide',
+      'genres'
     ]
 
     this.jsonApi.define('genre', {
@@ -148,7 +151,7 @@ class Kitsu {
       }
     }, { collectionPath: 'library-entries' })
 
-    this.libraryEntryFields = ['status']
+    this.libraryEntryFields = ['status', 'anime', 'manga', 'user']
 
     this.jsonApi.define('post', {
       content: '',
@@ -182,7 +185,11 @@ class Kitsu {
       'spoiler',
       'nsfw',
       'createdAt',
-      'editedAt'
+      'editedAt',
+      'user',
+      'targetUser',
+      'targetGroup',
+      'media'
     ]
 
     this.jsonApi.define('group', {

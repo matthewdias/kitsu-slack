@@ -6,6 +6,7 @@ import { userAttachment } from './user'
 import { postAttachment } from './post'
 import { commentAttachment } from './comment'
 import { reviewAttachment } from './review'
+import { pageAttacment } from './page'
 
 const route = async (path, route, children) => {
   let match = route.exec(path)
@@ -67,16 +68,12 @@ export default async (ctx, next, kitsu) => {
         }
       })
       if (!unfurl) {
-        unfurl = { text: mediaKind + '/index' }
+        unfurl = pageAttacment(match)
       }
     }
 
     await route(url, /\/anime/, mediaRoute)
     await route(url, /\/manga/, mediaRoute)
-
-    await route(url, /\/trending/, async (path, match) => {
-      unfurl = { text: 'trending' }
-    })
 
     await route(url, /\/users/, async (path, match) => {
       await route(path, /\/[a-zA-Z0-9_]+/, async (path, match) => {
@@ -123,7 +120,7 @@ export default async (ctx, next, kitsu) => {
         }
       })
       if (!unfurl) {
-        unfurl = { text: 'groups/index' }
+        unfurl = pageAttacment(match)
       }
     })
 
@@ -142,7 +139,7 @@ export default async (ctx, next, kitsu) => {
           })
         })
         if (!unfurl) {
-          unfurl = { text: 'feedback/bugs/index' }
+          unfurl = pageAttacment(match)
         }
       })
       await route(path, /\/feature-requests/, async (path, match) => {
@@ -152,28 +149,32 @@ export default async (ctx, next, kitsu) => {
           })
         })
         if (!unfurl) {
-          unfurl = { text: 'feedback/feature-requests/index' }
+          unfurl = pageAttacment(match)
         }
       })
       if (!unfurl) {
-        unfurl = { text: 'feedback/index' }
+        unfurl = pageAttacment(match)
       }
     })
 
+    await route(url, /\/trending/, async (path, match) => {
+      unfurl = pageAttacment(match)
+    })
+
     await route(url, /\/privacy/, async (path, match) => {
-      unfurl = { text: 'privacy' }
+      unfurl = pageAttacment(match)
     })
 
     await route(url, /\/terms/, async (path, match) => {
-      unfurl = { text: 'terms' }
+      unfurl = pageAttacment(match)
     })
 
     await route(url, /\/about/, async (path, match) => {
-      unfurl = { text: 'about' }
+      unfurl = pageAttacment(match)
     })
 
     if (!unfurl) {
-      unfurl = { text: 'kitsu' }
+      unfurl = pageAttacment('')
     }
 
     await slack.chat.unfurl(message_ts, channel, {

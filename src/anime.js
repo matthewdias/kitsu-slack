@@ -115,7 +115,7 @@ export function animeAttachment (anime, extended) {
     fields,
     fallback,
     footer: 'Kitsu API',
-    footer_icon: 'https://kitsu-slack.herokuapp.com/icon.png',
+    footer_icon: 'https://kitsu-slack.herokuapp.com/footer-icon.png',
     ts: moment().unix(),
     actions: [{
       name: 'anime',

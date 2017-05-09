@@ -24,19 +24,25 @@ export function postAttachment (post, extended) {
 
   nsfw = (targetGroup && targetGroup.nsfw) || nsfw
 
+  if (!spoiler && !nsfw && post.content) {
+    text += post.content
+    fallback += `\n${post.content}`
+  }
+
   if (nsfw) {
-    text += ':smirk: `NSFW`'
+    fields.push({
+      value: ':smirk: `NSFW`',
+      short: true
+    })
     fallback += '\n[NSFW]'
   }
 
   if (spoiler) {
-    text += '\n:exclamation: `SPOILER`'
+    fields.push({
+      value: ':exclamation: `SPOILER`',
+      short: true
+    })
     fallback += '\n[SPOILER]'
-  }
-
-  if (!spoiler && !nsfw && post.content) {
-    text = post.content
-    fallback += `\n${post.content}`
   }
 
   if (media) {
@@ -90,7 +96,7 @@ export function postAttachment (post, extended) {
 
   let attachment = {
     color: '#F65440',
-    mrkdwn_in: ['text'],
+    mrkdwn_in: ['text', 'fields'],
     callback_id: post.id,
     title,
     title_link,

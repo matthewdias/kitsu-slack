@@ -88,7 +88,7 @@ export function postAttachment (post, extended) {
     title,
     title_link,
     text,
-    thumb_url: targetUser.avatar ? targetUser.avatar.medium : null,
+    thumb_url: user.avatar ? user.avatar.medium : null,
     fields,
     fallback,
     footer: 'Kitsu API',

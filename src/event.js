@@ -6,6 +6,7 @@ import { userAttachment } from './user'
 import { postAttachment } from './post'
 import { commentAttachment } from './comment'
 import { reviewAttachment } from './review'
+import { feedbackAttachment, getFeedback } from './feedback'
 import { pageAttacment } from './page'
 import { groupAttachment } from './group'
 
@@ -97,27 +98,22 @@ export default async (ctx, next, kitsu) => {
       })
     })
 
+    const feedbackRoute = async (path, match) => {
+      let feedbackKind = match
+      await route(path, /\/p/, async (path, match) => {
+        await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
+          let feedback = await getFeedback(match, feedbackKind)
+          unfurl = feedbackAttachment(feedback)
+        })
+      })
+      if (!unfurl) {
+        unfurl = pageAttacment(match)
+      }
+    }
+
     await route(url, /\/feedback/, async (path, match) => {
-      await route(path, /\/bugs/, async (path, match) => {
-        await route(path, /\/p/, async (path, match) => {
-          await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
-            unfurl = { text: 'feedback/bugs/show' }
-          })
-        })
-        if (!unfurl) {
-          unfurl = pageAttacment(match)
-        }
-      })
-      await route(path, /\/feature-requests/, async (path, match) => {
-        await route(path, /\/p/, async (path, match) => {
-          await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
-            unfurl = { text: 'feedback/feature-requests/show' }
-          })
-        })
-        if (!unfurl) {
-          unfurl = pageAttacment(match)
-        }
-      })
+      await route(path, /\/bugs/, feedbackRoute)
+      await route(path, /\/feature-requests/, feedbackRoute)
       if (!unfurl) {
         unfurl = pageAttacment(match)
       }

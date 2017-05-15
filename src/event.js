@@ -57,9 +57,9 @@ export default async (ctx, next, kitsu) => {
 
     await route(url, /\/users/, async (path, match) => {
       await route(path, /\/[a-zA-Z0-9_]+/, async (path, match) => {
-        await route(path, /\/library/, async (path, match) => {
-          unfurl = { text: 'users/library' }
-        })
+        // await route(path, /\/library/, async (path, match) => {
+        //   unfurl = { text: 'users/library' }
+        // })
         if (!unfurl) {
           let user = await kitsu.findUser(match)
           unfurl = userAttachment(user)

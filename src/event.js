@@ -98,7 +98,7 @@ export default async (ctx, next, kitsu) => {
       })
     })
 
-    const feedbackRoute = async (path, match) => {
+    const boardRoute = async (path, match) => {
       let feedbackKind = match
       await route(path, /\/p/, async (path, match) => {
         await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
@@ -111,13 +111,17 @@ export default async (ctx, next, kitsu) => {
       }
     }
 
-    await route(url, /\/feedback/, async (path, match) => {
-      await route(path, /\/bugs/, feedbackRoute)
-      await route(path, /\/feature-requests/, feedbackRoute)
+    const feedbackRoute = async (path, match) => {
+      await route(path, /\/bugs/, boardRoute)
+      await route(path, /\/feature-requests/, boardRoute)
       if (!unfurl) {
         unfurl = pageAttacment(match)
       }
-    })
+    }
+
+    await route(url, /\/feedback/, feedbackRoute)
+
+    await feedbackRoute(url)
 
     await route(url, /\/trending/, async (path, match) => {
       unfurl = pageAttacment(match)

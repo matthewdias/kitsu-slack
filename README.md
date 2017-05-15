@@ -24,6 +24,4 @@ This app lets you retrieve information from Kitsu. You can search users, anime, 
 
 #### Privacy Policy
 
-Your Slack email is never read. The user info permission allows the app to find your Slack user id from your @username.
-
 Your Kitsu credentials are not stored. They are exchanged for a key which is stored in a private database which is used to make authenticated requests to the Kitsu API on your behalf.

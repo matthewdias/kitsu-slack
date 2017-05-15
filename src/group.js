@@ -33,7 +33,7 @@ export function groupAttachment (group, extended) {
     }
 
     if (privacy) {
-      privacy = privacy.charAt(0).toUpperCase + privacy.slice(1)
+      privacy = privacy.charAt(0).toUpperCase() + privacy.slice(1)
       fields.push({
         title: ':lock: Privacy',
         value: privacy,

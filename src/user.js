@@ -1,6 +1,5 @@
 import moment from 'moment'
-import { WebClient } from '@slack/client'
-import { getTeam, getUser } from './db'
+import { getUser } from './db'
 
 export function userAttachment (user, extended) {
   let text = ''
@@ -102,26 +101,6 @@ export function userAttachment (user, extended) {
   }
 }
 
-const atUser = async (teamid, username) => {
-  let { token } = await getTeam(teamid)
-  let slack = new WebClient(token)
-  let body = await slack.users.list()
-    .catch((err) => { throw new Error(err) })
-  if (body.ok === false) {
-    console.log('Error: ' + body.error)
-  } else {
-    let user
-    body.members.forEach((member) => {
-      if (!user && member.name === username) {
-        user = member.id
-      }
-    })
-    if (user) {
-      return user
-    }
-  }
-}
-
 export default async (ctx, next, kitsu) => {
   let query = ctx.request.body.text
   console.log('user: ' + query)
@@ -135,11 +114,10 @@ export default async (ctx, next, kitsu) => {
     extended = true
   }
   let user
-  if (query.indexOf('@') === 0) {
-    query = query.substring(1)
-    let { team_id } = ctx.request.body
-    let id = await atUser(team_id, query)
+  if (query.indexOf('<@') === 0) {
+    let id = query.substring(2, query.indexOf('|'))
     if (id) {
+      let { team_id } = ctx.request.body
       let u = await getUser(team_id, id)
       if (u) {
         try {

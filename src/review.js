@@ -14,8 +14,8 @@ export function reviewAttachment (review, extended) {
   let text = ''
   let fields = []
   let title_link = process.env.KITSU_HOST + '/reviews/' + review.id
-  let title = 'Review by ' + user.name
-  let fallback = title + ' - ' + title_link
+  let title = 'Review'
+  let fallback = `${title} by ${user.name} - ${title_link}`
 
   if (!spoiler && content) {
     text += content
@@ -77,7 +77,6 @@ export function reviewAttachment (review, extended) {
     title,
     title_link,
     text,
-    thumb_url: user.avatar ? user.avatar.medium : null,
     fields,
     fallback,
     footer: 'Kitsu API',
@@ -88,6 +87,14 @@ export function reviewAttachment (review, extended) {
     //   text: '',
     //   type: 'button'
     // }]
+  }
+
+  if (user.name) {
+    attachment.author_name = user.name
+  }
+
+  if (user.avatar) {
+    attachment.author_icon = user.avatar.medium
   }
 
   return attachment

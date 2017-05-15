@@ -14,8 +14,10 @@ export function commentAttachment (comment, extended) {
   let text = ''
   let fields = []
   let title_link = process.env.KITSU_HOST + '/comments/' + comment.id
-  let title = `Comment by ${user.name} on ${post.user.name}'s post`
-  let fallback = title + ' - ' + title_link
+  let title = 'Comment'
+  let titleInfo = ` on ${post.user.name}'s post`
+  let fallback = `${title} by ${user.name}${titleInfo} - ${title_link}`
+  title += titleInfo
 
   let nsfw = (post.targetGroup && post.targetGroup.nsfw) || post.nsfw
 
@@ -85,7 +87,6 @@ export function commentAttachment (comment, extended) {
     title,
     title_link,
     text,
-    thumb_url: user.avatar ? user.avatar.medium : null,
     fields,
     fallback,
     footer: 'Kitsu API',
@@ -96,6 +97,14 @@ export function commentAttachment (comment, extended) {
     //   text: '',
     //   type: 'button'
     // }]
+  }
+
+  if (user.name) {
+    attachment.author_name = user.name
+  }
+
+  if (user.avatar) {
+    attachment.author_icon = user.avatar.medium
   }
 
   return attachment

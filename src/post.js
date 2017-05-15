@@ -18,10 +18,11 @@ export function postAttachment (post, extended) {
   let text = ''
   let fields = []
   let title_link = process.env.KITSU_HOST + '/posts/' + post.id
-  let title = 'Post by ' + user.name
-  title += targetUser ? ` to ${targetUser.name}` : ''
-  title += targetGroup ? ` to ${targetGroup.name}` : ''
-  let fallback = title + ' - ' + title_link
+  let title = 'Post'
+  let titleInfo = targetUser ? ` to ${targetUser.name}` : ''
+  titleInfo += targetGroup ? ` to ${targetGroup.name}` : ''
+  let fallback = `${title} by ${user.name}${titleInfo} - ${title_link}`
+  title += titleInfo
 
   nsfw = (targetGroup && targetGroup.nsfw) || nsfw
 
@@ -102,7 +103,6 @@ export function postAttachment (post, extended) {
     title,
     title_link,
     text,
-    thumb_url: user.avatar ? user.avatar.medium : null,
     fields,
     fallback,
     footer: 'Kitsu API',
@@ -113,6 +113,14 @@ export function postAttachment (post, extended) {
     //   text: '',
     //   type: 'button'
     // }]
+  }
+
+  if (user.name) {
+    attachment.author_name = user.name
+  }
+
+  if (user.avatar) {
+    attachment.author_icon = user.avatar.medium
   }
 
   return attachment

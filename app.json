@@ -1,0 +1,59 @@
+{
+  "name": "kitsu-slack",
+  "description": "Query Kitsu.io from slack",
+  "repository": "https://github.com/matthewdias/kitsu-slack",
+  "logo": "https://kitsu-slack.herokuapp.com/icon.png",
+  "keywords": [ "kitsu", "slack", "anime", "manga", "koa2" ],
+  "addons": [
+    { "plan": "heroku-postgresql:hobby-dev" },
+    { "plan": "heroku-redis:hobby-dev" }
+  ],
+  "buildpacks": [
+    { "url": "heroku/nodejs" },
+    { "url": "https://github.com/heroku/heroku-buildpack-google-chrome" }
+  ],
+  "stack": "cedar-14",
+  "env": {
+    "CLIENT": {
+      "description": "Slack client id. Get one here https://api.slack.com/apps"
+    },
+    "SECRET": {
+      "description": "Slack client secret. Get one here https://api.slack.com/apps"
+    },
+    "VERIFICATION": {
+      "description": "Slack verification token. Get one here https://api.slack.com/apps"
+    },
+    "KITSU_CLIENT": {
+      "description": "Kitsu client id. Kitsu doesn't have client registration yet, so just use the default for now.",
+      "value": "dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd"
+    },
+    "KITSU_SECRET": {
+      "description": "Kitsu client secret. Kitsu doesn't have client registration yet, so just use the default for now.",
+      "value": "54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151"
+    },
+    "KITSU_HOST": {
+      "description": "Host domain for Kitsu.",
+      "value": "https://kitsu.io"
+    },
+    "NO_DEPRECATION": {
+      "description": "Disables a deprecation warning in the logs",
+      "value": "koa"
+    },
+    "DATABASE_URL": {
+      "description": "Postgres url. Don't set to use the provisioned Postgres",
+      "required": false
+    },
+    "REDIS_URL": {
+      "description": "Redis url. Don't set to use the provisioned Redis",
+      "required": false
+    },
+    "RATELIMIT_DURATION": {
+      "description": "Duration in milliseconds over which to apply ratelimit",
+      "value": 20000
+    },
+    "RATELIMIT_MAX": {
+      "description": "Number of allowed requests over duration",
+      "value": 5
+    }
+  }
+}

@@ -28,6 +28,7 @@
     "babel-core": "^6.24.1",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.4.0",
+    "babel-preset-stage-3": "^6.24.1",
     "chrome-remote-interface": "^0.22.0",
     "client-oauth2": "^4.1.0",
     "devour-client": "^1.4.1",

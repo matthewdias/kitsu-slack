@@ -4,9 +4,9 @@ export default async (ctx, next, kitsu) => {
   let username = ctx.request.body.text.split(' ')[0]
   let password = ctx.request.body.text.substr(username.length + 1)
 
-  let auth
+  let authData
   try {
-    auth = await kitsu.login(username, password)
+    authData = await kitsu.login(username, password)
   } catch (error) {
     ctx.body = 'Bad Login'
     return
@@ -16,11 +16,11 @@ export default async (ctx, next, kitsu) => {
   ctx.body = 'Logged In'
 
   let userId = await kitsu.getUserId(username)
-  let defaults = {
+  let auth = {
     kitsuid: userId,
-    token: auth.accessToken,
-    refresh: auth.refreshToken
+    token: authData.accessToken,
+    refresh: authData.refreshToken
   }
   let { team_id, user_id } = ctx.request.body
-  setUser(team_id, user_id, defaults)
+  setUser(team_id, user_id, auth)
 }

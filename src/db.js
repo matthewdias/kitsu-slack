@@ -23,37 +23,27 @@ const User = sequelize.define('user', {
   refresh: Sequelize.STRING
 })
 
-const setTeam = (id, token) => {
-  return sequelize.sync().then(() => {
-    Team.findCreateFind({
-      where: { id },
-      defaults: { token }
-    })
-  })
+const setTeam = async (id, token) => {
+  await sequelize.sync()
+  return Team.upsert({ id, token })
 }
 
-const getTeam = (id) => {
-  return sequelize.sync().then(() => {
-    return Team.findById(id)
-  })
+const getTeam = async (id) => {
+  await sequelize.sync()
+  return Team.findById(id)
 }
 
-const setUser = (teamId, userId, defaults) => {
-  return sequelize.sync().then(() => {
-    return User.findCreateFind({
-      where: { id: teamId + '/' + userId },
-      defaults
-    })
-  }).then((users) => {
-    let user = users[0]
-    user.update(defaults)
-  })
+const setUser = async (teamId, userId, auth) => {
+  await sequelize.sync()
+  return User.upsert({
+    id: teamId + '/' + userId,
+    ...auth
+  })[0]
 }
 
-const getUser = (teamId, userId) => {
-  return sequelize.sync().then(() => {
-    return User.findById(teamId + '/' + userId)
-  })
+const getUser = async (teamId, userId) => {
+  await sequelize.sync()
+  return User.findById(teamId + '/' + userId)
 }
 
 module.exports = { setTeam, getTeam, setUser, getUser }

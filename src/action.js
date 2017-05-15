@@ -28,8 +28,8 @@ export default async (ctx, next, kitsu) => {
     let authToken = await kitsu.refresh(token, refresh)
     token = authToken.data.access_token
     refresh = authToken.data.refresh_token
-    let defaults = { kitsuid, token, refresh }
-    setUser(team.id, userId, defaults)
+    let auth = { kitsuid, token, refresh }
+    setUser(team.id, userId, auth)
   }
 
   if (kitsuid === callback_id) {

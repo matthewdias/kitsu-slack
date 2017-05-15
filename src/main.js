@@ -1,4 +1,5 @@
 import 'babel-polyfill'
+import { spawn } from 'child_process'
 import Koa from 'koa'
 import parser from 'koa-bodyparser'
 import Router from 'koa-router'
@@ -20,6 +21,11 @@ import auth from './auth'
 const router = new Router()
 const app = new Koa()
 const kitsu = new Kitsu()
+const chrome = spawn('google-chrome')
+chrome.stdout.on('data', (data) => { console.log(`stdout: ${data}`) })
+chrome.stderr.on('data', (data) => { console.log(`stderr: ${data}`) })
+chrome.on('close', (code) => { console.log(`exited: ${code}`) })
+chrome.on('error', (err) => { console.log(`error: ${err}`) })
 
 app.use(parser())
 app.use(ratelimit({

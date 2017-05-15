@@ -3,13 +3,7 @@ export default async (ctx, next) => {
   ctx.body = {
     response_type: 'ephemeral',
     text:
-`This app lets you retrieve information from Kitsu.
-You can search users, anime, and manga in the default
-compact mode, or in extended mode. By logging in with
-your Kitsu credentials via \`/login\`, you can enable
-additional features, specifically following users and
-adding/editing media. If you don't have an account,
-head over to ${process.env.KITSU_HOST} to get started.
+`This app lets you retrieve information from Kitsu. You can search users, anime, manga, and groups in the default compact mode, or in extended mode. By logging in with your Kitsu credentials via \`/login\`, you can enable additional features, specifically following users and adding/editing media. If you don't have an account, head over to ${process.env.KITSU_HOST} to get started.
 
 Commands:
 
@@ -25,9 +19,6 @@ Commands:
 
 Privacy Policy:
 
-Your Kitsu credentials are not stored. They are
-exchanged for a key which is stored in a private
-database which is used to make authenticated requests
-to the Kitsu API on your behalf.`
+Your Kitsu credentials are not stored. They are exchanged for a key which is stored in a private database to make authenticated requests to the Kitsu API on your behalf.`
   }
 }

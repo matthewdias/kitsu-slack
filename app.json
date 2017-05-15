@@ -49,11 +49,11 @@
     },
     "RATELIMIT_DURATION": {
       "description": "Duration in milliseconds over which to apply ratelimit",
-      "value": 20000
+      "value": "20000"
     },
     "RATELIMIT_MAX": {
       "description": "Number of allowed requests over duration",
-      "value": 5
+      "value": "5"
     }
   }
 }

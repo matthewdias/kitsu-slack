@@ -128,10 +128,15 @@ export default async (ctx, next, kitsu) => {
     }
   }
 
-  if (action.name === 'animeentry') {
+  if (action.name === 'animeentry' || action.name === 'mangaentry') {
     let { value } = action.selected_options[0]
     kitsu.authenticate(token)
-    let entry = await kitsu.getEntryForAnime(kitsuid, callback_id)
+    let entry
+    if (action.name === 'animeentry') {
+      entry = await kitsu.getEntryForAnime(kitsuid, callback_id)
+    } else if (action.name === 'mangaentry') {
+      entry = await kitsu.getEntryForManga(kitsuid, callback_id)
+    }
 
     if (value === 'unadded') {
       if (entry) {
@@ -157,95 +162,9 @@ export default async (ctx, next, kitsu) => {
       return
     }
 
-    data.anime = { id: callback_id }
-    data.user = { id: kitsuid }
-    await kitsu.createEntry(data)
-    kitsu.unauthenticate()
-    ctx.body = 'Added.'
-    return
-  }
-
-  if (action.name === 'manga') {
-    body.attachments[0].title = 'Edit ' + title
-    body.attachments[0].actions = []
-    let statuses = [
-      { text: 'Currently Reading', value: 'current' },
-      { text: 'Plan to Read', value: 'planned' },
-      { text: 'Completed', value: 'completed' },
-      { text: 'On Hold', value: 'on_hold' },
-      { text: 'Dropped', value: 'dropped' }
-    ]
-    statuses.map((status) => {
-      let { text, value } = status
-      body.attachments[0].actions.push({
-        name: 'mangaentry',
-        text,
-        type: 'button',
-        value,
-        confirm: {
-          title: 'Edit ' + title,
-          text: `Are you sure you want to save ${title} as ${text}?`
-        }
-      })
-    })
-    kitsu.authenticate(token)
-    let entry = await kitsu.getEntryForManga(kitsuid, callback_id)
-    kitsu.unauthenticate()
-    if (entry) {
-      body.attachments[0].actions.map((attachment) => {
-        if (attachment.value === entry.status) {
-          attachment.style = 'primary'
-        }
-      })
-      body.attachments.push({
-        callback_id,
-        title: 'Remove ' + title,
-        actions: [{
-          name: 'mangaentry',
-          text: 'Remove from Library',
-          style: 'danger',
-          type: 'button',
-          value: 'remove',
-          confirm: {
-            title: 'Confirm',
-            text: `Are you sure you want to remove ${title}?`
-          }
-        }]
-      })
-    }
-    ctx.body = body
-    return
-  }
-
-  if (action.name === 'mangaentry') {
-    kitsu.authenticate(token)
-    let entry = await kitsu.getEntryForManga(kitsuid, callback_id)
-
-    if (action.value === 'remove') {
-      if (entry) {
-        await kitsu.removeEntry(entry.id)
-        kitsu.unauthenticate()
-        ctx.body = 'Removed.'
-      } else {
-        kitsu.unauthenticate()
-        ctx.body = 'Not yet in library.'
-      }
-      return
-    }
-
-    let data = {
-      status: action.value
-    }
-
-    if (entry) {
-      data.id = entry.id
-      await kitsu.updateEntry(data)
-      kitsu.unauthenticate()
-      ctx.body = 'Saved.'
-      return
-    }
-
-    data.manga = { id: callback_id }
+    if (action.name === 'animeentry') {
+      data.anime = { id: callback_id }
+    } else data.manga = { id: callback_id }
     data.user = { id: kitsuid }
     await kitsu.createEntry(data)
     kitsu.unauthenticate()

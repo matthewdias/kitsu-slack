@@ -118,9 +118,10 @@ export function animeAttachment (anime, extended) {
     footer_icon: 'https://kitsu-slack.herokuapp.com/footer-icon.png',
     ts: moment().unix(),
     actions: [{
-      name: 'anime',
+      name: 'animeentry',
       text: 'Edit Library Status',
-      type: 'button'
+      type: 'select',
+      data_source: 'external'
     }]
   }
 

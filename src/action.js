@@ -1,20 +1,8 @@
 import moment from 'moment'
 import { getUser, setUser } from './db'
 
-export default async (ctx, next, kitsu) => {
-  let payload = JSON.parse(ctx.request.body.payload)
-  let {
-    actions,
-    callback_id,
-    team,
-    user,
-    original_message
-  } = payload
-  let action = actions[0]
-  console.log('action: ' + action.name + (action.value ? (': ' + action.value) : ''))
-
-  let userId = user.id
-  user = await getUser(team.id, user.id)
+export const authAction = async (teamId, userId, ctx, kitsu) => {
+  let user = await getUser(teamId, userId)
   if (!user) {
     ctx.body = {
       text: 'Please login to Kitsu first using /login',
@@ -29,8 +17,28 @@ export default async (ctx, next, kitsu) => {
     token = authToken.data.access_token
     refresh = authToken.data.refresh_token
     let auth = { kitsuid, token, refresh }
-    setUser(team.id, userId, auth)
+    setUser(teamId, userId, auth)
   }
+  return user
+}
+
+export default async (ctx, next, kitsu) => {
+  let payload = JSON.parse(ctx.request.body.payload)
+  let {
+    actions,
+    callback_id,
+    team,
+    user,
+    original_message
+  } = payload
+  let action = actions[0]
+  console.log('action: ' + action.name + (action.value ? (': ' + action.value) : ''))
+
+  let kitsuUser = await authAction(team.id, user.id, ctx, kitsu)
+  if (!kitsuUser) {
+    return
+  }
+  let { kitsuid, token } = kitsuUser
 
   if (kitsuid === callback_id) {
     ctx.body = {
@@ -120,63 +128,12 @@ export default async (ctx, next, kitsu) => {
     }
   }
 
-  if (action.name === 'anime') {
-    body.attachments[0].title = 'Edit ' + title
-    body.attachments[0].actions = []
-    let statuses = [
-      { text: 'Currently Watching', value: 'current' },
-      { text: 'Plan to Watch', value: 'planned' },
-      { text: 'Completed', value: 'completed' },
-      { text: 'On Hold', value: 'on_hold' },
-      { text: 'Dropped', value: 'dropped' }
-    ]
-    statuses.map((status) => {
-      let { text, value } = status
-      body.attachments[0].actions.push({
-        name: 'animeentry',
-        text,
-        type: 'button',
-        value,
-        confirm: {
-          title: 'Edit ' + title,
-          text: `Are you sure you want to save ${title} as ${text}?`
-        }
-      })
-    })
-    kitsu.authenticate(token)
-    let entry = await kitsu.getEntryForAnime(kitsuid, callback_id)
-    kitsu.unauthenticate()
-    if (entry) {
-      body.attachments[0].actions.map((attachment) => {
-        if (attachment.value === entry.status) {
-          attachment.style = 'primary'
-        }
-      })
-      body.attachments.push({
-        callback_id,
-        title: 'Remove ' + title,
-        actions: [{
-          name: 'animeentry',
-          text: 'Remove from Library',
-          style: 'danger',
-          type: 'button',
-          value: 'remove',
-          confirm: {
-            title: 'Confirm',
-            text: `Are you sure you want to remove ${title}?`
-          }
-        }]
-      })
-    }
-    ctx.body = body
-    return
-  }
-
   if (action.name === 'animeentry') {
+    let { value } = action.selected_options[0]
     kitsu.authenticate(token)
     let entry = await kitsu.getEntryForAnime(kitsuid, callback_id)
 
-    if (action.value === 'remove') {
+    if (value === 'unadded') {
       if (entry) {
         await kitsu.removeEntry(entry.id)
         kitsu.unauthenticate()
@@ -189,7 +146,7 @@ export default async (ctx, next, kitsu) => {
     }
 
     let data = {
-      status: action.value
+      status: value
     }
 
     if (entry) {

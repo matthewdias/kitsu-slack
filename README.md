@@ -27,7 +27,8 @@ Your Kitsu credentials are not stored. They are exchanged for a key which is sto
 1. Create a Slack app [here](https://i.imgur.com/Zr8MCop.png)
 
 2. Deploy the app
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+    
+    [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 3. Configure the Slack app like below, replacing `kitsu-slack.herokuapp.com` with the host for your app. You can customize the command keywords if you like.
     - Interactive Messages

@@ -46,4 +46,10 @@ const getUser = async (teamId, userId) => {
   return User.findById(teamId + '/' + userId)
 }
 
-module.exports = { setTeam, getTeam, setUser, getUser }
+const deleteUser = async (teamId, userId) => {
+  await sequelize.sync()
+  let user = await User.findById(teamId + '/' + userId)
+  return user.destroy()
+}
+
+module.exports = { setTeam, getTeam, setUser, getUser, deleteUser }

@@ -14,6 +14,7 @@ Commands:
 /manga [(ex)tended] [manga title] - Lookup a Manga
 /group [(ex)tended] [group name] - Lookup a Group
 /login [username] [password] - Login to Kitsu
+/logout - Logout of Kitsu
 /kitsuhelp - Show this message
 \`\`\`
 

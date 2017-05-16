@@ -13,6 +13,7 @@ import anime from './anime'
 import manga from './manga'
 import group from './group'
 import login from './login'
+import logout from './logout'
 import action from './action'
 import menu from './menu'
 import event from './event'
@@ -73,6 +74,7 @@ router.post('/login', async (ctx, next) => { await login(ctx, next, kitsu) })
 router.post('/action', async (ctx, next) => { await action(ctx, next, kitsu) })
 router.post('/menu', async (ctx, next) => { await menu(ctx, next, kitsu) })
 router.post('/event', async (ctx, next) => { await event(ctx, next, kitsu) })
+router.post('/logout', logout)
 router.post('/help', help)
 router.get('/auth', auth)
 router.get('/health', async (ctx, next) => { ctx.body = 'healthy' })

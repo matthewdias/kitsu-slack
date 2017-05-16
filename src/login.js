@@ -13,7 +13,7 @@ export default async (ctx, next, kitsu) => {
   }
 
   ctx.status = 200
-  ctx.body = 'Logged In'
+  ctx.body = 'Logged in'
 
   let userId = await kitsu.getUserId(username)
   let auth = {

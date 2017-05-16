@@ -9,6 +9,7 @@ This app lets you retrieve information from Kitsu. You can search users, anime, 
 /manga [(ex)tended] [manga title] - Lookup a Manga
 /group [(ex)tended] [group name] - Lookup a Group
 /login [username] [password] - Login to Kitsu
+/logout - Logout of Kitsu
 /kitsuhelp - Show this message
 ```
 
@@ -43,6 +44,7 @@ Your Kitsu credentials are not stored. They are exchanged for a key which is sto
         ![](https://i.imgur.com/nhvEruS.png)
         ![](https://i.imgur.com/w7LtaPP.png)
         ![](https://i.imgur.com/m4O6mqT.png)
+        ![](https://i.imgur.com/OweHviE.png)
         ![](https://i.imgur.com/8NSJXRF.png)
 
     - OAuth & Permissions

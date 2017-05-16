@@ -12,6 +12,18 @@ class Kitsu {
 
     this.jsonApi = new JsonApi({ apiUrl: baseUrl + '/edge' })
 
+    this.jsonApi.insertMiddlewareBefore('axios-request', {
+      name: 'ignore-null-params',
+      req: (payload) => {
+        Object.entries(payload.req.params).forEach(([key, value]) => {
+          if (!value) {
+            delete payload.req.params[key]
+          }
+        })
+        return payload
+      }
+    })
+
     this.jsonApi.headers['User-Agent'] = 'Slack/1.0.0'
 
     this.jsonApi.define('user', {
@@ -304,7 +316,7 @@ class Kitsu {
 
   getUser (id, extended) {
     return this.jsonApi.find('user', id, {
-      include: 'waifu',
+      include: extended ? 'waifu' : null,
       fields: {
         users: extended ? this.userFields.join() : this.compactUserFields.join(),
         characters: this.characterFields.join()
@@ -316,7 +328,7 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('user', {
         filter: { name },
-        include: 'waifu',
+        include: extended ? 'waifu' : null,
         page: { limit: 1 },
         fields: {
           users: extended ? this.userFields.join() : this.compactUserFields.join(),
@@ -332,7 +344,7 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('user', {
         filter: { query },
-        include: 'waifu',
+        include: extended ? 'waifu' : null,
         page: { limit: 1 },
         fields: {
           users: extended ? this.userFields.join() : this.compactUserFields.join(),
@@ -349,7 +361,7 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('anime', {
         filter: { slug },
-        include: 'genres',
+        include: extended ? 'genres' : null,
         page: { limit: 1 },
         fields: {
           anime: extended ? this.animeFields.join() : this.compactMediaFields.join(),
@@ -365,7 +377,7 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('anime', {
         filter: { text },
-        include: 'genres',
+        include: extended ? 'genres' : null,
         page: { limit: 1 },
         fields: {
           anime: extended ? this.animeFields.join() : this.compactMediaFields.join(),
@@ -382,7 +394,7 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('manga', {
         filter: { slug },
-        include: 'genres',
+        include: extended ? 'genres' : null,
         page: { limit: 1 },
         fields: {
           manga: extended ? this.mangaFields.join() : this.compactMediaFields.join(),
@@ -398,7 +410,7 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('manga', {
         filter: { text },
-        include: 'genres',
+        include: extended ? 'genres' : null,
         page: { limit: 1 },
         fields: {
           manga: extended ? this.mangaFields.join() : this.compactMediaFields.join(),
@@ -415,7 +427,7 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('group', {
         filter: { slug },
-        include: 'category',
+        include: extended ? 'category' : null,
         page: { limit: 1 },
         fields: {
           groups: extended ? this.groupFields.join() : this.compactGroupFields.join(),
@@ -431,7 +443,7 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('group', {
         filter: { query },
-        include: 'category',
+        include: extended ? 'category' : null,
         page: { limit: 1 },
         fields: {
           groups: extended ? this.groupFields.join() : this.compactGroupFields.join(),

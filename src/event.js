@@ -1,5 +1,5 @@
 import { WebClient } from '@slack/client'
-import { getTeam } from './db'
+import { getUser, getTeam } from './db'
 import { animeAttachment } from './anime'
 import { mangaAttachment } from './manga'
 import { userAttachment } from './user'
@@ -27,6 +27,7 @@ export default async (ctx, next, kitsu) => {
   }
   let { team_id, event } = ctx.request.body
   let { channel, message_ts, links } = event
+  let sender = event.user
   console.log('event: ' + 'link_shared: ' + links.map(link => link.url).join())
 
   let { token } = await getTeam(team_id)
@@ -39,6 +40,10 @@ export default async (ctx, next, kitsu) => {
     const mediaRoute = async (path, match) => {
       let mediaKind = match
       await route(path, /\/[a-z0-9_-]+/, async (path, match) => {
+        let user = await getUser(team_id, sender)
+        if (user) {
+          kitsu.authenticate(user.token)
+        }
         if (mediaKind === 'anime') {
           let anime = await kitsu.findAnime(match)
           unfurl = animeAttachment(anime)
@@ -46,6 +51,7 @@ export default async (ctx, next, kitsu) => {
           let manga = await kitsu.findManga(match)
           unfurl = mangaAttachment(manga)
         }
+        kitsu.unauthenticate()
       })
       if (!unfurl) {
         unfurl = pageAttacment(match)
@@ -69,22 +75,37 @@ export default async (ctx, next, kitsu) => {
 
     await route(url, /\/posts/, async (path, match) => {
       await route(path, /\/\d+/, async (path, match) => {
+        let user = await getUser(team_id, sender)
+        if (user) {
+          kitsu.authenticate(user.token)
+        }
         let post = await kitsu.getPost(match)
         unfurl = postAttachment(post)
+        kitsu.unauthenticate()
       })
     })
 
     await route(url, /\/comments/, async (path, match) => {
       await route(path, /\/\d+/, async (path, match) => {
+        let user = await getUser(team_id, sender)
+        if (user) {
+          kitsu.authenticate(user.token)
+        }
         let comment = await kitsu.getComment(match)
         unfurl = commentAttachment(comment)
+        kitsu.unauthenticate()
       })
     })
 
     await route(url, /\/groups/, async (path, match) => {
       await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
+        let user = await getUser(team_id, sender)
+        if (user) {
+          kitsu.authenticate(user.token)
+        }
         let group = await kitsu.findGroup(match)
         unfurl = groupAttachment(group)
+        kitsu.unauthenticate()
       })
       if (!unfurl) {
         unfurl = pageAttacment(match)

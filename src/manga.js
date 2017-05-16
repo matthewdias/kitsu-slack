@@ -1,4 +1,5 @@
 import moment from 'moment'
+import { getUser } from './db'
 
 export function mangaAttachment (manga, extended) {
   let text = ''
@@ -126,20 +127,25 @@ export function mangaAttachment (manga, extended) {
 }
 
 export default async (ctx, next, kitsu) => {
-  let query = ctx.request.body.text
-  console.log('manga: ' + query)
+  let { text, user_id, team_id } = ctx.request.body
+  console.log('manga: ' + text)
   let extended = false
-  if (query.indexOf('extended ') === 0) {
-    query = query.substring(9)
+  if (text.indexOf('extended ') === 0) {
+    text = text.substring(9)
     extended = true
   }
-  if (query.indexOf('ex ') === 0) {
-    query = query.substring(3)
+  if (text.indexOf('ex ') === 0) {
+    text = text.substring(3)
     extended = true
   }
   let manga
   try {
-    manga = await kitsu.searchManga(encodeURI(query), extended)
+    let user = await getUser(team_id, user_id)
+    if (user) {
+      kitsu.authenticate(user.token)
+    }
+    manga = await kitsu.searchManga(encodeURI(text), extended)
+    kitsu.unauthenticate()
   } catch (error) {
     ctx.status = 404
     return

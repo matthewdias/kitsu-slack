@@ -38,7 +38,7 @@ Your Kitsu credentials are not stored. They are exchanged for a key which is sto
 
     - Slash Commands
 
-        ![](https://i.imgur.com/SVCDNpd.png)
+        ![](https://i.imgur.com/Dg5Flab.png)
         ![](https://i.imgur.com/TibRYGI.png)
         ![](https://i.imgur.com/nhvEruS.png)
         ![](https://i.imgur.com/w7LtaPP.png)

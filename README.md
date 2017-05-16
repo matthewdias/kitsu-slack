@@ -31,16 +31,24 @@ Your Kitsu credentials are not stored. They are exchanged for a key which is sto
     [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 3. Configure the Slack app like below, replacing `kitsu-slack.herokuapp.com` with the host for your app. You can customize the command keywords if you like.
+    
     - Interactive Messages
-    ![](https://i.imgur.com/F3RL2aq.png)
+        
+        ![](https://i.imgur.com/F3RL2aq.png)
+        
     - Slash Commands
-    ![](https://i.imgur.com/SVCDNpd.png)
-    ![](https://i.imgur.com/TibRYGI.png)
-    ![](https://i.imgur.com/nhvEruS.png)
-    ![](https://i.imgur.com/w7LtaPP.png)
-    ![](https://i.imgur.com/m4O6mqT.png)
-    ![](https://i.imgur.com/8NSJXRF.png)
+        
+        ![](https://i.imgur.com/SVCDNpd.png)
+        ![](https://i.imgur.com/TibRYGI.png)
+        ![](https://i.imgur.com/nhvEruS.png)
+        ![](https://i.imgur.com/w7LtaPP.png)
+        ![](https://i.imgur.com/m4O6mqT.png)
+        ![](https://i.imgur.com/8NSJXRF.png)
+        
     - OAuth & Permissions
-    ![](https://i.imgur.com/56G26Rj.png)
+    
+        ![](https://i.imgur.com/56G26Rj.png)
+        
     - Event Subscriptions
-    ![](https://i.imgur.com/DIxFkVc.png)
+    
+        ![](https://i.imgur.com/DIxFkVc.png)

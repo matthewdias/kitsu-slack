@@ -17,7 +17,8 @@ export default async (ctx, next, kitsu) => {
       { text: `Want to ${consumeVerb}`, value: 'planned' },
       { text: 'Completed', value: 'completed' },
       { text: 'On Hold', value: 'on_hold' },
-      { text: 'Dropped', value: 'dropped' }
+      { text: 'Dropped', value: 'dropped' },
+      { text: 'Not in Library', value: 'unadded' }
     ]
   }
 
@@ -36,16 +37,10 @@ export default async (ctx, next, kitsu) => {
   }
   kitsu.unauthenticate()
 
-  if (entry) {
-    body.options.push({ text: 'Remove From Library', value: 'unadded' })
-    body.selected_options = [
-      body.options.find(option => option.value === entry.status)
-    ]
-  } else {
-    let unaddedOption = { text: 'Add to Library', value: 'unadded' }
-    body.options.push(unaddedOption)
-    body.selected_options = [ unaddedOption ]
-  }
+  let status = entry ? entry.status : 'unadded'
+  body.selected_options = [
+    body.options.find(option => option.value === status)
+  ]
 
   ctx.body = body
 }

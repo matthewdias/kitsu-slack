@@ -32,7 +32,7 @@ export default async (ctx, next, kitsu) => {
     original_message
   } = payload
   let action = actions[0]
-  console.log('action: ' + action.name + (action.value ? (': ' + action.value) : ''))
+  console.log(`action: ${action.name}${action.value ? ': ' + action.value : ''}: ${callback_id}`)
 
   let kitsuUser = await authAction(team.id, user.id, ctx, kitsu)
   if (!kitsuUser) {
@@ -100,13 +100,12 @@ export default async (ctx, next, kitsu) => {
       kitsu.authenticate(token)
       try {
         await kitsu.removeFollow(callback_id)
+        body.text = 'Unfollowed.'
       } catch (error) {
-        ctx.body = 'Not yet following.'
-        kitsu.unauthenticate()
-        return
+        body.text = 'Not yet following.'
       }
       kitsu.unauthenticate()
-      ctx.body = 'Unfollowed.'
+      ctx.body = body
       return
     }
 
@@ -117,13 +116,12 @@ export default async (ctx, next, kitsu) => {
           follower: { id: kitsuid },
           followed: { id: callback_id }
         })
+        body.text = 'Followed.'
       } catch (error) {
-        ctx.body = 'Already following.'
-        kitsu.unauthenticate()
-        return
+        body.text = 'Already following.'
       }
       kitsu.unauthenticate()
-      ctx.body = 'Followed.'
+      ctx.body = body
       return
     }
   }
@@ -141,12 +139,10 @@ export default async (ctx, next, kitsu) => {
     if (value === 'unadded') {
       if (entry) {
         await kitsu.removeEntry(entry.id)
-        kitsu.unauthenticate()
-        ctx.body = 'Removed.'
-      } else {
-        kitsu.unauthenticate()
-        ctx.body = 'Not yet in library.'
+        body.text = 'Removed.'
+        ctx.body = body
       }
+      kitsu.unauthenticate()
       return
     }
 
@@ -158,7 +154,8 @@ export default async (ctx, next, kitsu) => {
       data.id = entry.id
       await kitsu.updateEntry(data)
       kitsu.unauthenticate()
-      ctx.body = 'Saved.'
+      body.text = 'Saved.'
+      ctx.body = body
       return
     }
 
@@ -168,6 +165,7 @@ export default async (ctx, next, kitsu) => {
     data.user = { id: kitsuid }
     await kitsu.createEntry(data)
     kitsu.unauthenticate()
-    ctx.body = 'Added.'
+    body.text = 'Added.'
+    ctx.body = body
   }
 }

@@ -8,12 +8,12 @@ export default async (ctx, next, kitsu) => {
   try {
     authData = await kitsu.login(username, password)
   } catch (error) {
-    ctx.body = 'Bad Login'
+    ctx.body = 'Bad Login.'
     return
   }
 
   ctx.status = 200
-  ctx.body = 'Logged in'
+  ctx.body = 'Logged in.'
 
   let userId = await kitsu.getUserId(username)
   let auth = {

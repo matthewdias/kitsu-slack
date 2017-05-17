@@ -15,11 +15,13 @@ class Kitsu {
     this.jsonApi.insertMiddlewareBefore('axios-request', {
       name: 'ignore-null-params',
       req: (payload) => {
-        Object.entries(payload.req.params).forEach(([key, value]) => {
-          if (!value) {
-            delete payload.req.params[key]
-          }
-        })
+        if (payload.req.params) {
+          Object.entries(payload.req.params).forEach(([key, value]) => {
+            if (!value) {
+              delete payload.req.params[key]
+            }
+          })
+        }
         return payload
       }
     })

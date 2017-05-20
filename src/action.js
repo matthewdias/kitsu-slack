@@ -51,7 +51,9 @@ export default async (ctx, next, kitsu) => {
   let body = { attachments: [{ callback_id }] }
 
   if (!action.value) {
-    var { color, title } = original_message.attachments[0]
+    if (original_message) {
+      var { color, title } = original_message.attachments[0]
+    }
     body.color = color
     body.response_type = 'ephemeral'
     body.replace_original = false
@@ -124,6 +126,49 @@ export default async (ctx, next, kitsu) => {
       ctx.body = body
       return
     }
+  }
+
+  if (action.name === 'anime' || action.name === 'manga') {
+    let consumeVerb = action.name === 'anime' ? 'Watch' : 'Read'
+    let name = action.name + 'entry'
+
+    let menu = {
+      name,
+      type: 'select',
+      options: [
+        { text: `Currently ${consumeVerb}ing`, value: 'current' },
+        { text: `Want to ${consumeVerb}`, value: 'planned' },
+        { text: 'Completed', value: 'completed' },
+        { text: 'On Hold', value: 'on_hold' },
+        { text: 'Dropped', value: 'dropped' },
+        { text: 'Not in Library', value: 'unadded' }
+      ],
+      confirm: {
+        title: 'Edit ' + title,
+        text: `Are you sure you want to edit ${title}?`
+      }
+    }
+
+    kitsu.authenticate(token)
+    let entry
+    if (action.name === 'anime') {
+      entry = await kitsu.getEntryForAnime(kitsuid, callback_id)
+    } else if (action.name === 'manga') {
+      entry = await kitsu.getEntryForManga(kitsuid, callback_id)
+    }
+    kitsu.unauthenticate()
+
+    let status = entry ? entry.status : 'unadded'
+    if (entry) {
+      menu.selected_options = [
+        menu.options.find(option => option.value === status)
+      ]
+    }
+
+    body.attachments[0].title = 'Edit ' + title
+    body.attachments[0].actions = [ menu ]
+    ctx.body = body
+    return
   }
 
   if (action.name === 'animeentry' || action.name === 'mangaentry') {

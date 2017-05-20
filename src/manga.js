@@ -109,10 +109,9 @@ export function mangaAttachment (manga, extended) {
     footer_icon: 'https://kitsu-slack.herokuapp.com/footer-icon.png',
     ts: moment().unix(),
     actions: [{
-      name: 'mangaentry',
+      name: 'manga',
       text: 'Edit Library Status',
-      type: 'select',
-      data_source: 'external'
+      type: 'button'
     }]
   }
 

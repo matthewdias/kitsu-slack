@@ -15,7 +15,6 @@ import group from './group'
 import login from './login'
 import logout from './logout'
 import action from './action'
-import menu from './menu'
 import event from './event'
 import help from './help'
 import auth from './auth'
@@ -72,7 +71,6 @@ router.post('/manga', async (ctx, next) => { await manga(ctx, next, kitsu) })
 router.post('/group', async (ctx, next) => { await group(ctx, next, kitsu) })
 router.post('/login', async (ctx, next) => { await login(ctx, next, kitsu) })
 router.post('/action', async (ctx, next) => { await action(ctx, next, kitsu) })
-router.post('/menu', async (ctx, next) => { await menu(ctx, next, kitsu) })
 router.post('/event', async (ctx, next) => { await event(ctx, next, kitsu) })
 router.post('/logout', logout)
 router.post('/help', help)

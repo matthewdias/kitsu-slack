@@ -15,7 +15,7 @@ export function userAttachment (user, extended) {
   if (extended) {
     let { gender, birthday, createdAt } = user
 
-    if (user.waifuOrHusbando) {
+    if (user.waifu) {
       fields.push({
         title: ':wedding: ' + user.waifuOrHusbando,
         value: user.waifu.name,

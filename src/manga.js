@@ -84,15 +84,15 @@ export function mangaAttachment (manga, extended) {
       fallback += `\nAge Rating: ${ageRating}`
     }
 
-    if (manga.genres) {
-      let genres = manga.genres.map(genre => genre.name)
-      genres = genres.join(', ')
+    if (manga.categories) {
+      let categories = manga.categories.map(genre => genre.title)
+      categories = categories.join(', ')
       fields.push({
-        title: ':performing_arts: Genres',
-        value: genres,
+        title: ':label: Categories',
+        value: categories,
         short: true
       })
-      fallback += `\nGenres: ${genres}`
+      fallback += `\nCategories: ${categories}`
     }
   }
 

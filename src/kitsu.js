@@ -91,9 +91,9 @@ class Kitsu {
       ageRating: '',
       ageRatingGuide: '',
       youtubeVideoId: '',
-      genres: {
+      categories: {
         jsonApi: 'hasMany',
-        type: 'genres'
+        type: 'categories'
       }
     }, { collectionPath: 'anime' })
 
@@ -108,7 +108,7 @@ class Kitsu {
       'ageRating',
       'ageRatingGuide',
       'youtubeVideoId',
-      'genres'
+      'categories'
     ]
 
     this.jsonApi.define('manga', {
@@ -124,9 +124,9 @@ class Kitsu {
       startDate: '',
       ageRating: '',
       ageRatingGuide: '',
-      genres: {
+      categories: {
         jsonApi: 'hasMany',
-        type: 'genres'
+        type: 'categories'
       }
     }, { collectionPath: 'manga' })
 
@@ -140,14 +140,14 @@ class Kitsu {
       'startDate',
       'ageRating',
       'ageRatingGuide',
-      'genres'
+      'categories'
     ]
 
-    this.jsonApi.define('genre', {
-      name: ''
+    this.jsonApi.define('category', {
+      title: ''
     })
 
-    this.genreFields = ['name']
+    this.categoryFields = ['title']
 
     this.jsonApi.define('libraryEntry', {
       status: '',
@@ -396,11 +396,11 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('anime', {
         filter: { slug },
-        include: extended ? 'genres' : null,
+        include: extended ? 'categories' : null,
         page: { limit: 1 },
         fields: {
           anime: extended ? this.animeFields.join() : this.compactMediaFields.join(),
-          genres: this.genreFields.join()
+          categories: this.categoryFields.join()
         }
       }).then((anime) => {
         resolve(anime[0])
@@ -412,11 +412,11 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('anime', {
         filter: { text },
-        include: extended ? 'genres' : null,
+        include: extended ? 'categories' : null,
         page: { limit: 1 },
         fields: {
           anime: extended ? this.animeFields.join() : this.compactMediaFields.join(),
-          genres: this.genreFields.join()
+          categories: this.categoryFields.join()
         }
       }).then((anime) => {
         resolve(anime[0])
@@ -429,11 +429,11 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('manga', {
         filter: { slug },
-        include: extended ? 'genres' : null,
+        include: extended ? 'categories' : null,
         page: { limit: 1 },
         fields: {
           manga: extended ? this.mangaFields.join() : this.compactMediaFields.join(),
-          genres: this.genreFields.join()
+          categories: this.categoryFields.join()
         }
       }).then((manga) => {
         resolve(manga[0])
@@ -445,11 +445,11 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('manga', {
         filter: { text },
-        include: extended ? 'genres' : null,
+        include: extended ? 'categories' : null,
         page: { limit: 1 },
         fields: {
           manga: extended ? this.mangaFields.join() : this.compactMediaFields.join(),
-          genres: this.genreFields.join()
+          categories: this.categoryFields.join()
         }
       }).then((manga) => {
         resolve(manga[0])

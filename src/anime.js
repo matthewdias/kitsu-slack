@@ -84,15 +84,15 @@ export function animeAttachment (anime, extended) {
       fallback += `\nAge Rating: ${ageRating}`
     }
 
-    if (anime.genres) {
-      let genres = anime.genres.map(genre => genre.name)
-      genres = genres.join(', ')
+    if (anime.categories) {
+      let categories = anime.categories.map(genre => genre.title)
+      categories = categories.join(', ')
       fields.push({
-        title: ':performing_arts: Genres',
-        value: genres,
+        title: ':label: Categories',
+        value: categories,
         short: true
       })
-      fallback += `\nGenres: ${genres}`
+      fallback += `\nCategories: ${categories}`
     }
 
     if (youtubeVideoId) {

@@ -217,8 +217,6 @@ class Kitsu {
       }
     }, { collectionPath: 'post-likes' })
 
-    this.postLikeFields = ['user,post']
-
     this.jsonApi.define('comment', {
       content: '',
       repliesCount: '',
@@ -255,8 +253,6 @@ class Kitsu {
         type: 'comments'
       }
     }, { collectionPath: 'comment-likes' })
-
-    this.commentLikeFields = ['user,comment']
 
     this.jsonApi.define('group', {
       slug: '',
@@ -296,8 +292,6 @@ class Kitsu {
         type: 'groups'
       }
     }, { collectionPath: 'group-members' })
-
-    this.groupMemberFields = ['group', 'user']
 
     this.jsonApi.define('review', {
       content: '',
@@ -540,8 +534,7 @@ class Kitsu {
   searchFollows (follower, followed) {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('follow', {
-        filter: { follower, followed },
-        include: 'follower,followed'
+        filter: { follower, followed }
       }).then((follows) => {
         resolve(follows[0])
       })
@@ -560,12 +553,7 @@ class Kitsu {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('groupMember', {
         filter: { user, group },
-        include: 'user,group',
-        fields: {
-          groupMembers: this.groupMemberFields.join(),
-          users: this.compactUserFields.join(),
-          groups: this.compactGroupFields.join()
-        }
+        fields: { groupMembers: 'id' }
       }).then((groupMembers) => {
         resolve(groupMembers[0])
       })
@@ -583,8 +571,7 @@ class Kitsu {
   searchPostLikes (userId, postId) {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('postLike', {
-        filter: { userId, postId },
-        include: 'user,post'
+        filter: { userId, postId }
       }).then((postLikes) => {
         resolve(postLikes[0])
       })
@@ -602,8 +589,7 @@ class Kitsu {
   searchCommentLikes (userId, commentId) {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('commentLike', {
-        filter: { userId, commentId },
-        include: 'user,comment'
+        filter: { userId, commentId }
       }).then((commentLikes) => {
         resolve(commentLikes[0])
       })

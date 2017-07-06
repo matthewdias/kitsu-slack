@@ -5,6 +5,7 @@ module.exports = {
     'promise'
   ],
   rules: {
-    camelcase: 'off'
+    camelcase: 'off',
+    'no-useless-return': 'off'
   }
 };

@@ -135,6 +135,80 @@ export function animeAttachment (anime, extended) {
   return attachment
 }
 
+export async function animeAction ({ ctx, kitsu, action, kitsuid, callback_id, body, title, token }) {
+  if (action.name === 'anime') {
+    let menu = {
+      name: 'animeentry',
+      type: 'select',
+      options: [
+        { text: 'Currently Watching', value: 'current' },
+        { text: 'Want to Watch', value: 'planned' },
+        { text: 'Completed', value: 'completed' },
+        { text: 'On Hold', value: 'on_hold' },
+        { text: 'Dropped', value: 'dropped' },
+        { text: 'Not in Library', value: 'unadded' }
+      ],
+      confirm: {
+        title: 'Edit ' + title,
+        text: `Are you sure you want to edit ${title}?`
+      }
+    }
+
+    kitsu.authenticate(token)
+    let entry = await kitsu.getEntryForAnime(kitsuid, callback_id)
+    kitsu.unauthenticate()
+
+    let status = entry ? entry.status : 'unadded'
+    if (entry) {
+      menu.selected_options = [
+        menu.options.find(option => option.value === status)
+      ]
+    }
+
+    body.attachments[0].title = 'Edit ' + title
+    body.attachments[0].actions = [ menu ]
+    ctx.body = body
+    return true
+  }
+
+  if (action.name === 'animeentry') {
+    let { value } = action.selected_options[0]
+    kitsu.authenticate(token)
+    let entry = await kitsu.getEntryForAnime(kitsuid, callback_id)
+
+    if (value === 'unadded') {
+      if (entry) {
+        await kitsu.removeEntry(entry.id)
+        body.text = 'Removed.'
+        ctx.body = body
+      }
+      kitsu.unauthenticate()
+      return true
+    }
+
+    let data = {
+      status: value
+    }
+
+    if (entry) {
+      data.id = entry.id
+      await kitsu.updateEntry(data)
+      kitsu.unauthenticate()
+      body.text = 'Saved.'
+      ctx.body = body
+      return true
+    }
+
+    data.anime = { id: callback_id }
+    data.user = { id: kitsuid }
+    await kitsu.createEntry(data)
+    kitsu.unauthenticate()
+    body.text = 'Added.'
+    ctx.body = body
+  }
+  return false
+}
+
 export default async (ctx, next, kitsu) => {
   let { text, user_id, team_id } = ctx.request.body
   console.log('anime: ' + text)

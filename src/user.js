@@ -101,6 +101,87 @@ export function userAttachment (user, extended) {
   }
 }
 
+export async function userAction ({ ctx, kitsu, action, kitsuid, callback_id, body, title, token }) {
+  if (action.name === 'user') {
+    if (kitsuid === callback_id) {
+      ctx.body = {
+        text: 'You can\'t follow yourself.',
+        response_type: 'ephemeral',
+        replace_original: false
+      }
+      return
+    }
+
+    let follow = await kitsu.searchFollows(kitsuid, callback_id)
+    if (follow) {
+      body.attachments[0].callback_id = follow.id
+      body.attachments[0].title = 'Unfollow ' + title
+      body.attachments[0].actions = [
+        {
+          name: 'follow',
+          text: 'Unfollow',
+          style: 'danger',
+          type: 'button',
+          value: 'unfollow',
+          confirm: {
+            title: 'Unfollow ' + title,
+            text: `Are you sure you want to unfollow ${title}?`
+          }
+        }
+      ]
+    } else {
+      body.attachments[0].title = 'Follow ' + title
+      body.attachments[0].actions = [
+        {
+          name: 'follow',
+          text: 'Follow',
+          style: 'primary',
+          type: 'button',
+          value: 'follow',
+          confirm: {
+            title: 'Follow ' + title,
+            text: `Are you sure you want to follow ${title}?`
+          }
+        }
+      ]
+    }
+    ctx.body = body
+    return true
+  }
+
+  if (action.name === 'follow') {
+    if (action.value === 'unfollow') {
+      kitsu.authenticate(token)
+      try {
+        await kitsu.removeFollow(callback_id)
+        body.text = 'Unfollowed.'
+      } catch (error) {
+        body.text = 'Not yet following.'
+      }
+      kitsu.unauthenticate()
+      ctx.body = body
+      return true
+    }
+
+    if (action.value === 'follow') {
+      kitsu.authenticate(token)
+      try {
+        await kitsu.createFollow({
+          follower: { id: kitsuid },
+          followed: { id: callback_id }
+        })
+        body.text = 'Followed.'
+      } catch (error) {
+        body.text = 'Already following.'
+      }
+      kitsu.unauthenticate()
+      ctx.body = body
+      return true
+    }
+  }
+  return false
+}
+
 export default async (ctx, next, kitsu) => {
   let query = ctx.request.body.text
   console.log('user: ' + query)

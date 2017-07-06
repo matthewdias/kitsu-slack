@@ -125,3 +125,77 @@ export function postAttachment (post, extended) {
 
   return attachment
 }
+
+export async function postAction ({ ctx, kitsu, action, kitsuid, callback_id, body, title, token }) {
+  if (action.name === 'post') {
+    kitsu.authenticate(token)
+    let postLike = await kitsu.searchPostLikes(kitsuid, callback_id)
+    kitsu.unauthenticate(token)
+    if (postLike) {
+      body.attachments[0].callback_id = postLike.id
+      body.attachments[0].title = 'Unlike ' + title
+      body.attachments[0].actions = [
+        {
+          name: 'postlike',
+          text: 'Unlike Post',
+          style: 'danger',
+          type: 'button',
+          value: 'unlike',
+          confirm: {
+            title: 'Unlike ' + title,
+            text: `Are you sure you want to unlike ${title}?`
+          }
+        }
+      ]
+    } else {
+      body.attachments[0].title = 'Like ' + title
+      body.attachments[0].actions = [
+        {
+          name: 'postlike',
+          text: 'Like Post',
+          style: 'primary',
+          type: 'button',
+          value: 'like',
+          confirm: {
+            title: 'Like ' + title,
+            text: `Are you sure you want to like ${title}?`
+          }
+        }
+      ]
+    }
+    ctx.body = body
+    return true
+  }
+
+  if (action.name === 'postlike') {
+    if (action.value === 'unlike') {
+      kitsu.authenticate(token)
+      try {
+        await kitsu.removePostLike(callback_id)
+        body.text = 'Unliked.'
+      } catch (error) {
+        body.text = 'Not yet liked.'
+      }
+      kitsu.unauthenticate()
+      ctx.body = body
+      return true
+    }
+
+    if (action.value === 'like') {
+      kitsu.authenticate(token)
+      try {
+        await kitsu.createPostLike({
+          user: { id: kitsuid },
+          post: { id: callback_id }
+        })
+        body.text = 'Liked.'
+      } catch (error) {
+        body.text = 'Already liked.'
+      }
+      kitsu.unauthenticate()
+      ctx.body = body
+      return true
+    }
+  }
+  return false
+}

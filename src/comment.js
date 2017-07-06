@@ -109,3 +109,77 @@ export function commentAttachment (comment, extended) {
 
   return attachment
 }
+
+export async function commentAction ({ ctx, kitsu, action, kitsuid, callback_id, body, title, token }) {
+  if (action.name === 'comment') {
+    kitsu.authenticate(token)
+    let commentLike = await kitsu.searchCommentLikes(kitsuid, callback_id)
+    kitsu.unauthenticate(token)
+    if (commentLike) {
+      body.attachments[0].callback_id = commentLike.id
+      body.attachments[0].title = 'Unlike ' + title
+      body.attachments[0].actions = [
+        {
+          name: 'commentlike',
+          text: 'Unlike Comment',
+          style: 'danger',
+          type: 'button',
+          value: 'unlike',
+          confirm: {
+            title: 'Unlike ' + title,
+            text: `Are you sure you want to unlike ${title}?`
+          }
+        }
+      ]
+    } else {
+      body.attachments[0].title = 'Like ' + title
+      body.attachments[0].actions = [
+        {
+          name: 'commentlike',
+          text: 'Like Comment',
+          style: 'primary',
+          type: 'button',
+          value: 'like',
+          confirm: {
+            title: 'Like ' + title,
+            text: `Are you sure you want to like ${title}?`
+          }
+        }
+      ]
+    }
+    ctx.body = body
+    return true
+  }
+
+  if (action.name === 'commentlike') {
+    if (action.value === 'unlike') {
+      kitsu.authenticate(token)
+      try {
+        await kitsu.removeCommentLike(callback_id)
+        body.text = 'Unliked.'
+      } catch (error) {
+        body.text = 'Not yet liked.'
+      }
+      kitsu.unauthenticate()
+      ctx.body = body
+      return true
+    }
+
+    if (action.value === 'like') {
+      kitsu.authenticate(token)
+      try {
+        await kitsu.createCommentLike({
+          user: { id: kitsuid },
+          comment: { id: callback_id }
+        })
+        body.text = 'Liked.'
+      } catch (error) {
+        body.text = 'Already liked.'
+      }
+      kitsu.unauthenticate()
+      ctx.body = body
+      return true
+    }
+  }
+  return false
+}

@@ -105,10 +105,7 @@ const query = async (Runtime, selector, after, all) => {
 export async function getFeedback (slug, board) {
   let url = `${CANNY_HOST}${board}/p/${slug}`
   try {
-    let manager = await CDP({ tab: 'ws://localhost:9222/devtools/browser' })
-    let { targetId } = await manager.Target.createTarget({ url })
-    let list = await CDP.List()
-    let tab = list.find(target => target.id === targetId).webSocketDebuggerUrl
+    let tab = await CDP.New({ url })
     let { Page, Runtime } = await CDP({ tab })
     await Page.enable()
     await Page.loadEventFired()
@@ -134,7 +131,6 @@ export async function getFeedback (slug, board) {
       comments: await query(Runtime, '.comment', '.length', true)
     }
 
-    manager.Target.closeTarget({ targetId })
     return post
   } catch (e) {
     console.log(e)

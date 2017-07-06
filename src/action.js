@@ -128,6 +128,77 @@ export default async (ctx, next, kitsu) => {
     }
   }
 
+  if (action.name === 'group') {
+    kitsu.authenticate(token)
+    let group = await kitsu.searchGroupMembers(kitsuid, callback_id)
+    kitsu.unauthenticate(token)
+    if (group) {
+      body.attachments[0].callback_id = group.id
+      body.attachments[0].title = 'Leave ' + title
+      body.attachments[0].actions = [
+        {
+          name: 'groupmember',
+          text: 'Leave Group',
+          style: 'danger',
+          type: 'button',
+          value: 'leave',
+          confirm: {
+            title: 'Leave ' + title,
+            text: `Are you sure you want to leave ${title}?`
+          }
+        }
+      ]
+    } else {
+      body.attachments[0].title = 'Join ' + title
+      body.attachments[0].actions = [
+        {
+          name: 'groupmember',
+          text: 'Join Group',
+          style: 'primary',
+          type: 'button',
+          value: 'join',
+          confirm: {
+            title: 'Join ' + title,
+            text: `Are you sure you want to join ${title}?`
+          }
+        }
+      ]
+    }
+    ctx.body = body
+    return
+  }
+
+  if (action.name === 'groupmember') {
+    if (action.value === 'leave') {
+      kitsu.authenticate(token)
+      try {
+        await kitsu.removeGroupMember(callback_id)
+        body.text = 'Left.'
+      } catch (error) {
+        body.text = 'Not yet joined.'
+      }
+      kitsu.unauthenticate()
+      ctx.body = body
+      return
+    }
+
+    if (action.value === 'join') {
+      kitsu.authenticate(token)
+      try {
+        await kitsu.createGroupMember({
+          user: { id: kitsuid },
+          group: { id: callback_id }
+        })
+        body.text = 'Joined.'
+      } catch (error) {
+        body.text = 'Already joined.'
+      }
+      kitsu.unauthenticate()
+      ctx.body = body
+      return
+    }
+  }
+
   if (action.name === 'anime' || action.name === 'manga') {
     let consumeVerb = action.name === 'anime' ? 'Watch' : 'Read'
     let name = action.name + 'entry'

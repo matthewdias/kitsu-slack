@@ -260,6 +260,19 @@ class Kitsu {
 
     this.groupCategoryFields = ['name']
 
+    this.jsonApi.define('groupMember', {
+      user: {
+        jsonApi: 'hasOne',
+        type: 'users'
+      },
+      group: {
+        jsonApi: 'hasOne',
+        type: 'groups'
+      }
+    }, { collectionPath: 'group-members' })
+
+    this.groupMemberFields = ['group', 'user']
+
     this.jsonApi.define('review', {
       content: '',
       likesCount: '',
@@ -441,7 +454,7 @@ class Kitsu {
     })
   }
 
-  searchGroup (query, extended) {
+  searchGroups (query, extended) {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('group', {
         filter: { query },
@@ -515,6 +528,30 @@ class Kitsu {
 
   removeFollow (id) {
     return this.jsonApi.destroy('follow', id)
+  }
+
+  searchGroupMembers (user, group) {
+    return new Promise((resolve, reject) => {
+      this.jsonApi.findAll('groupMember', {
+        filter: { user, group },
+        include: 'user,group',
+        fields: {
+          groupMembers: this.groupMemberFields.join(),
+          users: this.compactUserFields.join(),
+          groups: this.compactGroupFields.join()
+        }
+      }).then((groupMembers) => {
+        resolve(groupMembers[0])
+      })
+    })
+  }
+
+  createGroupMember (groupMember) {
+    return this.jsonApi.create('groupMember', groupMember)
+  }
+
+  removeGroupMember (id) {
+    return this.jsonApi.destroy('groupMember', id)
   }
 
   createEntry (entry) {

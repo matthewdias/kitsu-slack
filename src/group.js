@@ -65,12 +65,12 @@ export function groupAttachment (group, extended) {
     fallback,
     footer: 'Kitsu API',
     footer_icon: 'https://kitsu-slack.herokuapp.com/footer-icon.png',
-    ts: moment().unix()
-    // actions: [{
-    //   name: 'post',
-    //   text: '',
-    //   type: 'button'
-    // }]
+    ts: moment().unix(),
+    actions: [{
+      name: 'group',
+      text: 'Join/Leave',
+      type: 'button'
+    }]
   }
 
   return attachment
@@ -94,7 +94,7 @@ export default async (ctx, next, kitsu) => {
     if (user) {
       kitsu.authenticate(user.token)
     }
-    group = await kitsu.searchGroup(encodeURI(text), extended)
+    group = await kitsu.searchGroups(encodeURI(text), extended)
     kitsu.unauthenticate()
   } catch (error) {
     ctx.status = 404

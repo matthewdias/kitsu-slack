@@ -206,6 +206,19 @@ class Kitsu {
       'media'
     ]
 
+    this.jsonApi.define('postLike', {
+      user: {
+        jsonApi: 'hasOne',
+        type: 'users'
+      },
+      post: {
+        jsonApi: 'hasOne',
+        type: 'posts'
+      }
+    }, { collectionPath: 'post-likes' })
+
+    this.postLikeFields = ['user,post']
+
     this.jsonApi.define('comment', {
       content: '',
       repliesCount: '',
@@ -231,6 +244,19 @@ class Kitsu {
       'user',
       'post'
     ]
+
+    this.jsonApi.define('commentLike', {
+      user: {
+        jsonApi: 'hasOne',
+        type: 'users'
+      },
+      comment: {
+        jsonApi: 'hasOne',
+        type: 'comments'
+      }
+    }, { collectionPath: 'comment-likes' })
+
+    this.commentLikeFields = ['user,comment']
 
     this.jsonApi.define('group', {
       slug: '',
@@ -552,6 +578,44 @@ class Kitsu {
 
   removeGroupMember (id) {
     return this.jsonApi.destroy('groupMember', id)
+  }
+
+  searchPostLikes (userId, postId) {
+    return new Promise((resolve, reject) => {
+      this.jsonApi.findAll('postLike', {
+        filter: { userId, postId },
+        include: 'user,post'
+      }).then((postLikes) => {
+        resolve(postLikes[0])
+      })
+    })
+  }
+
+  createPostLike (postLike) {
+    return this.jsonApi.create('postLike', postLike)
+  }
+
+  removePostLike (id) {
+    return this.jsonApi.destroy('postLike', id)
+  }
+
+  searchCommentLikes (userId, commentId) {
+    return new Promise((resolve, reject) => {
+      this.jsonApi.findAll('commentLike', {
+        filter: { userId, commentId },
+        include: 'user,comment'
+      }).then((commentLikes) => {
+        resolve(commentLikes[0])
+      })
+    })
+  }
+
+  createCommentLike (commentLike) {
+    return this.jsonApi.create('commentLike', commentLike)
+  }
+
+  removeCommentLike (id) {
+    return this.jsonApi.destroy('commentLike', id)
   }
 
   createEntry (entry) {

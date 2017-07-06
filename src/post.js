@@ -107,12 +107,12 @@ export function postAttachment (post, extended) {
     fallback,
     footer: 'Kitsu API',
     footer_icon: 'https://kitsu-slack.herokuapp.com/footer-icon.png',
-    ts: moment().unix()
-    // actions: [{
-    //   name: 'post',
-    //   text: '',
-    //   type: 'button'
-    // }]
+    ts: moment().unix(),
+    actions: [{
+      name: 'post',
+      text: 'Like/Unlike',
+      type: 'button'
+    }]
   }
 
   if (user.name) {

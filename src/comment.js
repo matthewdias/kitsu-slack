@@ -91,12 +91,12 @@ export function commentAttachment (comment, extended) {
     fallback,
     footer: 'Kitsu API',
     footer_icon: 'https://kitsu-slack.herokuapp.com/footer-icon.png',
-    ts: moment().unix()
-    // actions: [{
-    //   name: 'post',
-    //   text: '',
-    //   type: 'button'
-    // }]
+    ts: moment().unix(),
+    actions: [{
+      name: 'comment',
+      text: 'Like/Unlike',
+      type: 'button'
+    }]
   }
 
   if (user.name) {

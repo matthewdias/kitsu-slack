@@ -2,12 +2,13 @@ import { WebClient } from '@slack/client'
 import { getUser, getTeam } from './db'
 import { animeAttachment } from './anime'
 import { mangaAttachment } from './manga'
+import { categoryAttachment } from './category'
 import { userAttachment } from './user'
 import { postAttachment } from './post'
 import { commentAttachment } from './comment'
 import { reviewAttachment } from './review'
 import { feedbackAttachment, getFeedback } from './feedback'
-import { pageAttacment } from './page'
+import { pageAttachment } from './page'
 import { groupAttachment } from './group'
 
 const route = async (path, route, children) => {
@@ -37,6 +38,23 @@ export default async (ctx, next, kitsu) => {
     let { url } = link
     let unfurl
 
+    await route(url, /\/explore\/anime|manga/, async (path, match) => {
+      await route(path, /\/category/, async (path, match) => {
+        await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
+          let user = await getUser(team_id, sender)
+          if (user) {
+            kitsu.authenticate(user.token)
+          }
+          let category = await kitsu.findCategory(match)
+          unfurl = categoryAttachment(category)
+          kitsu.unauthenticate()
+        })
+      })
+      if (!unfurl) {
+        unfurl = pageAttachment(match)
+      }
+    })
+
     const mediaRoute = async (path, match) => {
       let mediaKind = match
       await route(path, /\/[a-z0-9_-]+/, async (path, match) => {
@@ -54,15 +72,17 @@ export default async (ctx, next, kitsu) => {
         kitsu.unauthenticate()
       })
       if (!unfurl) {
-        unfurl = pageAttacment(match)
+        unfurl = pageAttachment(match)
       }
     }
 
-    await route(url, /\/anime/, mediaRoute)
-    await route(url, /\/manga/, mediaRoute)
+    if (!unfurl) {
+      await route(url, /\/anime/, mediaRoute)
+      await route(url, /\/manga/, mediaRoute)
+    }
 
     await route(url, /\/users/, async (path, match) => {
-      await route(path, /\/[a-zA-Z0-9_]+/, async (path, match) => {
+      await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
         // await route(path, /\/library/, async (path, match) => {
         //   unfurl = { text: 'users/library' }
         // })
@@ -108,7 +128,7 @@ export default async (ctx, next, kitsu) => {
         kitsu.unauthenticate()
       })
       if (!unfurl) {
-        unfurl = pageAttacment(match)
+        unfurl = pageAttachment(match)
       }
     })
 
@@ -128,7 +148,7 @@ export default async (ctx, next, kitsu) => {
         })
       })
       if (!unfurl) {
-        unfurl = pageAttacment(match)
+        unfurl = pageAttachment(match)
       }
     }
 
@@ -136,7 +156,7 @@ export default async (ctx, next, kitsu) => {
       await route(path, /\/bugs/, boardRoute)
       await route(path, /\/feature-requests/, boardRoute)
       if (!unfurl) {
-        unfurl = pageAttacment(match)
+        unfurl = pageAttachment(match)
       }
     }
 
@@ -144,24 +164,26 @@ export default async (ctx, next, kitsu) => {
 
     await feedbackRoute(url)
 
-    await route(url, /\/trending/, async (path, match) => {
-      unfurl = pageAttacment(match)
-    })
+    if (!unfurl) {
+      await route(url, /\/trending/, async (path, match) => {
+        unfurl = pageAttachment(match)
+      })
+    }
 
     await route(url, /\/privacy/, async (path, match) => {
-      unfurl = pageAttacment(match)
+      unfurl = pageAttachment(match)
     })
 
     await route(url, /\/terms/, async (path, match) => {
-      unfurl = pageAttacment(match)
+      unfurl = pageAttachment(match)
     })
 
     await route(url, /\/about/, async (path, match) => {
-      unfurl = pageAttacment(match)
+      unfurl = pageAttachment(match)
     })
 
     if (!unfurl) {
-      unfurl = pageAttacment('')
+      unfurl = pageAttachment('')
     }
 
     await slack.chat.unfurl(message_ts, channel, {

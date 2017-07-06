@@ -144,10 +144,21 @@ class Kitsu {
     ]
 
     this.jsonApi.define('category', {
-      title: ''
+      title: '',
+      slug: '',
+      description: '',
+      nsfw: '',
+      image: { medium: '' }
     })
 
-    this.categoryFields = ['title']
+    this.compactCategoryFields = ['title']
+    this.categoryFields = [
+      ...this.compactCategoryFields,
+      'slug',
+      'description',
+      'nsfw',
+      'image'
+    ]
 
     this.jsonApi.define('libraryEntry', {
       status: '',
@@ -400,7 +411,7 @@ class Kitsu {
         page: { limit: 1 },
         fields: {
           anime: extended ? this.animeFields.join() : this.compactMediaFields.join(),
-          categories: this.categoryFields.join()
+          categories: this.compactCategoryFields.join()
         }
       }).then((anime) => {
         resolve(anime[0])
@@ -416,7 +427,7 @@ class Kitsu {
         page: { limit: 1 },
         fields: {
           anime: extended ? this.animeFields.join() : this.compactMediaFields.join(),
-          categories: this.categoryFields.join()
+          categories: this.compactCategoryFields.join()
         }
       }).then((anime) => {
         resolve(anime[0])
@@ -433,7 +444,7 @@ class Kitsu {
         page: { limit: 1 },
         fields: {
           manga: extended ? this.mangaFields.join() : this.compactMediaFields.join(),
-          categories: this.categoryFields.join()
+          categories: this.compactCategoryFields.join()
         }
       }).then((manga) => {
         resolve(manga[0])
@@ -449,7 +460,7 @@ class Kitsu {
         page: { limit: 1 },
         fields: {
           manga: extended ? this.mangaFields.join() : this.compactMediaFields.join(),
-          categories: this.categoryFields.join()
+          categories: this.compactCategoryFields.join()
         }
       }).then((manga) => {
         resolve(manga[0])
@@ -486,6 +497,19 @@ class Kitsu {
         }
       }).then((groups) => {
         resolve(groups[0])
+      })
+    })
+  }
+
+  // categories
+  findCategory (slug) {
+    return new Promise((resolve, reject) => {
+      this.jsonApi.findAll('category', {
+        filter: { slug },
+        page: { limit: 1 },
+        fields: { categories: this.categoryFields.join() }
+      }).then((categories) => {
+        resolve(categories[0])
       })
     })
   }

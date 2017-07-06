@@ -1,11 +1,16 @@
 import moment from 'moment'
 
-export function pageAttacment (page) {
+export function pageAttachment (page) {
+  console.log('page', page)
   let title = 'Kitsu | '
   if (page === 'anime') {
     title += 'Browse Anime'
   } else if (page === 'manga') {
     title += 'Browse Manga'
+  } else if (page === 'explore/anime') {
+    title += 'Explore Anime'
+  } else if (page === 'explore/manga') {
+    title += 'Explore Manga'
   } else if (page === 'groups') {
     title += 'Groups'
   } else if (page === 'feedback') {

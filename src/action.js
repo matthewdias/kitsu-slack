@@ -4,6 +4,7 @@ import { userAction } from './user'
 import { groupAction } from './group'
 import { postAction } from './post'
 import { commentAction } from './comment'
+import { categoryAction } from './category'
 import { animeAction } from './anime'
 import { mangaAction } from './manga'
 
@@ -62,6 +63,7 @@ export default async (ctx, next, kitsu) => {
   if (await groupAction(actionParams)) return
   if (await postAction(actionParams)) return
   if (await commentAction(actionParams)) return
+  if (await categoryAction(actionParams)) return
   if (await animeAction(actionParams)) return
   if (await mangaAction(actionParams)) return
 }

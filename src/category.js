@@ -38,12 +38,12 @@ export function categoryAttachment (category) {
     fallback,
     footer: 'Kitsu API',
     footer_icon: 'https://kitsu-slack.herokuapp.com/footer-icon.png',
-    ts: moment().unix()
-    // actions: [{
-    //   name: 'category',
-    //   text: 'Favorite/Unfavorite',
-    //   type: 'button'
-    // }]
+    ts: moment().unix(),
+    actions: [{
+      name: 'category',
+      text: 'Favorite/Unfavorite',
+      type: 'button'
+    }]
   }
 
   let categoryImage = image ? image.medium : null
@@ -52,4 +52,76 @@ export function categoryAttachment (category) {
   }
 
   return attachment
+}
+
+export async function categoryAction ({ ctx, kitsu, action, kitsuid, callback_id, body, title, token }) {
+  if (action.name === 'category') {
+    let categoryFavorite = await kitsu.searchCategoryFavorites(kitsuid, callback_id)
+    if (categoryFavorite) {
+      body.attachments[0].callback_id = categoryFavorite.id
+      body.attachments[0].title = 'Unfavorite ' + title
+      body.attachments[0].actions = [
+        {
+          name: 'categoryfavorite',
+          text: 'Unfavorite',
+          style: 'danger',
+          type: 'button',
+          value: 'unfavorite',
+          confirm: {
+            title: 'Unfavorite ' + title,
+            text: `Are you sure you want to unfavorite ${title}?`
+          }
+        }
+      ]
+    } else {
+      body.attachments[0].title = 'Favorite ' + title
+      body.attachments[0].actions = [
+        {
+          name: 'categoryfavorite',
+          text: 'Favorite',
+          style: 'primary',
+          type: 'button',
+          value: 'favorite',
+          confirm: {
+            title: 'Favorite ' + title,
+            text: `Are you sure you want to favorite ${title}?`
+          }
+        }
+      ]
+    }
+    ctx.body = body
+    return true
+  }
+
+  if (action.name === 'categoryfavorite') {
+    if (action.value === 'unfavorite') {
+      kitsu.authenticate(token)
+      try {
+        await kitsu.removeCategoryFavorite(callback_id)
+        body.text = 'Unfavorited.'
+      } catch (error) {
+        body.text = 'Not yet favorited.'
+      }
+      kitsu.unauthenticate()
+      ctx.body = body
+      return true
+    }
+
+    if (action.value === 'favorite') {
+      kitsu.authenticate(token)
+      try {
+        await kitsu.createCategoryFavorite({
+          user: { id: kitsuid },
+          category: { id: callback_id }
+        })
+        body.text = 'Favorited.'
+      } catch (error) {
+        body.text = 'Already favorited.'
+      }
+      kitsu.unauthenticate()
+      ctx.body = body
+      return true
+    }
+  }
+  return false
 }

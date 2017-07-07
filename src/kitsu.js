@@ -160,6 +160,17 @@ class Kitsu {
       'image'
     ]
 
+    this.jsonApi.define('categoryFavorite', {
+      user: {
+        jsonApi: 'hasOne',
+        type: 'users'
+      },
+      category: {
+        jsonApi: 'hasOne',
+        type: 'categories'
+      }
+    }, { collectionPath: 'category-favorites' })
+
     this.jsonApi.define('libraryEntry', {
       status: '',
       anime: {
@@ -626,6 +637,24 @@ class Kitsu {
 
   removeCommentLike (id) {
     return this.jsonApi.destroy('commentLike', id)
+  }
+
+  searchCategoryFavorites (userId, categoryId) {
+    return new Promise((resolve, reject) => {
+      this.jsonApi.findAll('categoryFavorite', {
+        filter: { userId, categoryId }
+      }).then((categoryFavorites) => {
+        resolve(categoryFavorites[0])
+      })
+    })
+  }
+
+  createCategoryFavorite (categoryFavorite) {
+    return this.jsonApi.create('categoryFavorite', categoryFavorite)
+  }
+
+  removeCategoryFavorite (id) {
+    return this.jsonApi.destroy('categoryFavorite', id)
   }
 
   createEntry (entry) {

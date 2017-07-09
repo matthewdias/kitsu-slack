@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { getUser, setUser } from './db'
+import { getUser, setUser, deleteUser } from './db'
 import { userAction } from './user'
 import { groupAction } from './group'
 import { postAction } from './post'
@@ -19,12 +19,23 @@ export const authAction = async (teamId, userId, ctx, kitsu) => {
     return
   }
   let { kitsuid, token, refresh, updatedAt } = user
-  if (moment().diff(moment(updatedAt), 'days') > 20) {
-    let authToken = await kitsu.refresh(token, refresh)
-    token = authToken.data.access_token
-    refresh = authToken.data.refresh_token
-    let auth = { kitsuid, token, refresh }
-    setUser(teamId, userId, auth)
+  let remaining = moment().diff(moment(updatedAt), 'days')
+  if (remaining > 20) {
+    if (remaining < 30) {
+      let authToken = await kitsu.refresh(token, refresh)
+      token = authToken.data.access_token
+      refresh = authToken.data.refresh_token
+      let auth = { kitsuid, token, refresh }
+      setUser(teamId, userId, auth)
+    } else {
+      await deleteUser(teamId, userId)
+      ctx.body = {
+        text: 'Your login has expired. Please login again to Kitsu first using /login',
+        response_type: 'ephemeral',
+        replace_original: false
+      }
+      return
+    }
   }
   return user
 }

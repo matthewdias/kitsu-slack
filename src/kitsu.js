@@ -372,7 +372,7 @@ class Kitsu {
     }
     let { kitsuid, token, refresh, updatedAt } = user
     let remaining = moment().diff(moment(updatedAt), 'days')
-    if (remaining > 20) {
+    if (remaining > 5) {
       if (remaining < 30) {
         let authToken = await kitsu.refresh(token, refresh)
         token = authToken.data.access_token

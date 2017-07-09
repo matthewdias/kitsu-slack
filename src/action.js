@@ -18,7 +18,10 @@ export default async (ctx, next, kitsu) => {
   let action = actions[0]
   console.log(`action: ${action.name}${action.value ? ': ' + action.value : ''}: ${callback_id}`)
 
-  let { kitsuid, token } = await kitsu.authUser(team.id, user.id, ctx, kitsu)
+  let { kitsuid, token, fresh } = await kitsu.authUser(team.id, user.id, ctx, kitsu)
+  if (!fresh) {
+    return
+  }
 
   let body = { attachments: [{ callback_id }] }
 

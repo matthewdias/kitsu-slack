@@ -212,8 +212,10 @@ export default async (ctx, next, kitsu) => {
   }
   let manga
   try {
-    let { token } = await kitsu.authUser(team_id, user_id, ctx, kitsu)
-    kitsu.authenticate(token)
+    let { token, fresh } = await kitsu.authUser(team_id, user_id, ctx, kitsu)
+    if (fresh) {
+      kitsu.authenticate(token)
+    } else return
     manga = await kitsu.searchManga(encodeURI(text), extended)
     kitsu.unauthenticate()
   } catch (error) {

@@ -222,8 +222,10 @@ export default async (ctx, next, kitsu) => {
   }
   let anime
   try {
-    let { token } = await kitsu.authUser(team_id, user_id, ctx, kitsu)
-    kitsu.authenticate(token)
+    let { token, fresh } = await kitsu.authUser(team_id, user_id, ctx, kitsu)
+    if (fresh) {
+      kitsu.authenticate(token)
+    } else return
     anime = await kitsu.searchAnime(encodeURI(text), extended)
     kitsu.unauthenticate()
   } catch (error) {

@@ -1,5 +1,3 @@
-import moment from 'moment'
-import { getUser, setUser, deleteUser } from './db'
 import { userAction } from './user'
 import { groupAction } from './group'
 import { postAction } from './post'
@@ -7,38 +5,6 @@ import { commentAction } from './comment'
 import { categoryAction } from './category'
 import { animeAction } from './anime'
 import { mangaAction } from './manga'
-
-export const authAction = async (teamId, userId, ctx, kitsu) => {
-  let user = await getUser(teamId, userId)
-  if (!user) {
-    ctx.body = {
-      text: 'Please login to Kitsu first using /login',
-      response_type: 'ephemeral',
-      replace_original: false
-    }
-    return
-  }
-  let { kitsuid, token, refresh, updatedAt } = user
-  let remaining = moment().diff(moment(updatedAt), 'days')
-  if (remaining > 20) {
-    if (remaining < 30) {
-      let authToken = await kitsu.refresh(token, refresh)
-      token = authToken.data.access_token
-      refresh = authToken.data.refresh_token
-      let auth = { kitsuid, token, refresh }
-      setUser(teamId, userId, auth)
-    } else {
-      await deleteUser(teamId, userId)
-      ctx.body = {
-        text: 'Your login has expired. Please login again to Kitsu first using /login',
-        response_type: 'ephemeral',
-        replace_original: false
-      }
-      return
-    }
-  }
-  return user
-}
 
 export default async (ctx, next, kitsu) => {
   let payload = JSON.parse(ctx.request.body.payload)
@@ -52,11 +18,7 @@ export default async (ctx, next, kitsu) => {
   let action = actions[0]
   console.log(`action: ${action.name}${action.value ? ': ' + action.value : ''}: ${callback_id}`)
 
-  let kitsuUser = await authAction(team.id, user.id, ctx, kitsu)
-  if (!kitsuUser) {
-    return
-  }
-  let { kitsuid, token } = kitsuUser
+  let { kitsuid, token } = await kitsu.authUser(team.id, user.id, ctx, kitsu)
 
   let body = { attachments: [{ callback_id }] }
 

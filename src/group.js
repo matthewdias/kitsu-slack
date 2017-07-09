@@ -1,5 +1,4 @@
 import moment from 'moment'
-import { getUser } from './db'
 
 export function groupAttachment (group, extended) {
   let text = ''
@@ -164,10 +163,8 @@ export default async (ctx, next, kitsu) => {
   }
   let group
   try {
-    let user = await getUser(team_id, user_id)
-    if (user) {
-      kitsu.authenticate(user.token)
-    }
+    let { token } = await kitsu.authUser(team_id, user_id, ctx, kitsu)
+    kitsu.authenticate(token)
     group = await kitsu.searchGroups(encodeURI(text), extended)
     kitsu.unauthenticate()
   } catch (error) {

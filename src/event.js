@@ -41,10 +41,8 @@ export default async (ctx, next, kitsu) => {
     await route(url, /\/explore\/anime|manga/, async (path, match) => {
       await route(path, /\/category/, async (path, match) => {
         await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
-          let user = await getUser(team_id, sender)
-          if (user) {
-            kitsu.authenticate(user.token)
-          }
+          let { token } = await kitsu.authUser(team_id, sender, ctx, kitsu)
+          kitsu.authenticate(token)
           let category = await kitsu.findCategory(match)
           unfurl = categoryAttachment(category)
           kitsu.unauthenticate()
@@ -58,10 +56,8 @@ export default async (ctx, next, kitsu) => {
     const mediaRoute = async (path, match) => {
       let mediaKind = match
       await route(path, /\/[a-z0-9_-]+/, async (path, match) => {
-        let user = await getUser(team_id, sender)
-        if (user) {
-          kitsu.authenticate(user.token)
-        }
+        let { token } = await kitsu.authUser(team_id, sender, ctx, kitsu)
+        kitsu.authenticate(token)
         if (mediaKind === 'anime') {
           let anime = await kitsu.findAnime(match)
           unfurl = animeAttachment(anime)
@@ -95,10 +91,8 @@ export default async (ctx, next, kitsu) => {
 
     await route(url, /\/posts/, async (path, match) => {
       await route(path, /\/\d+/, async (path, match) => {
-        let user = await getUser(team_id, sender)
-        if (user) {
-          kitsu.authenticate(user.token)
-        }
+        let { token } = await kitsu.authUser(team_id, sender, ctx, kitsu)
+        kitsu.authenticate(token)
         let post = await kitsu.getPost(match)
         unfurl = postAttachment(post)
         kitsu.unauthenticate()
@@ -107,10 +101,8 @@ export default async (ctx, next, kitsu) => {
 
     await route(url, /\/comments/, async (path, match) => {
       await route(path, /\/\d+/, async (path, match) => {
-        let user = await getUser(team_id, sender)
-        if (user) {
-          kitsu.authenticate(user.token)
-        }
+        let { token } = await kitsu.authUser(team_id, sender, ctx, kitsu)
+        kitsu.authenticate(token)
         let comment = await kitsu.getComment(match)
         unfurl = commentAttachment(comment)
         kitsu.unauthenticate()
@@ -119,10 +111,8 @@ export default async (ctx, next, kitsu) => {
 
     await route(url, /\/groups/, async (path, match) => {
       await route(path, /\/[a-zA-Z0-9_-]+/, async (path, match) => {
-        let user = await getUser(team_id, sender)
-        if (user) {
-          kitsu.authenticate(user.token)
-        }
+        let { token } = await kitsu.authUser(team_id, sender, ctx, kitsu)
+        kitsu.authenticate(token)
         let group = await kitsu.findGroup(match)
         unfurl = groupAttachment(group)
         kitsu.unauthenticate()

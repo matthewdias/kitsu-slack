@@ -1,5 +1,7 @@
 import OAuth2 from 'client-oauth2'
 import JsonApi from 'devour-client'
+import moment from 'moment'
+import { getUser, setUser, deleteUser } from './db'
 const baseUrl = process.env.KITSU_HOST + '/api'
 
 class Kitsu {
@@ -356,6 +358,38 @@ class Kitsu {
   refresh (token, refresh) {
     let authToken = this.auth.createToken(token, refresh)
     return authToken.refresh()
+  }
+
+  async authUser (teamId, userId, ctx, kitsu) {
+    let user = await getUser(teamId, userId)
+    if (!user) {
+      ctx.body = {
+        text: 'Please login to Kitsu first using /login',
+        response_type: 'ephemeral',
+        replace_original: false
+      }
+      return
+    }
+    let { kitsuid, token, refresh, updatedAt } = user
+    let remaining = moment().diff(moment(updatedAt), 'days')
+    if (remaining > 20) {
+      if (remaining < 30) {
+        let authToken = await kitsu.refresh(token, refresh)
+        token = authToken.data.access_token
+        refresh = authToken.data.refresh_token
+        let auth = { kitsuid, token, refresh }
+        setUser(teamId, userId, auth)
+      } else {
+        await deleteUser(teamId, userId)
+        ctx.body = {
+          text: 'Your login has expired. Please login again to Kitsu first using /login',
+          response_type: 'ephemeral',
+          replace_original: false
+        }
+        return
+      }
+    }
+    return user
   }
 
   // users

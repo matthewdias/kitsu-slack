@@ -1,5 +1,5 @@
 import { WebClient } from '@slack/client'
-import { getUser, getTeam } from './db'
+import { getTeam } from './db'
 import { animeAttachment } from './anime'
 import { mangaAttachment } from './manga'
 import { categoryAttachment } from './category'

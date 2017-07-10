@@ -11,7 +11,7 @@ export default async (ctx, next) => {
     let error = 'Login Error: ' + body.error
     console.log(error)
     ctx.response.type = 'html'
-    ctx.body = `${error} <a href="https://slack.com/oauth/authorize?scope=commands,users:read,links:read,links:write&client_id=12303250033.57925979077">Try again</a>`
+    ctx.body = `${error} <a href="https://slack.com/oauth/authorize?scope=commands,links:read,links:write&client_id=12303250033.57925979077">Try again</a>`
   } else {
     setTeam(body.team_id, body.access_token)
     ctx.redirect(`/authed.html?team=${body.team_id}`)

@@ -20,6 +20,8 @@ Commands:
 
 Privacy Policy:
 
-Your Kitsu credentials are not stored. They are exchanged for a key which is stored in a private database to make authenticated requests to the Kitsu API on your behalf.`
+Your Kitsu credentials are not stored. They are exchanged for a key which is stored in a private database to make authenticated requests to the Kitsu API on your behalf.
+
+Go to https://kitsu-slack.herokuapp.com/contact.html for support.`
   }
 }

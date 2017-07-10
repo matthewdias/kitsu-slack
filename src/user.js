@@ -1,5 +1,6 @@
 import moment from 'moment'
 import { getUser } from './db'
+import help from './help'
 
 export function userAttachment (user, extended) {
   let text = ''
@@ -183,22 +184,26 @@ export async function userAction ({ ctx, kitsu, action, kitsuid, callback_id, bo
 }
 
 export default async (ctx, next, kitsu) => {
-  let query = ctx.request.body.text
-  console.log('user: ' + query)
+  let { text, team_id } = ctx.request.body
+  if (!text) {
+    help(ctx, next)
+    return
+  }
+
+  console.log('user: ' + text)
   let extended = false
-  if (query.indexOf('extended ') === 0) {
-    query = query.substring(9)
+  if (text.indexOf('extended ') === 0) {
+    text = text.substring(9)
     extended = true
   }
-  if (query.indexOf('ex ') === 0) {
-    query = query.substring(3)
+  if (text.indexOf('ex ') === 0) {
+    text = text.substring(3)
     extended = true
   }
   let user
-  if (query.indexOf('<@') === 0) {
-    let id = query.substring(2, query.indexOf('|'))
+  if (text.indexOf('<@') === 0) {
+    let id = text.substring(2, text.indexOf('|'))
     if (id) {
-      let { team_id } = ctx.request.body
       let u = await getUser(team_id, id)
       if (u) {
         try {
@@ -210,7 +215,7 @@ export default async (ctx, next, kitsu) => {
     } else ctx.body = 'No such Slack user.'
   } else {
     try {
-      user = await kitsu.searchUsers(encodeURI(query), extended)
+      user = await kitsu.searchUsers(encodeURI(text), extended)
     } catch (error) {
       ctx.status = 404
       return

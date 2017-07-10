@@ -1,4 +1,5 @@
 import moment from 'moment'
+import help from './help'
 
 export function mangaAttachment (manga, extended) {
   let text = ''
@@ -200,6 +201,11 @@ export async function mangaAction ({ ctx, kitsu, action, kitsuid, callback_id, b
 
 export default async (ctx, next, kitsu) => {
   let { text, user_id, team_id } = ctx.request.body
+  if (!text) {
+    help(ctx, next)
+    return
+  }
+
   console.log('manga: ' + text)
   let extended = false
   if (text.indexOf('extended ') === 0) {

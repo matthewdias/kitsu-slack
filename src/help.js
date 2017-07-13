@@ -22,6 +22,8 @@ Privacy Policy:
 
 Your Kitsu credentials are not stored. They are exchanged for a key which is stored in a private database to make authenticated requests to the Kitsu API on your behalf.
 
+Your Slack user and team ids are stored anonymously on the same private database, and are only used for looking up your user. No other Slack data is stored.
+
 Go to https://kitsu-slack.herokuapp.com/contact.html for support.`
   }
 }

@@ -29,7 +29,7 @@
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.4.0",
     "babel-preset-stage-3": "^6.24.1",
-    "chrome-remote-interface": "^0.22.0",
+    "chrome-remote-interface": "^0.27.2",
     "client-oauth2": "^4.1.0",
     "devour-client": "^1.4.1",
     "koa": "^2.2.0",
@@ -39,6 +39,7 @@
     "koa-router": "^7.1.1",
     "koa-static": "^3.0.0",
     "moment": "^2.18.1",
+    "node-fetch": "^2.6.0",
     "pg": "^6.2.2",
     "redis": "^2.7.1",
     "sequelize": "^3.30.4"

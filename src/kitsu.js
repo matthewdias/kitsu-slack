@@ -392,12 +392,12 @@ class Kitsu {
   }
 
   // users
-  getUserId (name) {
+  getUserId () {
     return new Promise((resolve, reject) => {
       this.jsonApi.findAll('user', {
-        filter: { name },
+        filter: { self: true },
         page: { limit: 1 },
-        fields: { users: ['name'].join() }
+        fields: { users: ['id'].join() }
       }).then((users) => {
         resolve(users[0].id)
       })

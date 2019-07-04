@@ -1,26 +1,42 @@
+import fetch from 'node-fetch'
 import { setUser } from './db'
 
 export default async (ctx, next, kitsu) => {
-  let username = ctx.request.body.text.split(' ')[0]
-  let password = ctx.request.body.text.substr(username.length + 1)
+  const { text, team_id, user_id, response_url } = ctx.request.body
+  let username = text.split(' ')[0]
+  let password = text.substr(username.length + 1)
 
+  login(username, password, team_id, user_id, kitsu)
+    .then(text => fetch(response_url, {
+      method: 'post',
+      body: JSON.stringify({ text }),
+      headers: { 'Content-Type': 'application/json'}
+    }))
+
+  ctx.status = 200
+  ctx.body = 'Loading...'
+}
+
+const login = async (username, password, team_id, user_id, kitsu) => {
+  const response = {}
   let authData
   try {
     authData = await kitsu.login(username, password)
   } catch (error) {
-    ctx.body = 'Bad Login.'
-    return
+    return 'Bad Login.'
   }
 
-  ctx.status = 200
-  ctx.body = 'Logged in.'
+  const { accessToken: token, refreshToken: refresh } = authData
 
-  let userId = await kitsu.getUserId(username)
-  let auth = {
-    kitsuid: userId,
-    token: authData.accessToken,
-    refresh: authData.refreshToken
+  kitsu.authenticate(token)
+  const kitsuid = await kitsu.getUserId()
+  kitsu.unauthenticate()
+  const auth = { kitsuid, token, refresh }
+
+  try {
+    setUser(team_id, user_id, auth)
+    return 'Logged in.'
+  } catch (error) {
+    return 'Failed to save.'
   }
-  let { team_id, user_id } = ctx.request.body
-  setUser(team_id, user_id, auth)
 }

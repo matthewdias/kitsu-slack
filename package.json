@@ -42,7 +42,7 @@
     "node-fetch": "^2.6.0",
     "pg": "^6.2.2",
     "redis": "^2.7.1",
-    "sequelize": "^3.30.4"
+    "sequelize": "^5.15.1"
   },
   "devDependencies": {
     "eslint": "^3.19.0",
